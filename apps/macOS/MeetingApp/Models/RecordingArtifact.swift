@@ -1,6 +1,6 @@
 import Foundation
 
-struct RecordingArtifact: Identifiable, Equatable {
+struct RecordingArtifact: Identifiable, Equatable, Sendable {
     let id: UUID
     let sessionId: String
     let directoryURL: URL
@@ -38,7 +38,7 @@ struct RecordingArtifact: Identifiable, Equatable {
     }
 }
 
-struct AudioCaptureActivity: Equatable {
+struct AudioCaptureActivity: Equatable, Sendable {
     var systemAudioLevel: Double
     var microphoneLevel: Double
     var updatedAt: Date

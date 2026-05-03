@@ -2,6 +2,13 @@ import Core
 import Foundation
 import ParakeetTranscription
 
+protocol TranscriptionRunning: Sendable {
+    func transcribe(
+        artifact: RecordingArtifact,
+        config: TranscriptionConfig
+    ) async throws -> TranscriptionArtifact
+}
+
 enum TranscriptionRunnerError: Error, Equatable, LocalizedError {
     case missingMixedAudio
     case missingAudioFile(String)
@@ -16,7 +23,7 @@ enum TranscriptionRunnerError: Error, Equatable, LocalizedError {
     }
 }
 
-struct TranscriptionArtifact: Equatable {
+struct TranscriptionArtifact: Equatable, Sendable {
     let transcript: Transcript
     let jsonURL: URL
     let markdownURL: URL
@@ -28,7 +35,7 @@ struct TranscriptionArtifact: Equatable {
     }
 }
 
-struct TranscriptionRunner {
+struct TranscriptionRunner: TranscriptionRunning, @unchecked Sendable {
     private let provider: any TranscriptionProvider
     private let fileManager: FileManager
     private let clock: () -> Date
