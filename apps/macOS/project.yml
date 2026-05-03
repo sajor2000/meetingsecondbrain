@@ -16,6 +16,9 @@ targets:
       - MeetingApp
     dependencies:
       - package: Core
+        product: Core
+      - package: Core
+        product: ParakeetTranscription
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.sajor2000.meetingsecondbrain.mac

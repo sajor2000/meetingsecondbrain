@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01827426B40FF7A80DD5F44A /* TranscriptionRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F914C0F699D291895522F9C /* TranscriptionRunner.swift */; };
 		22ADD5AAC585D0D7139B11BE /* CaptureProofView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419D91AE242DAC5C688FC9D8 /* CaptureProofView.swift */; };
 		24FD468FAE603EE0F20A756A /* AudioFileWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3F22604AFDA885ACF8724B /* AudioFileWriterTests.swift */; };
 		460E9E4DA89D6D428159F1C3 /* MeetingAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A091269E33601A9E374A8A /* MeetingAppTests.swift */; };
 		517A5ED8BEE48E3CFDF28957 /* CapturePermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DC85645B8DE583572E3ED5 /* CapturePermissionService.swift */; };
 		61E37928C23DD826547B5DE0 /* MeetingAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A155B71947110ED58678EA /* MeetingAudioRecorder.swift */; };
 		6EE38469A5CACEFAF00A514B /* RecordingSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064BAFDF0638EAC979E7F367 /* RecordingSessionViewModel.swift */; };
+		6F941C0385DBE07C9F20884A /* TranscriptionRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB9D832AFFFE1BD2FD71716 /* TranscriptionRunnerTests.swift */; };
 		90C6DD4DEC79EC36C72ABB93 /* RecordingSessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D6EF0156D37731D6967E37 /* RecordingSessionState.swift */; };
 		9489B698C3BE72507B623DB8 /* RecordingSessionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9411E7FD1C434C55D79C222 /* RecordingSessionViewModelTests.swift */; };
 		9DA7D709B5E6DB0D3E4EAE82 /* MeetingAudioRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F3BAF037C02A24C12EA855F /* MeetingAudioRecorderTests.swift */; };
@@ -20,6 +22,7 @@
 		B43B0257939E37161E4EB58F /* MicrophoneCaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD66285D8F2CBA7CB3DEFFF2 /* MicrophoneCaptureEngine.swift */; };
 		B44DAA8658A769593B0C91FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8920AF953BCD4CA157D651 /* ContentView.swift */; };
 		C5625129D18F3262E17457DC /* AudioFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451BEAF6CC438B064151CA27 /* AudioFileWriter.swift */; };
+		EF3D682D4D3AABF0D61778D8 /* ParakeetTranscription in Frameworks */ = {isa = PBXBuildFile; productRef = E21F645D8DBD4B47429574C5 /* ParakeetTranscription */; };
 		F7FD1EEAE3A3C4C338764BF2 /* MeetingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACF93E700C756985B60BA36 /* MeetingApp.swift */; };
 		FC04327E65A33CCE2DC558BC /* Core in Frameworks */ = {isa = PBXBuildFile; productRef = BA2339EA45BF208415E352C7 /* Core */; };
 		FDEB727E988A272D6F1AE77B /* RecordingArtifact.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11902F01ED7120E74E73647 /* RecordingArtifact.swift */; };
@@ -49,6 +52,8 @@
 		62DC85645B8DE583572E3ED5 /* CapturePermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturePermissionService.swift; sourceTree = "<group>"; };
 		87D6EF0156D37731D6967E37 /* RecordingSessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingSessionState.swift; sourceTree = "<group>"; };
 		8ACF93E700C756985B60BA36 /* MeetingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingApp.swift; sourceTree = "<group>"; };
+		9F914C0F699D291895522F9C /* TranscriptionRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionRunner.swift; sourceTree = "<group>"; };
+		9FB9D832AFFFE1BD2FD71716 /* TranscriptionRunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionRunnerTests.swift; sourceTree = "<group>"; };
 		C11902F01ED7120E74E73647 /* RecordingArtifact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingArtifact.swift; sourceTree = "<group>"; };
 		C9411E7FD1C434C55D79C222 /* RecordingSessionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingSessionViewModelTests.swift; sourceTree = "<group>"; };
 		DD66285D8F2CBA7CB3DEFFF2 /* MicrophoneCaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneCaptureEngine.swift; sourceTree = "<group>"; };
@@ -62,6 +67,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FC04327E65A33CCE2DC558BC /* Core in Frameworks */,
+				EF3D682D4D3AABF0D61778D8 /* ParakeetTranscription in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +92,7 @@
 				06A155B71947110ED58678EA /* MeetingAudioRecorder.swift */,
 				DD66285D8F2CBA7CB3DEFFF2 /* MicrophoneCaptureEngine.swift */,
 				223C2A7C03C01CB23BEDB386 /* SystemAudioCaptureEngine.swift */,
+				9F914C0F699D291895522F9C /* TranscriptionRunner.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -152,6 +159,7 @@
 				29A091269E33601A9E374A8A /* MeetingAppTests.swift */,
 				0F3BAF037C02A24C12EA855F /* MeetingAudioRecorderTests.swift */,
 				C9411E7FD1C434C55D79C222 /* RecordingSessionViewModelTests.swift */,
+				9FB9D832AFFFE1BD2FD71716 /* TranscriptionRunnerTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -191,6 +199,7 @@
 			name = MeetingApp;
 			packageProductDependencies = (
 				BA2339EA45BF208415E352C7 /* Core */,
+				E21F645D8DBD4B47429574C5 /* ParakeetTranscription */,
 			);
 			productName = MeetingApp;
 			productReference = DF8C21534E2AD124148F3AA2 /* MeetingApp.app */;
@@ -249,6 +258,7 @@
 				90C6DD4DEC79EC36C72ABB93 /* RecordingSessionState.swift in Sources */,
 				6EE38469A5CACEFAF00A514B /* RecordingSessionViewModel.swift in Sources */,
 				A715B3731A9857B6CA2B1257 /* SystemAudioCaptureEngine.swift in Sources */,
+				01827426B40FF7A80DD5F44A /* TranscriptionRunner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +270,7 @@
 				460E9E4DA89D6D428159F1C3 /* MeetingAppTests.swift in Sources */,
 				9DA7D709B5E6DB0D3E4EAE82 /* MeetingAudioRecorderTests.swift in Sources */,
 				9489B698C3BE72507B623DB8 /* RecordingSessionViewModelTests.swift in Sources */,
+				6F941C0385DBE07C9F20884A /* TranscriptionRunnerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,6 +525,10 @@
 		BA2339EA45BF208415E352C7 /* Core */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Core;
+		};
+		E21F645D8DBD4B47429574C5 /* ParakeetTranscription */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ParakeetTranscription;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
