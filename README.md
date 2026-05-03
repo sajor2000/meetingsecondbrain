@@ -4,7 +4,7 @@ Native macOS and iOS app for meeting capture, notes, tasks, screenshot OCR, audi
 
 ## Status
 
-Phase 1 foundation is in progress. The current gate is user approval of the Convex schema before Phase 2 starts.
+Phase 1 foundation is complete. Phase 2 core capture proof is in progress, with the macOS recording scaffold implemented and the real meeting capture gate still pending.
 
 Completed foundation items:
 
@@ -15,7 +15,17 @@ Completed foundation items:
 - iOS project scaffold exists at `apps/iOS/MeetingAppMobile.xcodeproj`.
 - Git remote is set to `https://github.com/sajor2000/meetingsecondbrain.git`.
 
-No Phase 2 capture, transcription, calendar implementation, LLM enhancement, or Cognee code has been started.
+Phase 2 capture proof items now present:
+
+- macOS recording session UI scaffold with local capture proof controls.
+- ScreenCaptureKit system audio capture service.
+- AVFoundation microphone capture service.
+- Recording artifact model, metadata writer, and local diagnostic output folder.
+- Recorder lifecycle tests for startup cleanup, stop cleanup, artifact uniqueness, and live meter activity.
+- Manual real meeting test plan at `docs/manual-test-plan.md`.
+- Capture hardening learning at `docs/solutions/logic-errors/stabilize-macos-capture-recorder-cleanup-and-activity-state-2026-05-03.md`.
+
+Transcription, calendar implementation, LLM enhancement, and Cognee code have not been started.
 
 ## Setup
 
