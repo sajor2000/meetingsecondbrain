@@ -1,5 +1,6 @@
 import Core
 import Foundation
+import ParakeetTranscription
 
 enum TranscriptionRunnerError: Error, Equatable, LocalizedError {
     case missingMixedAudio

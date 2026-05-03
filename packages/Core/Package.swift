@@ -9,6 +9,7 @@ let package = Package(
     ],
     products: [
         .library(name: "Core", targets: ["Core"]),
+        .library(name: "ParakeetTranscription", targets: ["ParakeetTranscription"]),
     ],
     dependencies: [
         .package(
@@ -17,13 +18,21 @@ let package = Package(
         ),
     ],
     targets: [
+        .target(name: "Core"),
         .target(
-            name: "Core",
-            dependencies: ["FluidAudio"]
+            name: "ParakeetTranscription",
+            dependencies: [
+                "Core",
+                "FluidAudio",
+            ]
         ),
         .executableTarget(
             name: "CoreSelfTests",
             dependencies: ["Core"]
+        ),
+        .executableTarget(
+            name: "ParakeetTranscriptionSelfTests",
+            dependencies: ["ParakeetTranscription"]
         ),
     ]
 )

@@ -70,6 +70,8 @@ Regression coverage to keep:
 - Core transcript segments sort by start time and keep final and partial segment state.
 - Core transcription provider config defaults to English with no vocabulary hints.
 - Parakeet model selection uses the English v2 model for English and multilingual v3 for other languages.
+- Parakeet token timings map into timestamped transcript segments.
+- Parakeet does not advertise diarization until speaker assignment is wired into returned segments.
 - Batch transcription checks for a missing audio file before invoking the provider.
 - The macOS transcription runner writes transcript JSON and markdown beside the mixed audio artifact.
 - The macOS transcription runner surfaces missing mixed audio and missing file errors.
@@ -87,6 +89,7 @@ Regression coverage to keep:
 - Real-time factor:
 - Transcript JSON:
 - Transcript markdown:
+- Timestamp segment quality:
 - Speaker label quality:
 - Vocabulary normalization notes:
 - Accuracy notes:
@@ -97,4 +100,5 @@ Regression coverage to keep:
 - A real 30 minute meeting artifact transcribes end to end.
 - Transcript generation finishes within the spec target for post-meeting enhancement readiness.
 - Transcript JSON and markdown are written beside the recording artifact.
+- Transcript segments include nonzero timestamp anchors beyond the first segment.
 - Any model download, accuracy, diarization, or performance issue is added to `DECISIONS.md` or a follow-up issue before Phase 2 continues.

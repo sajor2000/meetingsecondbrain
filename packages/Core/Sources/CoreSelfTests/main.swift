@@ -38,44 +38,4 @@ expect(defaultConfig.language == "en", "Default transcription config should use 
 expect(defaultConfig.enableDiarization, "Default transcription config should enable diarization")
 expect(defaultConfig.vocabularyHints.isEmpty, "Default transcription config should start without vocabulary hints")
 
-expect(ParakeetModelManager.modelChoice(forLanguage: "en") == .englishV2, "English should select Parakeet v2")
-expect(ParakeetModelManager.modelChoice(forLanguage: "en-US") == .englishV2, "English locale should select Parakeet v2")
-expect(ParakeetModelManager.modelChoice(forLanguage: "fr") == .multilingualV3, "Non-English should select Parakeet v3")
-
-struct FakeParakeetEngine: ParakeetTranscribing {
-    func transcribe(audioURL: URL, config: TranscriptionConfig) async throws -> Transcript {
-        Transcript(
-            segments: [
-                TranscriptSegment(startMs: 0, endMs: 1_250, text: "hello world", confidence: 0.97)
-            ],
-            language: config.language,
-            engine: "fake-parakeet"
-        )
-    }
-}
-
-let provider = ParakeetProvider(
-    engineFactory: { _ in FakeParakeetEngine() },
-    fileExists: { _ in true }
-)
-let transcript = try await provider.transcribeBatch(
-    audioURL: URL(fileURLWithPath: "/tmp/fake.m4a"),
-    config: .english
-)
-expect(provider.name == "parakeet", "Parakeet provider should report its engine name")
-expect(!provider.requiresNetwork, "Parakeet provider should report local inference")
-expect(provider.supportsDiarization, "Parakeet provider should report diarization support")
-expect(transcript.text == "hello world", "Parakeet provider should return engine transcript")
-
-do {
-    _ = try await ParakeetProvider(
-        engineFactory: { _ in FakeParakeetEngine() },
-        fileExists: { _ in false }
-    ).transcribeBatch(audioURL: URL(fileURLWithPath: "/tmp/missing.m4a"))
-    fatalError("Missing audio should throw")
-} catch TranscriptionError.audioFileMissing {
-} catch {
-    fatalError("Missing audio threw unexpected error \(error)")
-}
-
 print("CoreSelfTests passed")

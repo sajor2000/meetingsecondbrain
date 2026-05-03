@@ -16,6 +16,7 @@ targets:
       - MeetingAppMobile
     dependencies:
       - package: Core
+        product: Core
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.sajor2000.meetingsecondbrain.ios

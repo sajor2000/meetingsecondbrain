@@ -30,12 +30,12 @@ Phase 2 capture proof items now present:
 Phase 2 transcription proof items now present:
 
 - Core transcript models and transcription provider protocol.
-- FluidAudio Parakeet dependency pinned to version `0.14.3`.
-- Offline-safe Parakeet batch transcription wrapper.
+- FluidAudio Parakeet dependency pinned to version `0.14.3` in a macOS-only package product.
+- Offline-safe Parakeet batch transcription wrapper with token timing mapped to transcript segments.
 - macOS transcription runner that writes transcript JSON and markdown artifacts.
 - Automated tests for transcript modeling, model selection, missing audio files, and transcript artifact writing.
 
-Real meeting capture and real 30 minute transcription gates are still pending. Calendar implementation, LLM enhancement, and Cognee code have not been started.
+Real meeting capture, real 30 minute transcription, and Parakeet diarization gates are still pending. Calendar implementation, LLM enhancement, and Cognee code have not been started.
 
 ## Setup
 
