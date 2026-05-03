@@ -8,3 +8,4 @@
 - 2026-05-03: Phase 1 Xcode projects are generated with XcodeGen from checked-in `project.yml` files. This keeps project files reproducible while preserving the required `.xcodeproj` deliverables.
 - 2026-05-03: The canonical native entry point is `MeetingSecondBrain.xcworkspace`, which references both generated app projects and the Core package.
 - 2026-05-03: The local developer directory currently points to Command Line Tools, not full Xcode. The strict Phase 1 gate is `npm run phase1:check` and includes a Core command line self-test plus macOS and iOS Xcode scheme tests. `npm run phase1:check:local` is only a Command Line Tools sanity check.
+- 2026-05-03: Deferred the real meeting capture gate because a live Zoom, Meet, or Teams call was not available. Continued with offline-safe U4 and U5 transcription scaffolding only. Phase 2 still requires the manual capture and 30 minute transcription gates before approval.

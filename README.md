@@ -27,7 +27,15 @@ Phase 2 capture proof items now present:
 - Manual real meeting test plan at `docs/manual-test-plan.md`.
 - Capture hardening learning at `docs/solutions/logic-errors/stabilize-macos-capture-recorder-cleanup-and-activity-state-2026-05-03.md`.
 
-Transcription, calendar implementation, LLM enhancement, and Cognee code have not been started.
+Phase 2 transcription proof items now present:
+
+- Core transcript models and transcription provider protocol.
+- FluidAudio Parakeet dependency pinned to version `0.14.3`.
+- Offline-safe Parakeet batch transcription wrapper.
+- macOS transcription runner that writes transcript JSON and markdown artifacts.
+- Automated tests for transcript modeling, model selection, missing audio files, and transcript artifact writing.
+
+Real meeting capture and real 30 minute transcription gates are still pending. Calendar implementation, LLM enhancement, and Cognee code have not been started.
 
 ## Setup
 
