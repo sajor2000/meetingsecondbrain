@@ -126,7 +126,7 @@ private extension RecordingArtifact {
             directoryURL: directoryURL,
             startedAt: Date(timeIntervalSince1970: 0),
             endedAt: Date(timeIntervalSince1970: 5),
-            systemAudioURL: directoryURL.appendingPathComponent("system.m4a"),
+            systemAudioURL: directoryURL.appendingPathComponent("system.caf"),
             microphoneAudioURL: directoryURL.appendingPathComponent("microphone.caf"),
             mixedAudioURL: mixedAudioURL,
             metadataURL: directoryURL.appendingPathComponent("metadata.json")

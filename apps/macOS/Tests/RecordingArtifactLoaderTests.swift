@@ -6,7 +6,7 @@ final class RecordingArtifactLoaderTests: XCTestCase {
         let directory = try makeArtifactDirectory()
         let startedAt = Date(timeIntervalSince1970: 10)
         let endedAt = Date(timeIntervalSince1970: 20)
-        let systemURL = try writeFile("system.m4a", in: directory)
+        let systemURL = try writeFile("system.caf", in: directory)
         let microphoneURL = try writeFile("microphone.caf", in: directory)
         let mixedURL = try writeFile("mixed.m4a", in: directory)
         let transcriptJSONURL = try writeFile("transcript.json", in: directory)
@@ -38,7 +38,7 @@ final class RecordingArtifactLoaderTests: XCTestCase {
 
     func testInfersStandardFileNamesWhenMetadataIsMissing() throws {
         let directory = try makeArtifactDirectory(sessionId: "folder-session")
-        let systemURL = try writeFile("system.m4a", in: directory)
+        let systemURL = try writeFile("system.caf", in: directory)
         let microphoneURL = try writeFile("microphone.caf", in: directory)
         let mixedURL = try writeFile("mixed.m4a", in: directory)
         let loader = RecordingArtifactLoader()
@@ -76,6 +76,17 @@ final class RecordingArtifactLoaderTests: XCTestCase {
         XCTAssertTrue(result.warnings.contains(.missingSystemAudio))
         XCTAssertTrue(result.warnings.contains(.missingMicrophoneAudio))
         XCTAssertTrue(result.warnings.contains(.missingMixedAudio))
+    }
+
+    func testInfersLegacySystemAudioFileName() throws {
+        let directory = try makeArtifactDirectory(sessionId: "legacy-session")
+        let systemURL = try writeFile("system.m4a", in: directory)
+        let loader = RecordingArtifactLoader()
+
+        let result = try loader.load(from: directory)
+
+        XCTAssertEqual(result.artifact.systemAudioURL, systemURL)
+        XCTAssertFalse(result.warnings.contains(.missingSystemAudio))
     }
 
     func testInvalidMetadataThrowsReadableError() throws {

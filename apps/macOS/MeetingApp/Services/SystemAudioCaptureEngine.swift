@@ -3,8 +3,16 @@ import Foundation
 import ScreenCaptureKit
 
 protocol SystemAudioCapturing {
+    var diagnostics: RecordingCaptureDiagnostics { get }
+
     func startRecording(to fileURL: URL?, activityHandler: @escaping (Double) -> Void) async throws
     func stopRecording() async throws
+}
+
+extension SystemAudioCapturing {
+    var diagnostics: RecordingCaptureDiagnostics {
+        .empty
+    }
 }
 
 final class SystemAudioCaptureEngine: NSObject, SystemAudioCapturing {
@@ -12,12 +20,18 @@ final class SystemAudioCaptureEngine: NSObject, SystemAudioCapturing {
     private var writer: SampleBufferAudioFileWriter?
     private var activityHandler: ((Double) -> Void)?
     private let sampleQueue = DispatchQueue(label: "meeting-second-brain.system-audio")
+    private let diagnosticsStore = SystemAudioDiagnosticsStore()
+
+    var diagnostics: RecordingCaptureDiagnostics {
+        diagnosticsStore.snapshot()
+    }
 
     func startRecording(to fileURL: URL?, activityHandler: @escaping (Double) -> Void) async throws {
         guard let fileURL else {
             return
         }
 
+        diagnosticsStore.reset()
         self.activityHandler = activityHandler
         writer = SampleBufferAudioFileWriter(fileURL: fileURL)
 
@@ -49,7 +63,7 @@ final class SystemAudioCaptureEngine: NSObject, SystemAudioCapturing {
         }
 
         try await stream.stopCapture()
-        await writer?.stop()
+        writer?.stop()
         writer = nil
         self.stream = nil
         activityHandler = nil
@@ -66,7 +80,18 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
             return
         }
 
-        try? writer?.append(sampleBuffer)
+        diagnosticsStore.recordSystemSample()
+        guard let writer else {
+            diagnosticsStore.recordSystemAppendFailure(SystemAudioCaptureError.noActiveWriter)
+            return
+        }
+
+        do {
+            try writer.append(sampleBuffer)
+            diagnosticsStore.recordSystemWrite()
+        } catch {
+            diagnosticsStore.recordSystemAppendFailure(error)
+        }
         activityHandler?(Self.level(for: sampleBuffer))
     }
 
@@ -87,13 +112,67 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
     }
 }
 
+private final class SystemAudioDiagnosticsStore: @unchecked Sendable {
+    private let lock = NSLock()
+    private var diagnostics = RecordingCaptureDiagnostics.empty
+
+    func reset() {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+
+        diagnostics = .empty
+    }
+
+    func recordSystemSample() {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+
+        diagnostics.systemSampleCount += 1
+    }
+
+    func recordSystemWrite() {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+
+        diagnostics.systemWrittenSampleCount += 1
+    }
+
+    func recordSystemAppendFailure(_ error: Error) {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+
+        diagnostics.systemAppendFailureCount += 1
+        diagnostics.lastSystemAppendError = error.localizedDescription
+    }
+
+    func snapshot() -> RecordingCaptureDiagnostics {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+
+        return diagnostics
+    }
+}
+
 enum SystemAudioCaptureError: Error, LocalizedError {
     case noDisplayAvailable
+    case noActiveWriter
 
     var errorDescription: String? {
         switch self {
         case .noDisplayAvailable:
             return "No display is available for system audio capture."
+        case .noActiveWriter:
+            return "No system audio writer is active."
         }
     }
 }

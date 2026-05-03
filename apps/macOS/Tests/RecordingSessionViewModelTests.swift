@@ -253,7 +253,7 @@ extension RecordingArtifact {
             directoryURL: directoryURL,
             startedAt: startedAt,
             endedAt: endedAt,
-            systemAudioURL: directoryURL.appendingPathComponent("system.m4a"),
+            systemAudioURL: directoryURL.appendingPathComponent("system.caf"),
             microphoneAudioURL: directoryURL.appendingPathComponent("microphone.caf"),
             mixedAudioURL: directoryURL.appendingPathComponent("mixed.m4a"),
             metadataURL: directoryURL.appendingPathComponent("metadata.json")
