@@ -10,6 +10,7 @@ struct RecordingArtifact: Identifiable, Equatable, Sendable {
     var microphoneAudioURL: URL?
     var mixedAudioURL: URL?
     var metadataURL: URL?
+    var captureDiagnostics: RecordingCaptureDiagnostics
 
     init(
         id: UUID = UUID(),
@@ -20,7 +21,8 @@ struct RecordingArtifact: Identifiable, Equatable, Sendable {
         systemAudioURL: URL? = nil,
         microphoneAudioURL: URL? = nil,
         mixedAudioURL: URL? = nil,
-        metadataURL: URL? = nil
+        metadataURL: URL? = nil,
+        captureDiagnostics: RecordingCaptureDiagnostics = .empty
     ) {
         self.id = id
         self.sessionId = sessionId
@@ -31,11 +33,26 @@ struct RecordingArtifact: Identifiable, Equatable, Sendable {
         self.microphoneAudioURL = microphoneAudioURL
         self.mixedAudioURL = mixedAudioURL
         self.metadataURL = metadataURL
+        self.captureDiagnostics = captureDiagnostics
     }
 
     var duration: TimeInterval? {
         endedAt.map { $0.timeIntervalSince(startedAt) }
     }
+}
+
+struct RecordingCaptureDiagnostics: Codable, Equatable, Sendable {
+    var systemSampleCount: Int
+    var systemWrittenSampleCount: Int
+    var systemAppendFailureCount: Int
+    var lastSystemAppendError: String?
+
+    static let empty = RecordingCaptureDiagnostics(
+        systemSampleCount: 0,
+        systemWrittenSampleCount: 0,
+        systemAppendFailureCount: 0,
+        lastSystemAppendError: nil
+    )
 }
 
 struct AudioCaptureActivity: Equatable, Sendable {

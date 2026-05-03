@@ -102,7 +102,8 @@ struct RecordingArtifactLoader: RecordingArtifactLoading, @unchecked Sendable {
                 missingWarning: .missingMixedAudio,
                 warnings: &warnings
             ),
-            metadataURL: fileManager.fileExists(atPath: metadataURL.path) ? metadataURL : nil
+            metadataURL: fileManager.fileExists(atPath: metadataURL.path) ? metadataURL : nil,
+            captureDiagnostics: metadata?.captureDiagnostics ?? .empty
         )
 
         return RecordingArtifactLoadResult(
@@ -173,6 +174,7 @@ private struct LoadedRecordingArtifactMetadata: Decodable {
     let systemAudioPath: String?
     let microphoneAudioPath: String?
     let mixedAudioPath: String?
+    let captureDiagnostics: RecordingCaptureDiagnostics?
 }
 
 private extension JSONDecoder {

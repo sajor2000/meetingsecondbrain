@@ -99,6 +99,7 @@ final class MeetingAudioRecorder: MeetingAudioRecording, @unchecked Sendable {
         }
 
         currentArtifact.endedAt = clock()
+        currentArtifact.captureDiagnostics = systemAudioCapture.diagnostics
         currentArtifact.mixedAudioURL = try? await AudioFileWriter.mixAudioTracks(
             systemAudioURL: currentArtifact.systemAudioURL,
             microphoneAudioURL: currentArtifact.microphoneAudioURL,
@@ -226,6 +227,7 @@ private struct RecordingArtifactMetadata: Codable {
     let systemAudioPath: String?
     let microphoneAudioPath: String?
     let mixedAudioPath: String?
+    let captureDiagnostics: RecordingCaptureDiagnostics
 
     init(artifact: RecordingArtifact) {
         sessionId = artifact.sessionId
@@ -235,6 +237,7 @@ private struct RecordingArtifactMetadata: Codable {
         systemAudioPath = artifact.systemAudioURL?.path
         microphoneAudioPath = artifact.microphoneAudioURL?.path
         mixedAudioPath = artifact.mixedAudioURL?.path
+        captureDiagnostics = artifact.captureDiagnostics
     }
 }
 
