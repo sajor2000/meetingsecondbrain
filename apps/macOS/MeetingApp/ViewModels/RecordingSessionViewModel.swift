@@ -30,6 +30,13 @@ final class RecordingSessionViewModel: ObservableObject {
         state.canStop
     }
 
+    var completedArtifact: RecordingArtifact? {
+        if case let .completed(artifact) = state {
+            return artifact
+        }
+        return nil
+    }
+
     var statusText: String {
         switch state {
         case .idle:
