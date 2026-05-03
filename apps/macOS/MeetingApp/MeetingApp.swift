@@ -5,7 +5,7 @@ import SwiftUI
 struct MeetingApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView(module: CoreModule())
+            ContentView()
         }
     }
 }

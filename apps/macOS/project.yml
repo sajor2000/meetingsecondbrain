@@ -24,6 +24,7 @@ targets:
         CODE_SIGNING_ALLOWED: NO
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: Meeting Second Brain
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: Meeting Second Brain records your microphone during meeting capture.
   MeetingAppTests:
     type: bundle.unit-test
     platform: macOS
