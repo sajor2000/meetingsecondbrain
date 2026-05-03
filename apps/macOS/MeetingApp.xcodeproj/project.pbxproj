@@ -1,0 +1,447 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		460E9E4DA89D6D428159F1C3 /* MeetingAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A091269E33601A9E374A8A /* MeetingAppTests.swift */; };
+		B44DAA8658A769593B0C91FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8920AF953BCD4CA157D651 /* ContentView.swift */; };
+		F7FD1EEAE3A3C4C338764BF2 /* MeetingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACF93E700C756985B60BA36 /* MeetingApp.swift */; };
+		FC04327E65A33CCE2DC558BC /* Core in Frameworks */ = {isa = PBXBuildFile; productRef = BA2339EA45BF208415E352C7 /* Core */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		673E79854C73C156E641029F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28ED3300EDBAAB8CE193096A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D2D29AB71085DA3CCC8E8E7;
+			remoteInfo = MeetingApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		29A091269E33601A9E374A8A /* MeetingAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingAppTests.swift; sourceTree = "<group>"; };
+		46E9DA57938E7A2832536831 /* Core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Core; path = ../../packages/Core; sourceTree = SOURCE_ROOT; };
+		4E8920AF953BCD4CA157D651 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8ACF93E700C756985B60BA36 /* MeetingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingApp.swift; sourceTree = "<group>"; };
+		DF8C21534E2AD124148F3AA2 /* MeetingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFCA7C7F92EE7AAEBE737435 /* MeetingAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeetingAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		951CD74EA9B268B385A2CF27 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC04327E65A33CCE2DC558BC /* Core in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5A53FFE121FB97C65A92DFF0 = {
+			isa = PBXGroup;
+			children = (
+				A8E3B8027DDEAE6D7C5AC35C /* MeetingApp */,
+				8CA8CA1C122159580FC0C24F /* Packages */,
+				FADF1FD5BC62D51FB5198886 /* Tests */,
+				E9EDF2A9ABEDBBD8AFDCC495 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8CA8CA1C122159580FC0C24F /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				46E9DA57938E7A2832536831 /* Core */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		A8E3B8027DDEAE6D7C5AC35C /* MeetingApp */ = {
+			isa = PBXGroup;
+			children = (
+				8ACF93E700C756985B60BA36 /* MeetingApp.swift */,
+				CC1678FA11B354B6F7357766 /* Views */,
+			);
+			path = MeetingApp;
+			sourceTree = "<group>";
+		};
+		CC1678FA11B354B6F7357766 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4E8920AF953BCD4CA157D651 /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E9EDF2A9ABEDBBD8AFDCC495 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DF8C21534E2AD124148F3AA2 /* MeetingApp.app */,
+				DFCA7C7F92EE7AAEBE737435 /* MeetingAppTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FADF1FD5BC62D51FB5198886 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				29A091269E33601A9E374A8A /* MeetingAppTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1E54C6D1533F26DC778DEE74 /* MeetingAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C04CB22A82EC880097BFB6D0 /* Build configuration list for PBXNativeTarget "MeetingAppTests" */;
+			buildPhases = (
+				EF8187A1E29E8909BDBE10DC /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				60EC656D2E78A40FF519DDFE /* PBXTargetDependency */,
+			);
+			name = MeetingAppTests;
+			packageProductDependencies = (
+			);
+			productName = MeetingAppTests;
+			productReference = DFCA7C7F92EE7AAEBE737435 /* MeetingAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8D2D29AB71085DA3CCC8E8E7 /* MeetingApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0340C086056136758E9F952E /* Build configuration list for PBXNativeTarget "MeetingApp" */;
+			buildPhases = (
+				1BE3311B3818683B38328E55 /* Sources */,
+				951CD74EA9B268B385A2CF27 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MeetingApp;
+			packageProductDependencies = (
+				BA2339EA45BF208415E352C7 /* Core */,
+			);
+			productName = MeetingApp;
+			productReference = DF8C21534E2AD124148F3AA2 /* MeetingApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		28ED3300EDBAAB8CE193096A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					8D2D29AB71085DA3CCC8E8E7 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A29B8B69FECFDEAB2BE6B958 /* Build configuration list for PBXProject "MeetingApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 5A53FFE121FB97C65A92DFF0;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9092B0A11A88FBD2F7ACCDE8 /* XCLocalSwiftPackageReference "../../packages/Core" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E9EDF2A9ABEDBBD8AFDCC495 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D2D29AB71085DA3CCC8E8E7 /* MeetingApp */,
+				1E54C6D1533F26DC778DEE74 /* MeetingAppTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1BE3311B3818683B38328E55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B44DAA8658A769593B0C91FE /* ContentView.swift in Sources */,
+				F7FD1EEAE3A3C4C338764BF2 /* MeetingApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EF8187A1E29E8909BDBE10DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				460E9E4DA89D6D428159F1C3 /* MeetingAppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		60EC656D2E78A40FF519DDFE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D2D29AB71085DA3CCC8E8E7 /* MeetingApp */;
+			targetProxy = 673E79854C73C156E641029F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1E331B9F68B81DC0E71B1B5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		2DBC7252CE4856B81BA146CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Meeting Second Brain";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sajor2000.meetingsecondbrain.mac;
+				PRODUCT_NAME = MeetingApp;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		51EDFCA00458548A68AEF083 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sajor2000.meetingsecondbrain.mac.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MeetingApp.app/Contents/MacOS/MeetingApp";
+			};
+			name = Release;
+		};
+		6AECB8F584385AB3B9B09E02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		B7A63F140F0A0469E3D73804 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sajor2000.meetingsecondbrain.mac.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MeetingApp.app/Contents/MacOS/MeetingApp";
+			};
+			name = Debug;
+		};
+		C7C8DDB2F446642156D629F5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Meeting Second Brain";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sajor2000.meetingsecondbrain.mac;
+				PRODUCT_NAME = MeetingApp;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0340C086056136758E9F952E /* Build configuration list for PBXNativeTarget "MeetingApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C7C8DDB2F446642156D629F5 /* Debug */,
+				2DBC7252CE4856B81BA146CE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A29B8B69FECFDEAB2BE6B958 /* Build configuration list for PBXProject "MeetingApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6AECB8F584385AB3B9B09E02 /* Debug */,
+				1E331B9F68B81DC0E71B1B5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C04CB22A82EC880097BFB6D0 /* Build configuration list for PBXNativeTarget "MeetingAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7A63F140F0A0469E3D73804 /* Debug */,
+				51EDFCA00458548A68AEF083 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		9092B0A11A88FBD2F7ACCDE8 /* XCLocalSwiftPackageReference "../../packages/Core" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../packages/Core;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BA2339EA45BF208415E352C7 /* Core */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Core;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 28ED3300EDBAAB8CE193096A /* Project object */;
+}

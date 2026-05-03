@@ -1,0 +1,47 @@
+name: MeetingAppMobile
+options:
+  bundleIdPrefix: com.sajor2000.meetingsecondbrain
+packages:
+  Core:
+    path: ../../packages/Core
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+targets:
+  MeetingAppMobile:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - MeetingAppMobile
+    dependencies:
+      - package: Core
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sajor2000.meetingsecondbrain.ios
+        PRODUCT_NAME: MeetingAppMobile
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGNING_ALLOWED: NO
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Meeting Second Brain
+  MeetingAppMobileTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - Tests
+    dependencies:
+      - target: MeetingAppMobile
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sajor2000.meetingsecondbrain.ios.tests
+        CODE_SIGNING_ALLOWED: NO
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  MeetingAppMobile:
+    build:
+      targets:
+        MeetingAppMobile: all
+    test:
+      targets:
+        - MeetingAppMobileTests

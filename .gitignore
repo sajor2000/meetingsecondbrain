@@ -1,0 +1,9 @@
+.env.local
+node_modules/
+.convex/local/
+*.xcuserstate
+xcuserdata/
+DerivedData/
+.build/
+.swiftpm/
+.compound-engineering/config.local.yaml

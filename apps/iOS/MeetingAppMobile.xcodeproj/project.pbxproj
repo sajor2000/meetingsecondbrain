@@ -1,0 +1,449 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0FB3929EC29F5682824F07B6 /* MeetingAppMobileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60DD2035CB2097C1BA959E8 /* MeetingAppMobileTests.swift */; };
+		5622EE90C545DADFD7E916F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F3FA94BAB625B942F09F8E /* ContentView.swift */; };
+		8D473A83B8DC6AD8EE89A719 /* MeetingAppMobile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B230756B44C6BCA68E98F09 /* MeetingAppMobile.swift */; };
+		B65885A2D1A3ABDC6283D42F /* Core in Frameworks */ = {isa = PBXBuildFile; productRef = A7DEBAB14F5546DEFDE17727 /* Core */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EC864443969A5F52A42ADC72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 732927C1A4FC9A7F3CB78A31 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 852791E2F3A91DF67835439C;
+			remoteInfo = MeetingAppMobile;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		25BF0A0D4AF99A87B26CD2A8 /* Core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Core; path = ../../packages/Core; sourceTree = SOURCE_ROOT; };
+		33F3FA94BAB625B942F09F8E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3AF073AF442EC1F89EA43E94 /* MeetingAppMobile.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MeetingAppMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B230756B44C6BCA68E98F09 /* MeetingAppMobile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingAppMobile.swift; sourceTree = "<group>"; };
+		99411ED49E4105915E67896C /* MeetingAppMobileTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = MeetingAppMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E60DD2035CB2097C1BA959E8 /* MeetingAppMobileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingAppMobileTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		790EC204C52BA9993AFBAF0A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B65885A2D1A3ABDC6283D42F /* Core in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		02569CBCA526A843B7326047 /* MeetingAppMobile */ = {
+			isa = PBXGroup;
+			children = (
+				8B230756B44C6BCA68E98F09 /* MeetingAppMobile.swift */,
+				B606EBDD13FD85E9FAB0888C /* Views */,
+			);
+			path = MeetingAppMobile;
+			sourceTree = "<group>";
+		};
+		2F090156BC2526DB0846245A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3AF073AF442EC1F89EA43E94 /* MeetingAppMobile.app */,
+				99411ED49E4105915E67896C /* MeetingAppMobileTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		467E9AC152E81B6F3DF29B2B /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				25BF0A0D4AF99A87B26CD2A8 /* Core */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		8099C0F5BA5B51FFC4B44A5B /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				E60DD2035CB2097C1BA959E8 /* MeetingAppMobileTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		AA38F1DB8861E0905EB6F90E = {
+			isa = PBXGroup;
+			children = (
+				02569CBCA526A843B7326047 /* MeetingAppMobile */,
+				467E9AC152E81B6F3DF29B2B /* Packages */,
+				8099C0F5BA5B51FFC4B44A5B /* Tests */,
+				2F090156BC2526DB0846245A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B606EBDD13FD85E9FAB0888C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				33F3FA94BAB625B942F09F8E /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		852791E2F3A91DF67835439C /* MeetingAppMobile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8ED36824C339E8E41416AD79 /* Build configuration list for PBXNativeTarget "MeetingAppMobile" */;
+			buildPhases = (
+				89C95FBB0DF08A78D0AB8215 /* Sources */,
+				790EC204C52BA9993AFBAF0A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MeetingAppMobile;
+			packageProductDependencies = (
+				A7DEBAB14F5546DEFDE17727 /* Core */,
+			);
+			productName = MeetingAppMobile;
+			productReference = 3AF073AF442EC1F89EA43E94 /* MeetingAppMobile.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F26EF333F89223CAF9767788 /* MeetingAppMobileTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2DAB45376E75031FB96DC23F /* Build configuration list for PBXNativeTarget "MeetingAppMobileTests" */;
+			buildPhases = (
+				FBE193BD486428FB8F947746 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BE2BCC2DCD217E3BE4FEAE45 /* PBXTargetDependency */,
+			);
+			name = MeetingAppMobileTests;
+			packageProductDependencies = (
+			);
+			productName = MeetingAppMobileTests;
+			productReference = 99411ED49E4105915E67896C /* MeetingAppMobileTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		732927C1A4FC9A7F3CB78A31 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					852791E2F3A91DF67835439C = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 967A38CA3661AF4B39768084 /* Build configuration list for PBXProject "MeetingAppMobile" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = AA38F1DB8861E0905EB6F90E;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F1B972E12318497F201943BB /* XCLocalSwiftPackageReference "../../packages/Core" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2F090156BC2526DB0846245A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				852791E2F3A91DF67835439C /* MeetingAppMobile */,
+				F26EF333F89223CAF9767788 /* MeetingAppMobileTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		89C95FBB0DF08A78D0AB8215 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5622EE90C545DADFD7E916F6 /* ContentView.swift in Sources */,
+				8D473A83B8DC6AD8EE89A719 /* MeetingAppMobile.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FBE193BD486428FB8F947746 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FB3929EC29F5682824F07B6 /* MeetingAppMobileTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BE2BCC2DCD217E3BE4FEAE45 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 852791E2F3A91DF67835439C /* MeetingAppMobile */;
+			targetProxy = EC864443969A5F52A42ADC72 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0381188FD2AEEB93A83AD8A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		22B2D0F1AE7D685820A41235 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Meeting Second Brain";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sajor2000.meetingsecondbrain.ios;
+				PRODUCT_NAME = MeetingAppMobile;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		64AF88F286C277D88EEA0802 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sajor2000.meetingsecondbrain.ios.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MeetingAppMobile.app/MeetingAppMobile";
+			};
+			name = Debug;
+		};
+		95F502FA45F6E4DA17EE06EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Meeting Second Brain";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sajor2000.meetingsecondbrain.ios;
+				PRODUCT_NAME = MeetingAppMobile;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		975865A3C26DFC5767321642 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sajor2000.meetingsecondbrain.ios.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MeetingAppMobile.app/MeetingAppMobile";
+			};
+			name = Release;
+		};
+		DF40EA5DB7818EEBC4C6F49D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2DAB45376E75031FB96DC23F /* Build configuration list for PBXNativeTarget "MeetingAppMobileTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				64AF88F286C277D88EEA0802 /* Debug */,
+				975865A3C26DFC5767321642 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8ED36824C339E8E41416AD79 /* Build configuration list for PBXNativeTarget "MeetingAppMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22B2D0F1AE7D685820A41235 /* Debug */,
+				95F502FA45F6E4DA17EE06EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		967A38CA3661AF4B39768084 /* Build configuration list for PBXProject "MeetingAppMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF40EA5DB7818EEBC4C6F49D /* Debug */,
+				0381188FD2AEEB93A83AD8A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		F1B972E12318497F201943BB /* XCLocalSwiftPackageReference "../../packages/Core" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../packages/Core;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A7DEBAB14F5546DEFDE17727 /* Core */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Core;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 732927C1A4FC9A7F3CB78A31 /* Project object */;
+}

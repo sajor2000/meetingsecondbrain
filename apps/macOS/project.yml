@@ -1,0 +1,47 @@
+name: MeetingApp
+options:
+  bundleIdPrefix: com.sajor2000.meetingsecondbrain
+packages:
+  Core:
+    path: ../../packages/Core
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+targets:
+  MeetingApp:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - MeetingApp
+    dependencies:
+      - package: Core
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sajor2000.meetingsecondbrain.mac
+        PRODUCT_NAME: MeetingApp
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGNING_ALLOWED: NO
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Meeting Second Brain
+  MeetingAppTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - Tests
+    dependencies:
+      - target: MeetingApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sajor2000.meetingsecondbrain.mac.tests
+        CODE_SIGNING_ALLOWED: NO
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  MeetingApp:
+    build:
+      targets:
+        MeetingApp: all
+    test:
+      targets:
+        - MeetingAppTests
