@@ -96,6 +96,8 @@ Regression coverage to keep:
 - Proof UI transcript panel visible:
 - Proof UI JSON path visible:
 - Proof UI markdown path visible:
+- Proof UI audio playback checked:
+- Proof UI evidence summary copied:
 - Timestamp segment quality:
 - Speaker label quality:
 - Vocabulary normalization notes:

@@ -4,13 +4,19 @@ import SwiftUI
 struct CaptureProofView: View {
     @StateObject private var viewModel: RecordingSessionViewModel
     @StateObject private var transcriptionViewModel: TranscriptionProofViewModel
+    @StateObject private var audioInspectionViewModel: AudioInspectionViewModel
+    @State private var evidenceCopyStatus: String?
+
+    private let evidenceSummaryBuilder = ManualEvidenceSummaryBuilder()
 
     init(
         viewModel: RecordingSessionViewModel = RecordingSessionViewModel(),
-        transcriptionViewModel: TranscriptionProofViewModel = TranscriptionProofViewModel()
+        transcriptionViewModel: TranscriptionProofViewModel = TranscriptionProofViewModel(),
+        audioInspectionViewModel: AudioInspectionViewModel = AudioInspectionViewModel()
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         _transcriptionViewModel = StateObject(wrappedValue: transcriptionViewModel)
+        _audioInspectionViewModel = StateObject(wrappedValue: audioInspectionViewModel)
     }
 
     var body: some View {
@@ -20,6 +26,8 @@ struct CaptureProofView: View {
                 controls
                 meters
                 artifactSummary
+                audioInspectionSection
+                evidenceSection
                 transcriptionSection
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -44,8 +52,10 @@ struct CaptureProofView: View {
         HStack(spacing: 12) {
             Button {
                 transcriptionViewModel.reset()
+                evidenceCopyStatus = nil
                 Task {
                     await viewModel.start()
+                    audioInspectionViewModel.load(artifact: viewModel.completedArtifact)
                 }
             } label: {
                 Label("Start", systemImage: "record.circle")
@@ -56,6 +66,7 @@ struct CaptureProofView: View {
             Button {
                 Task {
                     await viewModel.stop()
+                    audioInspectionViewModel.load(artifact: viewModel.completedArtifact)
                 }
             } label: {
                 Label("Stop", systemImage: "stop.circle")
@@ -127,6 +138,7 @@ struct CaptureProofView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 12) {
                     Button {
+                        evidenceCopyStatus = nil
                         Task {
                             await transcriptionViewModel.transcribe(artifact: artifact)
                         }
@@ -140,6 +152,32 @@ struct CaptureProofView: View {
                 }
 
                 TranscriptPanelView(state: transcriptionViewModel.state)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var audioInspectionSection: some View {
+        if viewModel.completedArtifact != nil {
+            AudioInspectionView(viewModel: audioInspectionViewModel)
+        }
+    }
+
+    @ViewBuilder
+    private var evidenceSection: some View {
+        if let artifact = viewModel.completedArtifact {
+            HStack(spacing: 12) {
+                Button {
+                    copyEvidence(for: artifact)
+                } label: {
+                    Label("Copy Evidence", systemImage: "doc.on.doc")
+                }
+
+                if let evidenceCopyStatus {
+                    Text(evidenceCopyStatus)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }
@@ -160,7 +198,21 @@ struct CaptureProofView: View {
         }
 
         transcriptionViewModel.reset()
+        evidenceCopyStatus = nil
         viewModel.loadArtifactFolder(url)
+        audioInspectionViewModel.load(artifact: viewModel.completedArtifact)
+    }
+
+    private func copyEvidence(for artifact: RecordingArtifact) {
+        let summary = evidenceSummaryBuilder.build(
+            artifact: artifact,
+            audioRows: audioInspectionViewModel.rows,
+            loadResult: viewModel.loadedArtifactInspection,
+            transcriptionArtifact: transcriptionViewModel.completedArtifact
+        )
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(summary, forType: .string)
+        evidenceCopyStatus = "Copied"
     }
 
     @ViewBuilder
