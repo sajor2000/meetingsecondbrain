@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct CaptureProofView: View {
@@ -42,13 +43,14 @@ struct CaptureProofView: View {
     private var controls: some View {
         HStack(spacing: 12) {
             Button {
+                transcriptionViewModel.reset()
                 Task {
                     await viewModel.start()
                 }
             } label: {
                 Label("Start", systemImage: "record.circle")
             }
-            .disabled(!viewModel.canStart)
+            .disabled(!canReplaceArtifact)
             .keyboardShortcut("r", modifiers: [.command])
 
             Button {
@@ -60,6 +62,13 @@ struct CaptureProofView: View {
             }
             .disabled(!viewModel.canStop)
             .keyboardShortcut(".", modifiers: [.command])
+
+            Button {
+                openArtifactFolder()
+            } label: {
+                Label("Load Folder", systemImage: "folder")
+            }
+            .disabled(!canReplaceArtifact)
         }
         .buttonStyle(.borderedProminent)
     }
@@ -103,6 +112,9 @@ struct CaptureProofView: View {
                 artifactPath("Mic", artifact.microphoneAudioURL)
                 artifactPath("Mixed", artifact.mixedAudioURL)
                 artifactPath("Metadata", artifact.metadataURL)
+                loadedTranscriptPath("Transcript JSON", viewModel.loadedArtifactInspection?.transcriptJSONURL)
+                loadedTranscriptPath("Transcript MD", viewModel.loadedArtifactInspection?.transcriptMarkdownURL)
+                artifactWarnings(viewModel.loadedArtifactInspection?.warnings ?? [])
             }
         default:
             EmptyView()
@@ -136,6 +148,21 @@ struct CaptureProofView: View {
         transcriptionViewModel.unavailableReason(for: artifact) ?? transcriptionViewModel.statusText
     }
 
+    private func openArtifactFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.prompt = "Load"
+
+        guard panel.runModal() == .OK, let url = panel.url else {
+            return
+        }
+
+        transcriptionViewModel.reset()
+        viewModel.loadArtifactFolder(url)
+    }
+
     @ViewBuilder
     private func artifactPath(_ label: String, _ url: URL?) -> some View {
         if let url {
@@ -147,6 +174,27 @@ struct CaptureProofView: View {
                     .font(.caption)
                     .textSelection(.enabled)
             }
+        }
+    }
+
+    @ViewBuilder
+    private func loadedTranscriptPath(_ label: String, _ url: URL?) -> some View {
+        if viewModel.loadedArtifactInspection != nil {
+            artifactPath(label, url)
+        }
+    }
+
+    @ViewBuilder
+    private func artifactWarnings(_ warnings: [RecordingArtifactLoadWarning]) -> some View {
+        if !warnings.isEmpty {
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(warnings.map(\.warningText), id: \.self) { warning in
+                    Label(warning, systemImage: "exclamationmark.triangle")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
+            }
+            .padding(.top, 4)
         }
     }
 
@@ -171,8 +219,18 @@ struct CaptureProofView: View {
             return .secondary
         }
     }
+
+    private var canReplaceArtifact: Bool {
+        viewModel.canStart && transcriptionViewModel.canTranscribe
+    }
 }
 
 #Preview {
     CaptureProofView()
+}
+
+private extension RecordingArtifactLoadWarning {
+    var warningText: String {
+        errorDescription ?? "Artifact warning"
+    }
 }

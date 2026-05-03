@@ -44,6 +44,7 @@ enum RecordingFailureReason: Equatable, LocalizedError {
     case microphonePermissionDenied
     case screenRecordingPermissionDenied
     case recorderFailed(String)
+    case artifactLoadFailed(String)
 
     var errorDescription: String? {
         switch self {
@@ -52,6 +53,8 @@ enum RecordingFailureReason: Equatable, LocalizedError {
         case .screenRecordingPermissionDenied:
             return "Screen recording permission is required for system audio."
         case let .recorderFailed(message):
+            return message
+        case let .artifactLoadFailed(message):
             return message
         }
     }

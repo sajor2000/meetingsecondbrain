@@ -5,9 +5,11 @@ final class RecordingSessionViewModel: ObservableObject {
     @Published private(set) var state: RecordingSessionState = .idle
     @Published private(set) var activity: AudioCaptureActivity = .idle
     @Published private(set) var lastStartLatency: TimeInterval?
+    @Published private(set) var loadedArtifactInspection: RecordingArtifactLoadResult?
 
     private let permissionService: CapturePermissionChecking
     private let recorderFactory: @MainActor () -> MeetingAudioRecording
+    private let artifactLoader: RecordingArtifactLoading
     private var recorder: MeetingAudioRecording?
     private var activityTask: Task<Void, Never>?
     private let clock: () -> Date
@@ -15,10 +17,12 @@ final class RecordingSessionViewModel: ObservableObject {
     init(
         permissionService: CapturePermissionChecking = CapturePermissionService(),
         recorderFactory: @escaping @MainActor () -> MeetingAudioRecording = { MeetingAudioRecorder() },
+        artifactLoader: RecordingArtifactLoading = RecordingArtifactLoader(),
         clock: @escaping () -> Date = Date.init
     ) {
         self.permissionService = permissionService
         self.recorderFactory = recorderFactory
+        self.artifactLoader = artifactLoader
         self.clock = clock
     }
 
@@ -63,6 +67,7 @@ final class RecordingSessionViewModel: ObservableObject {
 
         let requestedAt = clock()
         state = .checkingPermissions
+        loadedArtifactInspection = nil
 
         let permissions = await permissionService.checkPermissions()
         guard permissions.microphone == .authorized else {
@@ -93,6 +98,23 @@ final class RecordingSessionViewModel: ObservableObject {
         }
     }
 
+    func loadArtifactFolder(_ directoryURL: URL) {
+        guard state.canStart else {
+            return
+        }
+
+        do {
+            let result = try artifactLoader.load(from: directoryURL)
+            loadedArtifactInspection = result
+            state = .completed(result.artifact)
+            activity = .idle
+            lastStartLatency = nil
+        } catch {
+            state = .failed(.artifactLoadFailed(error.localizedDescription))
+            loadedArtifactInspection = nil
+        }
+    }
+
     func stop() async {
         guard case .recording = state, let recorder else {
             return
@@ -102,6 +124,7 @@ final class RecordingSessionViewModel: ObservableObject {
         do {
             let artifact = try await recorder.stop()
             state = .completed(artifact)
+            loadedArtifactInspection = nil
         } catch {
             state = .failed(.recorderFailed(error.localizedDescription))
         }
