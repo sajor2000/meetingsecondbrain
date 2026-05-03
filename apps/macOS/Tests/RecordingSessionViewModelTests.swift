@@ -119,6 +119,52 @@ final class RecordingSessionViewModelTests: XCTestCase {
 
         XCTAssertNil(viewModel.completedArtifact)
     }
+
+    func testLoadArtifactFolderSetsCompletedStateAndWarnings() {
+        let directoryURL = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let artifact = RecordingArtifact.testArtifact(sessionId: "loaded-session")
+        let loadResult = RecordingArtifactLoadResult(
+            artifact: artifact,
+            transcriptJSONURL: nil,
+            transcriptMarkdownURL: nil,
+            warnings: [.missingTranscriptJSON]
+        )
+        let viewModel = RecordingSessionViewModel(
+            permissionService: FakeCapturePermissionService(.authorized),
+            recorderFactory: { FakeMeetingAudioRecorder() },
+            artifactLoader: FakeRecordingArtifactLoader(result: .success(loadResult))
+        )
+
+        viewModel.loadArtifactFolder(directoryURL)
+
+        XCTAssertEqual(viewModel.state, .completed(artifact))
+        XCTAssertEqual(viewModel.loadedArtifactInspection, loadResult)
+        XCTAssertEqual(viewModel.completedArtifact, artifact)
+    }
+
+    func testLoadArtifactFolderSurfacesLoaderFailure() {
+        let directoryURL = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let viewModel = RecordingSessionViewModel(
+            permissionService: FakeCapturePermissionService(.authorized),
+            recorderFactory: { FakeMeetingAudioRecorder() },
+            artifactLoader: FakeRecordingArtifactLoader(
+                result: .failure(RecordingArtifactLoaderError.folderMissing(directoryURL.path))
+            )
+        )
+
+        viewModel.loadArtifactFolder(directoryURL)
+
+        XCTAssertNil(viewModel.loadedArtifactInspection)
+        guard case let .failed(reason) = viewModel.state else {
+            return XCTFail("Expected failed state")
+        }
+        XCTAssertEqual(
+            reason.errorDescription,
+            "Artifact folder does not exist at \(directoryURL.path)."
+        )
+    }
 }
 
 struct FakeCapturePermissionService: CapturePermissionChecking, Sendable {
@@ -172,6 +218,14 @@ final class FakeMeetingAudioRecorder: MeetingAudioRecording, @unchecked Sendable
 
     func stop() async throws -> RecordingArtifact {
         stopArtifact
+    }
+}
+
+struct FakeRecordingArtifactLoader: RecordingArtifactLoading, @unchecked Sendable {
+    let result: Result<RecordingArtifactLoadResult, Error>
+
+    func load(from directoryURL: URL) throws -> RecordingArtifactLoadResult {
+        try result.get()
     }
 }
 

@@ -48,6 +48,13 @@ final class TranscriptionProofViewModel: ObservableObject {
         return nil
     }
 
+    func reset() {
+        guard case .transcribing = state else {
+            state = .idle
+            return
+        }
+    }
+
     func transcribe(artifact: RecordingArtifact) async {
         guard canTranscribe else {
             return

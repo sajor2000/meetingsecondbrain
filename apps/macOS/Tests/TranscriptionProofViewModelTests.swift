@@ -63,6 +63,19 @@ final class TranscriptionProofViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statusText, "Model setup failed.")
     }
 
+    func testResetClearsCompletedState() async {
+        let artifact = RecordingArtifact.testArtifact()
+        let transcriptionArtifact = TranscriptionArtifact.testArtifact()
+        let runner = FakeTranscriptionRunner(result: .success(transcriptionArtifact))
+        let viewModel = TranscriptionProofViewModel(runner: runner)
+
+        await viewModel.transcribe(artifact: artifact)
+        viewModel.reset()
+
+        XCTAssertEqual(viewModel.state, .idle)
+        XCTAssertNil(viewModel.completedArtifact)
+    }
+
     func testDuplicateTranscribeWhileRunningDoesNotStartSecondRun() async {
         let artifact = RecordingArtifact.testArtifact()
         let transcriptionArtifact = TranscriptionArtifact.testArtifact()
