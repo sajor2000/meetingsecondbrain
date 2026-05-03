@@ -2,6 +2,8 @@
 
 Native macOS and iOS app for meeting capture, notes, tasks, screenshot OCR, audio retention, and a Cognee powered second brain.
 
+The meeting capture model is bot-free. The app does not join meetings as a participant. On macOS, it records local system audio from the meeting client plus local microphone audio from the user.
+
 ## Status
 
 Phase 1 foundation is complete. Phase 2 core capture proof is in progress, with the macOS recording scaffold implemented and the real meeting capture gate still pending.
