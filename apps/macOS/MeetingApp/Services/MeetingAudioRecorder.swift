@@ -100,11 +100,27 @@ final class MeetingAudioRecorder: MeetingAudioRecording, @unchecked Sendable {
 
         currentArtifact.endedAt = clock()
         currentArtifact.captureDiagnostics = systemAudioCapture.diagnostics
-        currentArtifact.mixedAudioURL = try? await AudioFileWriter.mixAudioTracks(
-            systemAudioURL: currentArtifact.systemAudioURL,
-            microphoneAudioURL: currentArtifact.microphoneAudioURL,
-            outputDirectory: currentArtifact.directoryURL
-        )
+        do {
+            let mixResult = try await AudioFileWriter.mixAudioTracksWithDiagnostics(
+                systemAudioURL: currentArtifact.systemAudioURL,
+                microphoneAudioURL: currentArtifact.microphoneAudioURL,
+                outputDirectory: currentArtifact.directoryURL
+            )
+            currentArtifact.mixedAudioURL = mixResult.outputURL
+            currentArtifact.captureDiagnostics.mix = mixResult.diagnostics
+        } catch {
+            currentArtifact.mixedAudioURL = nil
+            currentArtifact.captureDiagnostics.mix = RecordingMixDiagnostics(
+                attempted: true,
+                inputFileCount: [currentArtifact.systemAudioURL, currentArtifact.microphoneAudioURL].compactMap { $0 }.count,
+                insertedTrackCount: 0,
+                skippedInputCount: 0,
+                lastInputError: nil,
+                outputPath: currentArtifact.directoryURL.appendingPathComponent("mixed.m4a").path,
+                exportStatus: "failed",
+                exportError: error.localizedDescription
+            )
+        }
         artifactStore.writeMetadata(for: currentArtifact)
         currentArtifact.metadataURL = artifactStore.metadataURL(for: currentArtifact)
         artifact = nil

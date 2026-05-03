@@ -9,6 +9,23 @@ final class ManualEvidenceSummaryBuilderTests: XCTestCase {
             startedAt: Date(timeIntervalSince1970: 0),
             endedAt: Date(timeIntervalSince1970: 125)
         )
+        var diagnosticArtifact = artifact
+        diagnosticArtifact.captureDiagnostics = RecordingCaptureDiagnostics(
+            systemSampleCount: 12,
+            systemWrittenSampleCount: 11,
+            systemAppendFailureCount: 1,
+            lastSystemAppendError: "copy failed",
+            mix: RecordingMixDiagnostics(
+                attempted: true,
+                inputFileCount: 2,
+                insertedTrackCount: 1,
+                skippedInputCount: 1,
+                lastInputError: "system.caf: unreadable",
+                outputPath: artifact.mixedAudioURL?.path,
+                exportStatus: "failed",
+                exportError: "track rejected"
+            )
+        )
         let transcriptionArtifact = TranscriptionArtifact(
             transcript: Transcript(engine: "fake"),
             jsonURL: artifact.directoryURL.appendingPathComponent("transcript.json"),
@@ -23,7 +40,7 @@ final class ManualEvidenceSummaryBuilderTests: XCTestCase {
         ]
 
         let summary = ManualEvidenceSummaryBuilder().build(
-            artifact: artifact,
+            artifact: diagnosticArtifact,
             audioRows: rows,
             loadResult: nil,
             transcriptionArtifact: transcriptionArtifact
@@ -35,6 +52,10 @@ final class ManualEvidenceSummaryBuilderTests: XCTestCase {
         XCTAssertTrue(summary.contains("- System audio: present, 02:05"))
         XCTAssertTrue(summary.contains(artifact.systemAudioURL?.path ?? "missing"))
         XCTAssertTrue(summary.contains("- Transcript JSON: \(transcriptionArtifact.jsonURL.path)"))
+        XCTAssertTrue(summary.contains("- System samples seen: 12"))
+        XCTAssertTrue(summary.contains("- Last mix input error: system.caf: unreadable"))
+        XCTAssertTrue(summary.contains("- Mix export status: failed"))
+        XCTAssertTrue(summary.contains("- Mix export error: track rejected"))
         XCTAssertTrue(summary.contains("- System audio audible:"))
     }
 

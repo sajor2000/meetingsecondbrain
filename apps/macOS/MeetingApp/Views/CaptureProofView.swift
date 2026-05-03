@@ -125,6 +125,7 @@ struct CaptureProofView: View {
                 artifactPath("Metadata", artifact.metadataURL)
                 loadedTranscriptPath("Transcript JSON", viewModel.loadedArtifactInspection?.transcriptJSONURL)
                 loadedTranscriptPath("Transcript MD", viewModel.loadedArtifactInspection?.transcriptMarkdownURL)
+                captureDiagnostics(artifact.captureDiagnostics)
                 artifactWarnings(viewModel.loadedArtifactInspection?.warnings ?? [])
             }
         default:
@@ -234,6 +235,44 @@ struct CaptureProofView: View {
         if viewModel.loadedArtifactInspection != nil {
             artifactPath(label, url)
         }
+    }
+
+    @ViewBuilder
+    private func captureDiagnostics(_ diagnostics: RecordingCaptureDiagnostics) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Diagnostics")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text("System samples \(diagnostics.systemSampleCount), written \(diagnostics.systemWrittenSampleCount), failures \(diagnostics.systemAppendFailureCount)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .textSelection(.enabled)
+            if let error = diagnostics.lastSystemAppendError {
+                Text("System error: \(error)")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                    .textSelection(.enabled)
+            }
+            if let mix = diagnostics.mix {
+                Text("Mix \(mix.exportStatus ?? "unknown"), inputs \(mix.inputFileCount), inserted \(mix.insertedTrackCount), skipped \(mix.skippedInputCount)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
+                if let error = mix.lastInputError {
+                    Text("Mix input error: \(error)")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                        .textSelection(.enabled)
+                }
+                if let error = mix.exportError {
+                    Text("Mix error: \(error)")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                        .textSelection(.enabled)
+                }
+            }
+        }
+        .padding(.top, 4)
     }
 
     @ViewBuilder

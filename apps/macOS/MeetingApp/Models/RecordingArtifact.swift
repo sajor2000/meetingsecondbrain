@@ -46,12 +46,36 @@ struct RecordingCaptureDiagnostics: Codable, Equatable, Sendable {
     var systemWrittenSampleCount: Int
     var systemAppendFailureCount: Int
     var lastSystemAppendError: String?
+    var mix: RecordingMixDiagnostics?
 
     static let empty = RecordingCaptureDiagnostics(
         systemSampleCount: 0,
         systemWrittenSampleCount: 0,
         systemAppendFailureCount: 0,
-        lastSystemAppendError: nil
+        lastSystemAppendError: nil,
+        mix: nil
+    )
+}
+
+struct RecordingMixDiagnostics: Codable, Equatable, Sendable {
+    var attempted: Bool
+    var inputFileCount: Int
+    var insertedTrackCount: Int
+    var skippedInputCount: Int
+    var lastInputError: String?
+    var outputPath: String?
+    var exportStatus: String?
+    var exportError: String?
+
+    static let notAttempted = RecordingMixDiagnostics(
+        attempted: false,
+        inputFileCount: 0,
+        insertedTrackCount: 0,
+        skippedInputCount: 0,
+        lastInputError: nil,
+        outputPath: nil,
+        exportStatus: nil,
+        exportError: nil
     )
 }
 
