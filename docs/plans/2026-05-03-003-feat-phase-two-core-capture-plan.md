@@ -18,6 +18,8 @@ This plan turns Phase 2 into three manageable `ce-work` loops: prove Mac audio c
 
 The app only becomes viable if it can capture bot-free meeting audio and turn it into a useful transcript with low latency. Phase 2 is the highest technical risk in the spec because it crosses macOS permissions, ScreenCaptureKit system audio, AVFoundation microphone capture, local file writing, FluidAudio model download, Parakeet transcription, and live UI updates.
 
+Bot-free means the app never joins Zoom, Meet, Teams, or another meeting as a participant. It records only what is already happening locally on the user's Mac: system audio from the meeting client plus microphone audio from the user.
+
 The right next step is not broad product UI. It is a small proof surface inside the macOS app that records local audio artifacts, produces transcripts, and exposes enough diagnostics to decide whether the locked stack is sound.
 
 ---
@@ -28,6 +30,7 @@ The right next step is not broad product UI. It is a small proof surface inside 
 - R2. Start recording within 500 ms after the user clicks Start in normal permission-ready conditions.
 - R3. Write clean local audio artifacts that can be manually inspected and reused for transcription.
 - R4. Verify capture with a real Zoom call or equivalent video meeting, including remote speaker audio and local mic audio.
+- R4a. Verify that no bot, browser automation participant, meeting invitee, or external recorder joins the meeting.
 - R5. Add the Core transcription model and provider protocol described in `SPEC.md`.
 - R6. Integrate FluidAudio Parakeet as the default Mac transcription provider.
 - R7. Transcribe a real 30 minute meeting recording end to end and record speed plus qualitative accuracy notes.
@@ -40,6 +43,7 @@ The right next step is not broad product UI. It is a small proof surface inside 
 ## Scope Boundaries
 
 - No Convex storage upload for audio files.
+- No meeting bot or external meeting participant.
 - No transcript persistence in Convex.
 - No calendar-triggered meeting start flow.
 - No LLM enhancement or task extraction.

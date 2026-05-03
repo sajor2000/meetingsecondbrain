@@ -26,6 +26,10 @@ Documented capture hardening:
 
 ### Real Zoom or Equivalent Capture Gate
 
+- Bot-free requirement:
+  - App does not join the meeting.
+  - No meeting bot, external recorder, browser automation participant, or invited capture account appears in the participant list.
+  - Capture uses only local system audio and local microphone audio from the Mac running the app.
 - Date:
 - Meeting app build:
 - macOS version:
@@ -35,6 +39,7 @@ Documented capture hardening:
 - System audio file audible:
 - Microphone file audible:
 - Mixed file audible:
+- No bot or external recorder joined:
 - Stop leaves no active capture indicators:
 - Artifact directory contains unique session ID:
 - Live system meter active:
@@ -45,5 +50,6 @@ Documented capture hardening:
 
 - Remote speaker audio is audible in the system audio artifact.
 - Local microphone audio is audible in the microphone artifact.
+- No bot, external recorder, or extra participant joins the meeting.
 - Start latency is recorded.
 - Any capture permission or audio quality issue is added to `DECISIONS.md` or a follow-up issue before Phase 2 continues.
