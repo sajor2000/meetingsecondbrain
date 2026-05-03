@@ -75,6 +75,8 @@ Regression coverage to keep:
 - Batch transcription checks for a missing audio file before invoking the provider.
 - The macOS transcription runner writes transcript JSON and markdown beside the mixed audio artifact.
 - The macOS transcription runner surfaces missing mixed audio and missing file errors.
+- The proof UI enables transcription only for completed recordings with mixed audio.
+- The proof UI renders transcript duration, output paths, and timestamped transcript rows.
 
 ### Real 30 Minute Transcription Gate
 
@@ -89,6 +91,11 @@ Regression coverage to keep:
 - Real-time factor:
 - Transcript JSON:
 - Transcript markdown:
+- Proof UI transcribe button enabled after stop:
+- Proof UI duration visible:
+- Proof UI transcript panel visible:
+- Proof UI JSON path visible:
+- Proof UI markdown path visible:
 - Timestamp segment quality:
 - Speaker label quality:
 - Vocabulary normalization notes:
@@ -101,4 +108,5 @@ Regression coverage to keep:
 - Transcript generation finishes within the spec target for post-meeting enhancement readiness.
 - Transcript JSON and markdown are written beside the recording artifact.
 - Transcript segments include nonzero timestamp anchors beyond the first segment.
+- The proof UI can run transcription from a completed recording and show duration, output paths, and timestamped rows.
 - Any model download, accuracy, diarization, or performance issue is added to `DECISIONS.md` or a follow-up issue before Phase 2 continues.

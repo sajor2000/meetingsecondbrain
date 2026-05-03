@@ -20,6 +20,14 @@ final class TranscriptionProofViewModel: ObservableObject {
         state.canTranscribe
     }
 
+    func canTranscribe(artifact: RecordingArtifact) -> Bool {
+        state.canTranscribe && artifact.mixedAudioURL != nil
+    }
+
+    func unavailableReason(for artifact: RecordingArtifact) -> String? {
+        artifact.mixedAudioURL == nil ? "Mixed audio file is required." : nil
+    }
+
     var statusText: String {
         switch state {
         case .idle:

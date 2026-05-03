@@ -1,7 +1,7 @@
 ---
 title: feat: Phase 2 transcript UI sprint
 type: feat
-status: active
+status: review
 date: 2026-05-03
 origin: docs/plans/2026-05-03-003-feat-phase-two-core-capture-plan.md
 ---
@@ -166,3 +166,9 @@ This sprint can be merged with fake provider tests, but Phase 2 cannot be approv
 - Manual test plan fields are ready for real capture and real 30 minute transcription evidence.
 - The full gate passes.
 - CE review has no unresolved P1 to P3 findings.
+
+## Progress
+
+- U1 shipped in PR #4.
+- U2 and U3 are implemented on `feat/transcript-proof-panel`.
+- Phase 2 remains gated on real Zoom or equivalent capture and a real 30 minute transcription proof run.

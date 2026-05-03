@@ -33,6 +33,25 @@ final class TranscriptionProofViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canTranscribe)
     }
 
+    func testCanTranscribeRequiresMixedAudioURL() {
+        let runner = FakeTranscriptionRunner(result: .success(.testArtifact()))
+        let viewModel = TranscriptionProofViewModel(runner: runner)
+        let artifact = RecordingArtifact.testArtifact()
+
+        XCTAssertTrue(viewModel.canTranscribe(artifact: artifact))
+        XCTAssertNil(viewModel.unavailableReason(for: artifact))
+    }
+
+    func testUnavailableReasonExplainsMissingMixedAudioURL() {
+        let runner = FakeTranscriptionRunner(result: .success(.testArtifact()))
+        let viewModel = TranscriptionProofViewModel(runner: runner)
+        var artifact = RecordingArtifact.testArtifact()
+        artifact.mixedAudioURL = nil
+
+        XCTAssertFalse(viewModel.canTranscribe(artifact: artifact))
+        XCTAssertEqual(viewModel.unavailableReason(for: artifact), "Mixed audio file is required.")
+    }
+
     func testProviderFailureSurfacesFailureAndKeepsRecordingArtifact() async {
         let artifact = RecordingArtifact.testArtifact()
         let runner = FakeTranscriptionRunner(result: .failure(TestTranscriptionError.modelSetupFailed))

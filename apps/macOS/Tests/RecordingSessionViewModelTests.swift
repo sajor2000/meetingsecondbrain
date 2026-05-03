@@ -102,8 +102,22 @@ final class RecordingSessionViewModelTests: XCTestCase {
         await viewModel.stop()
 
         XCTAssertEqual(viewModel.state, .completed(completedArtifact))
+        XCTAssertEqual(viewModel.completedArtifact, completedArtifact)
         XCTAssertTrue(viewModel.canStart)
         XCTAssertFalse(viewModel.canStop)
+    }
+
+    func testCompletedArtifactIsNilBeforeRecordingCompletes() async {
+        let viewModel = RecordingSessionViewModel(
+            permissionService: FakeCapturePermissionService(.authorized),
+            recorderFactory: { FakeMeetingAudioRecorder() }
+        )
+
+        XCTAssertNil(viewModel.completedArtifact)
+
+        await viewModel.start()
+
+        XCTAssertNil(viewModel.completedArtifact)
     }
 }
 

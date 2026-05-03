@@ -2,21 +2,29 @@ import SwiftUI
 
 struct CaptureProofView: View {
     @StateObject private var viewModel: RecordingSessionViewModel
+    @StateObject private var transcriptionViewModel: TranscriptionProofViewModel
 
-    init(viewModel: RecordingSessionViewModel = RecordingSessionViewModel()) {
+    init(
+        viewModel: RecordingSessionViewModel = RecordingSessionViewModel(),
+        transcriptionViewModel: TranscriptionProofViewModel = TranscriptionProofViewModel()
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        _transcriptionViewModel = StateObject(wrappedValue: transcriptionViewModel)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            header
-            controls
-            meters
-            artifactSummary
-            Spacer()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                header
+                controls
+                meters
+                artifactSummary
+                transcriptionSection
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(32)
         }
         .frame(minWidth: 720, minHeight: 480)
-        .padding(32)
     }
 
     private var header: some View {
@@ -102,6 +110,33 @@ struct CaptureProofView: View {
     }
 
     @ViewBuilder
+    private var transcriptionSection: some View {
+        if let artifact = viewModel.completedArtifact {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 12) {
+                    Button {
+                        Task {
+                            await transcriptionViewModel.transcribe(artifact: artifact)
+                        }
+                    } label: {
+                        Label("Transcribe", systemImage: "waveform.and.magnifyingglass")
+                    }
+                    .disabled(!transcriptionViewModel.canTranscribe(artifact: artifact))
+
+                    Text(transcriptionStatus(for: artifact))
+                        .foregroundStyle(transcriptionStatusColor)
+                }
+
+                TranscriptPanelView(state: transcriptionViewModel.state)
+            }
+        }
+    }
+
+    private func transcriptionStatus(for artifact: RecordingArtifact) -> String {
+        transcriptionViewModel.unavailableReason(for: artifact) ?? transcriptionViewModel.statusText
+    }
+
+    @ViewBuilder
     private func artifactPath(_ label: String, _ url: URL?) -> some View {
         if let url {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -120,6 +155,17 @@ struct CaptureProofView: View {
         case .failed:
             return .red
         case .recording:
+            return .green
+        default:
+            return .secondary
+        }
+    }
+
+    private var transcriptionStatusColor: Color {
+        switch transcriptionViewModel.state {
+        case .failed:
+            return .red
+        case .completed:
             return .green
         default:
             return .secondary
