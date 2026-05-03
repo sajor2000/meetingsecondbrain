@@ -57,6 +57,12 @@ If the iOS simulator platform is missing, install it with Xcode Settings > Compo
 xcodebuild -downloadPlatform iOS
 ```
 
+The iOS test runner defaults to `platform=iOS Simulator,name=iPhone 17`. Override it when needed:
+
+```bash
+IOS_TEST_DESTINATION='platform=iOS Simulator,name=iPhone 17' npm run xcode:test:ios
+```
+
 When only Command Line Tools are selected, use the local sanity check. This is not the approval gate:
 
 ```bash
