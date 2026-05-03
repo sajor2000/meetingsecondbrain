@@ -24,58 +24,65 @@ final class MicrophoneAudioFileWriter {
 
 final class SampleBufferAudioFileWriter {
     private let fileURL: URL
-    private var assetWriter: AVAssetWriter?
-    private var input: AVAssetWriterInput?
-    private var didStartSession = false
+    private var audioFile: AVAudioFile?
 
     init(fileURL: URL) {
         self.fileURL = fileURL
     }
 
     func append(_ sampleBuffer: CMSampleBuffer) throws {
-        if assetWriter == nil {
-            try startWriter()
+        let buffer = try makePCMBuffer(from: sampleBuffer)
+        if audioFile == nil {
+            audioFile = try AVAudioFile(forWriting: fileURL, settings: buffer.format.settings)
         }
 
-        guard let assetWriter, let input else {
-            return
-        }
-
-        if !didStartSession {
-            assetWriter.startSession(atSourceTime: CMSampleBufferGetPresentationTimeStamp(sampleBuffer))
-            didStartSession = true
-        }
-
-        if input.isReadyForMoreMediaData {
-            input.append(sampleBuffer)
-        }
+        try audioFile?.write(from: buffer)
     }
 
-    func stop() async {
-        guard let assetWriter, let input else {
-            return
-        }
-
-        input.markAsFinished()
-        await withCheckedContinuation { continuation in
-            assetWriter.finishWriting {
-                continuation.resume()
-            }
-        }
+    func stop() {
+        audioFile = nil
     }
 
-    private func startWriter() throws {
-        let writer = try AVAssetWriter(outputURL: fileURL, fileType: .m4a)
-        let writerInput = AVAssetWriterInput(mediaType: .audio, outputSettings: nil)
-        writerInput.expectsMediaDataInRealTime = true
+    private func makePCMBuffer(from sampleBuffer: CMSampleBuffer) throws -> AVAudioPCMBuffer {
+        guard let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) else {
+            throw AudioFileWriterError.missingSystemAudioFormat
+        }
+        let format = AVAudioFormat(cmAudioFormatDescription: formatDescription)
 
-        if writer.canAdd(writerInput) {
-            writer.add(writerInput)
+        let frameCount = AVAudioFrameCount(CMSampleBufferGetNumSamples(sampleBuffer))
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else {
+            throw AudioFileWriterError.cannotCreateSystemAudioBuffer
+        }
+        buffer.frameLength = frameCount
+
+        let status = CMSampleBufferCopyPCMDataIntoAudioBufferList(
+            sampleBuffer,
+            at: 0,
+            frameCount: Int32(frameCount),
+            into: buffer.mutableAudioBufferList
+        )
+        guard status == noErr else {
+            throw AudioFileWriterError.cannotCopySystemAudioData(status)
         }
 
-        writer.startWriting()
-        assetWriter = writer
-        input = writerInput
+        return buffer
+    }
+}
+
+enum AudioFileWriterError: Error, LocalizedError {
+    case missingSystemAudioFormat
+    case cannotCreateSystemAudioBuffer
+    case cannotCopySystemAudioData(OSStatus)
+
+    var errorDescription: String? {
+        switch self {
+        case .missingSystemAudioFormat:
+            return "System audio sample is missing an audio format."
+        case .cannotCreateSystemAudioBuffer:
+            return "System audio buffer could not be created."
+        case let .cannotCopySystemAudioData(status):
+            return "System audio sample could not be copied. Status \(status)."
+        }
     }
 }
 

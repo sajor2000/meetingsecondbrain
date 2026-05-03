@@ -180,7 +180,7 @@ struct RecordingArtifactStore {
             sessionId: sessionId,
             directoryURL: directoryURL,
             startedAt: startedAt,
-            systemAudioURL: directoryURL.appendingPathComponent("system.m4a"),
+            systemAudioURL: directoryURL.appendingPathComponent("system.caf"),
             microphoneAudioURL: directoryURL.appendingPathComponent("microphone.caf"),
             metadataURL: directoryURL.appendingPathComponent("metadata.json")
         )

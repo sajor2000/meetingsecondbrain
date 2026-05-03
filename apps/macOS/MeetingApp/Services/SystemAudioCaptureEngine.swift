@@ -49,7 +49,7 @@ final class SystemAudioCaptureEngine: NSObject, SystemAudioCapturing {
         }
 
         try await stream.stopCapture()
-        await writer?.stop()
+        writer?.stop()
         writer = nil
         self.stream = nil
         activityHandler = nil

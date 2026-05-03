@@ -83,21 +83,21 @@ struct RecordingArtifactLoader: RecordingArtifactLoading, @unchecked Sendable {
             endedAt: metadata?.endedAt,
             systemAudioURL: existingURL(
                 metadataPath: metadata?.systemAudioPath,
-                fallbackName: "system.m4a",
+                fallbackNames: ["system.caf", "system.m4a"],
                 directoryURL: directoryURL,
                 missingWarning: .missingSystemAudio,
                 warnings: &warnings
             ),
             microphoneAudioURL: existingURL(
                 metadataPath: metadata?.microphoneAudioPath,
-                fallbackName: "microphone.caf",
+                fallbackNames: ["microphone.caf"],
                 directoryURL: directoryURL,
                 missingWarning: .missingMicrophoneAudio,
                 warnings: &warnings
             ),
             mixedAudioURL: existingURL(
                 metadataPath: metadata?.mixedAudioPath,
-                fallbackName: "mixed.m4a",
+                fallbackNames: ["mixed.m4a"],
                 directoryURL: directoryURL,
                 missingWarning: .missingMixedAudio,
                 warnings: &warnings
@@ -109,14 +109,14 @@ struct RecordingArtifactLoader: RecordingArtifactLoading, @unchecked Sendable {
             artifact: artifact,
             transcriptJSONURL: existingURL(
                 metadataPath: nil,
-                fallbackName: "transcript.json",
+                fallbackNames: ["transcript.json"],
                 directoryURL: directoryURL,
                 missingWarning: .missingTranscriptJSON,
                 warnings: &warnings
             ),
             transcriptMarkdownURL: existingURL(
                 metadataPath: nil,
-                fallbackName: "transcript.md",
+                fallbackNames: ["transcript.md"],
                 directoryURL: directoryURL,
                 missingWarning: .missingTranscriptMarkdown,
                 warnings: &warnings
@@ -144,15 +144,13 @@ struct RecordingArtifactLoader: RecordingArtifactLoading, @unchecked Sendable {
 
     private func existingURL(
         metadataPath: String?,
-        fallbackName: String,
+        fallbackNames: [String],
         directoryURL: URL,
         missingWarning: RecordingArtifactLoadWarning,
         warnings: inout [RecordingArtifactLoadWarning]
     ) -> URL? {
-        let candidates = [
-            metadataPath.map(URL.init(fileURLWithPath:)),
-            Optional(directoryURL.appendingPathComponent(fallbackName))
-        ].compactMap { $0 }
+        let candidates = [metadataPath.map(URL.init(fileURLWithPath:))].compactMap { $0 }
+            + fallbackNames.map { directoryURL.appendingPathComponent($0) }
 
         for candidate in candidates where fileManager.fileExists(atPath: candidate.path) {
             return candidate

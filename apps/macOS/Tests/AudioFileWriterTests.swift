@@ -19,4 +19,15 @@ final class AudioFileWriterTests: XCTestCase {
 
         XCTAssertTrue(FileManager.default.fileExists(atPath: fileURL.path))
     }
+
+    func testSystemWriterClosesWithoutBuffers() {
+        let directory = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let fileURL = directory.appendingPathComponent("system.caf")
+        let writer = SampleBufferAudioFileWriter(fileURL: fileURL)
+
+        writer.stop()
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: fileURL.path))
+    }
 }
