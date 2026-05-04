@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-workspace="MeetingSecondBrain.xcworkspace"
-scheme="MeetingAppMobile"
+project="RecallOS.xcodeproj"
+scheme="RecallOSiOS"
+bundle_id="com.recallos.ios"
 stable_destination="platform=iOS Simulator,name=iPhone 17"
 destination="${IOS_TEST_DESTINATION:-}"
 
 show_destinations() {
   xcodebuild -showdestinations \
-    -workspace "${workspace}" \
+    -project "${project}" \
     -scheme "${scheme}" \
     2>&1
 }
@@ -54,8 +55,8 @@ reset_simulator() {
     return 0
   fi
 
-  xcrun simctl terminate "${device_id}" com.sajor2000.meetingsecondbrain.ios >/dev/null 2>&1 || true
-  xcrun simctl uninstall "${device_id}" com.sajor2000.meetingsecondbrain.ios >/dev/null 2>&1 || true
+  xcrun simctl terminate "${device_id}" "${bundle_id}" >/dev/null 2>&1 || true
+  xcrun simctl uninstall "${device_id}" "${bundle_id}" >/dev/null 2>&1 || true
   xcrun simctl shutdown "${device_id}" >/dev/null 2>&1 || true
 }
 
@@ -80,7 +81,7 @@ run_test() {
 
   set +e
   xcodebuild test \
-    -workspace "${workspace}" \
+    -project "${project}" \
     -scheme "${scheme}" \
     -destination "${selected}" \
     CODE_SIGNING_ALLOWED=NO 2>&1 | tee "${output_path}"

@@ -1,13 +1,39 @@
-# Deviations and decisions log
+# RecallOS Decisions
 
-- 2026-05-03: Placed the working repository at `/Users/jcrmacstudio/Desktop/meeting-app` instead of keeping it under `/Users/jcrmacstudio/Desktop/Notes:Second Brain`. Convex local dev generated invalid module paths when any parent folder contained spaces or punctuation. This preserves the spec's `meeting-app/` root and lets Convex initialize cleanly.
-- 2026-05-03: Server-side LLM calls use `OPENROUTER_API_KEY` in Convex environment variables. macOS Keychain may still store a local copy for settings validation, but Convex actions cannot read Keychain directly.
-- 2026-05-03: Calendar source records store typed non-secret config plus secret reference keys. Actual ICS URLs and Google OAuth material should live in Convex environment variables or platform key storage.
-- 2026-05-03: Audio remains local by default. Convex audio file sync is opt-in because always syncing 88 meeting hours per month would likely exceed the intended free-tier operating envelope.
-- 2026-05-03: GitHub repository for this project is `sajor2000/meetingsecondbrain` at `https://github.com/sajor2000/meetingsecondbrain.git`.
-- 2026-05-03: Phase 1 Xcode projects are generated with XcodeGen from checked-in `project.yml` files. This keeps project files reproducible while preserving the required `.xcodeproj` deliverables.
-- 2026-05-03: The canonical native entry point is `MeetingSecondBrain.xcworkspace`, which references both generated app projects and the Core package.
-- 2026-05-03: The local developer directory currently points to Command Line Tools, not full Xcode. The strict Phase 1 gate is `npm run phase1:check` and includes a Core command line self-test plus macOS and iOS Xcode scheme tests. `npm run phase1:check:local` is only a Command Line Tools sanity check.
-- 2026-05-03: Deferred the real meeting capture gate because a live Zoom, Meet, or Teams call was not available. Continued with offline-safe U4 and U5 transcription scaffolding only. Phase 2 still requires the manual capture and 30 minute transcription gates before approval.
-- 2026-05-03: Isolated FluidAudio Parakeet in the `ParakeetTranscription` package product so the shared Core product stays lightweight for iOS. Parakeet diarization is reported unsupported until FluidAudio speaker assignment is wired into returned transcript segments.
-- 2026-05-03: Continued building past the unresolved real capture evidence at user request. The app must still treat Phase 2 capture validation as pending until system audio, microphone audio, mixed audio, and a real 30 minute Parakeet transcript are verified.
+## 2026-05-03: HTML Artifact Is Reference Only
+
+The files at `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c-4588-adcb-0afebf87b658/index.html` and `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c-4588-adcb-0afebf87b658/recallos-meeting-second-brain.html` are treated as high-fidelity design artifacts, not source code for the app. The implementation is native SwiftUI with AppKit only for the floating macOS recording panel.
+
+## 2026-05-03: Shared Core Package
+
+Design tokens, domain models, fixtures, and reusable SwiftUI components live in `packages/RecallOSCore`. Both app targets import this package.
+
+## 2026-05-03: MeetingTask Code Name
+
+The product model is “Task,” but the Swift type is `MeetingTask` to avoid ambiguity with Swift concurrency's generic `Task` type.
+
+## 2026-05-03: Board Mode Approved As Optional Task View
+
+Board mode for meeting-derived task workflow is approved, not the default task experience.
+
+Rationale: the artifact and current product direction include a Kanban-style board for drag-and-drop workflow triage. This deviates from the earlier “not Trello” constraint, so the default task surface remains the Things-style list. Board mode is an optional view for meeting-derived tasks where status movement, owner clarity, and source provenance benefit from columns.
+
+## 2026-05-03: Recording Banner Uses NSPanel
+
+The floating macOS recording banner uses `NSPanel` with a SwiftUI-hosted `RecordingBannerView`. This gives the app correct top-right positioning, all-space behavior, and native macOS material while keeping most UI reusable.
+
+## 2026-05-03: Convex First, Capture Later
+
+Convex schema and stubs are created before real AVFoundation/ScreenCaptureKit capture. This keeps product entities and sync boundaries explicit before implementing provider-specific capture pipelines.
+
+## 2026-05-04: Explicit Demo Runtime Until Live Convex Adapter Exists
+
+The macOS and iOS apps run with fixture-backed demo data by default for the foundation PR. `RECALLOS_USE_LIVE_CONVEX=1` is an explicit opt-in, but it now produces a visible configuration error until the Swift Convex adapter has real list/query/mutation behavior.
+
+Rationale: the Pilot MVP plan keeps live Convex disabled until repository methods are implemented and tested. A requested live mode must not silently fall back to fixtures, because that hides deployment/configuration mistakes.
+
+## 2026-05-04: RecallOS Convex Tables Are The Pilot Namespace
+
+The `recallOS*` Convex tables are the canonical Pilot MVP namespace for the new native RecallOS client. Existing unprefixed meeting/task/document tables remain legacy data until a dedicated migration/deprecation sprint decides whether to backfill, quarantine, or remove them.
+
+Rationale: PR #11 introduces RecallOS side by side with the older implementation. The new public RecallOS functions read and mutate only the `recallOS*` tables, so future schema work should treat cross-namespace migration as explicit Sprint 2+ work rather than assuming both models stay in sync automatically.

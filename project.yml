@@ -6,7 +6,7 @@ options:
     iOS: "17.0"
 packages:
   RecallOSCore:
-    path: Packages/RecallOSCore
+    path: packages/RecallOSCore
   ConvexSwift:
     url: https://github.com/get-convex/convex-swift
     from: 0.8.1
@@ -20,16 +20,18 @@ targets:
     type: application
     platform: macOS
     sources:
-      - Apps/Shared/Sources
-      - Apps/RecallOSMac/Sources
-    resources:
-      - Apps/RecallOSMac/Resources
+      - apps/Shared/Sources
+      - apps/RecallOSMac/Sources
+      - path: apps/RecallOSMac/Resources
+        buildPhase: resources
+        excludes:
+          - Info.plist
     dependencies:
       - package: RecallOSCore
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.recallos.mac
-        INFOPLIST_FILE: Apps/RecallOSMac/Resources/Info.plist
+        INFOPLIST_FILE: apps/RecallOSMac/Resources/Info.plist
         CODE_SIGN_STYLE: Automatic
         ENABLE_PREVIEWS: YES
         ONLY_ACTIVE_ARCH: YES
@@ -37,10 +39,12 @@ targets:
     type: application
     platform: iOS
     sources:
-      - Apps/Shared/Sources
-      - Apps/RecallOSiOS/Sources
-    resources:
-      - Apps/RecallOSiOS/Resources
+      - apps/Shared/Sources
+      - apps/RecallOSiOS/Sources
+      - path: apps/RecallOSiOS/Resources
+        buildPhase: resources
+        excludes:
+          - Info.plist
     dependencies:
       - package: RecallOSCore
       - package: ConvexSwift
@@ -48,12 +52,38 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.recallos.ios
-        INFOPLIST_FILE: Apps/RecallOSiOS/Resources/Info.plist
+        INFOPLIST_FILE: apps/RecallOSiOS/Resources/Info.plist
         TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_STYLE: Automatic
         ENABLE_PREVIEWS: YES
         ONLY_ACTIVE_ARCH: YES
         EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
+  RecallOSSharedTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - apps/Shared/Sources
+      - apps/Shared/Tests
+    dependencies:
+      - package: RecallOSCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.recallos.shared-tests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+  RecallOSiOSTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - apps/RecallOSiOS/Tests
+    dependencies:
+      - target: RecallOSiOS
+      - package: RecallOSCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.recallos.ios-tests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
 schemes:
   RecallOSMac:
     build:
@@ -65,5 +95,16 @@ schemes:
     build:
       targets:
         RecallOSiOS: all
+        RecallOSiOSTests: [test]
     run:
       config: Debug
+    test:
+      targets:
+        - RecallOSiOSTests
+  RecallOSSharedTests:
+    build:
+      targets:
+        RecallOSSharedTests: all
+    test:
+      targets:
+        - RecallOSSharedTests
