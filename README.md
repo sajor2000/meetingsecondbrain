@@ -87,3 +87,38 @@ Not production-complete yet:
 
 - Live Convex Swift adapter/subscriptions/mutations, real audio capture, screen capture, transcription, diarization, AI enhancement, background sync, and Convex deployment.
 - Screenshot preview generation for the native apps.
+
+When only Command Line Tools are selected, use the local sanity check. This is not the approval gate:
+
+```sh
+npm run phase1:check:local
+```
+
+## Architecture
+
+See `SPEC.md` for the locked architecture, stack decisions, build order, and performance targets.
+
+## Development
+
+Open the canonical workspace in Xcode:
+
+```sh
+open MeetingSecondBrain.xcworkspace
+```
+
+RecallOS native prototype checks:
+
+```sh
+npm run swift:test:core
+npm run xcode:build
+```
+
+Convex local development:
+
+```sh
+npm run convex:dev
+```
+
+## Costs
+
+The target operating cost is about $5 to $6 per month, excluding Apple Developer Program fees and hardware.

@@ -24,12 +24,9 @@ public enum TaskListFilter: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .today:
             return Self.nonEmpty([
-                TaskListSection(title: "Overdue", tasks: tasks.filter { $0.isOverdue(relativeTo: now) }),
-                TaskListSection(title: "Today", tasks: tasks.filter { $0.status == .today && !$0.isOverdue(relativeTo: now) }),
-                TaskListSection(title: "Done today", tasks: tasks.filter { task in
-                    guard task.status == .done, let completedAt = task.completedAt else { return false }
-                    return calendar.isDate(completedAt, inSameDayAs: now)
-                })
+                TaskListSection(title: "Overdue", tasks: tasks.filter { $0.isOverdue(relativeTo: now) || ($0.priority == .high && $0.status != .done) }),
+                TaskListSection(title: "Today", tasks: tasks.filter { $0.status == .today }),
+                TaskListSection(title: "Done today", tasks: tasks.filter { $0.status == .done && $0.completedAt.map { calendar.isDate($0, inSameDayAs: now) } != false })
             ])
         case .thisWeek:
             return Self.nonEmpty([

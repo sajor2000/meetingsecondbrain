@@ -4,10 +4,12 @@ import SwiftUI
 struct MacContentView: View {
     @EnvironmentObject private var bannerController: RecordingBannerPanelController
     @StateObject private var store: RecallOSAppStore
+    @StateObject private var lifecycleScheduler = MeetingLifecycleScheduler()
     @State private var rightRailTab = "Tasks"
     @State private var taskMode = "List"
     @State private var navigation: MacNavigation = .meeting
     @State private var highlightedTranscriptID: UUID?
+    private let lifecycleTimer = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     init(store: RecallOSAppStore) {
         _store = StateObject(wrappedValue: store)
@@ -26,10 +28,11 @@ struct MacContentView: View {
                         openTaskCount: store.tasks.filter { $0.status != .done }.count,
                         selectedNavigation: navigation,
                         selectedMeetingID: meeting.id,
+                        recordingMeetingID: store.recordingSession?.meetingID,
                         onSelectMeeting: selectMeeting,
                         onSelectNavigation: selectNavigation,
-                        onCreateMeetingFromEvent: { title, startsAt in
-                            createMeeting(title: title, startsAt: startsAt)
+                        onCreateMeetingFromEvent: { event in
+                            createMeeting(from: event)
                         },
                         onCreateMeeting: {
                             createMeeting(title: "Ad-hoc meeting")
@@ -76,6 +79,16 @@ struct MacContentView: View {
         .background(Color.appBackground)
         .task {
             await store.load()
+            evaluatePreMeetingBanner()
+        }
+        .onReceive(lifecycleTimer) { _ in
+            Swift.Task {
+                await store.refreshMeetingLifecycle()
+                evaluatePreMeetingBanner()
+            }
+        }
+        .onChange(of: store.upcomingEvents) { _, _ in
+            evaluatePreMeetingBanner()
         }
         .toolbar {
             ToolbarItemGroup {
@@ -154,9 +167,16 @@ struct MacContentView: View {
     }
 
     private func startRecording() {
+        startRecording(from: nil)
+    }
+
+    private func startRecording(from event: CalendarEvent?) {
         navigation = .meeting
         rightRailTab = "Transcript"
         Swift.Task {
+            if let event {
+                await store.createOrSelectMeeting(for: event)
+            }
             await store.startRecording()
             showBanner(state: store.recordingSession?.bannerState ?? .recording)
         }
@@ -171,34 +191,39 @@ struct MacContentView: View {
         }
     }
 
+    private func showBanner(state: RecordingBannerState, event: CalendarEvent? = nil) {
+        let meeting = store.recordingSession.flatMap { session in
+            store.meetings.first { $0.id == session.meetingID }
+        } ?? store.selectedMeeting
+        bannerController.show(
+            state: state,
+            title: event?.title ?? meeting?.title ?? "Ad-hoc meeting",
+            subtitle: store.recordingSession?.state == .paused ? "Paused" : "Mock capture · ready for Parakeet",
+            elapsed: elapsedTitle(store.recordingSession),
+            onRecord: { startRecording(from: event) },
+            onPause: pauseRecording,
+            onResume: resumeRecording,
+            onStop: stopAndEnhance,
+            onDismiss: {
+                if let event {
+                    lifecycleScheduler.dismiss(event)
+                }
+            }
+        )
+    }
+
     private func pauseRecording() {
         Swift.Task {
             await store.pauseRecording()
-            showBanner(state: store.recordingSession?.bannerState ?? .adHoc)
+            showBanner(state: store.recordingSession?.bannerState ?? .paused)
         }
     }
 
     private func resumeRecording() {
         Swift.Task {
             await store.resumeRecording()
-            showBanner(state: store.recordingSession?.bannerState ?? .adHoc)
+            showBanner(state: store.recordingSession?.bannerState ?? .recording)
         }
-    }
-
-    private func showBanner(state: RecordingBannerState) {
-        let meeting = store.selectedMeeting
-        bannerController.show(
-            state: state,
-            title: meeting?.title ?? "Ad-hoc meeting",
-            subtitle: store.recordingSession?.state == .paused ? "Paused" : "Mock capture · ready for Parakeet",
-            elapsed: elapsedTitle(store.recordingSession),
-            onRecord: {
-                startRecording()
-            },
-            onPause: pauseRecording,
-            onResume: resumeRecording,
-            onStop: stopAndEnhance
-        )
     }
 
     private func selectMeeting(_ meetingID: UUID) {
@@ -228,6 +253,24 @@ struct MacContentView: View {
         Swift.Task {
             await store.createMeeting(title: title, startsAt: startsAt)
         }
+    }
+
+    private func createMeeting(from event: CalendarEvent) {
+        navigation = .meeting
+        rightRailTab = "Transcript"
+        Swift.Task {
+            await store.createOrSelectMeeting(for: event)
+        }
+    }
+
+    private func evaluatePreMeetingBanner() {
+        guard store.recordingSession?.isActive != true,
+              let event = lifecycleScheduler.preMeetingEvent(from: store.upcomingEvents) else {
+            return
+        }
+
+        lifecycleScheduler.markPrompted(event)
+        showBanner(state: .preMeeting, event: event)
     }
 
     private func handleTimestampSelected(_ timestamp: TimeInterval) {
@@ -282,9 +325,4 @@ struct MacContentView: View {
         formatter.zeroFormattingBehavior = .pad
         return formatter
     }()
-}
-
-#Preview {
-    MacContentView(store: RecallOSAppStore.fixture())
-        .environmentObject(RecordingBannerPanelController())
 }

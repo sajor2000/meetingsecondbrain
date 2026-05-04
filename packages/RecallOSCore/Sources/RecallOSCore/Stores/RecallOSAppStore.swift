@@ -23,11 +23,6 @@ public final class RecallOSAppStore: ObservableObject {
     private let secondBrainSearchProvider: any SecondBrainSearchProvider
     private let defaultSearchQuery: String
     private var transcriptTask: Swift.Task<Void, Never>?
-    private var isStartingRecording = false
-    private var isStoppingRecording = false
-    private var taskMoveGeneration = 0
-    private var taskMoveGenerationsByID: [UUID: Int] = [:]
-    private var searchGeneration = 0
 
     public init(
         repository: any RecallOSRepository,
@@ -43,7 +38,9 @@ public final class RecallOSAppStore: ObservableObject {
         tasks: [MeetingTask] = [],
         searchResults: [SearchResult] = [],
         upcomingEvents: [CalendarEvent] = [],
-        defaultSearchQuery: String = ""
+        defaultSearchQuery: String = "",
+        syncError: String? = nil,
+        workflowMessage: String? = nil
     ) {
         self.repository = repository
         self.permissionProvider = permissionProvider
@@ -59,23 +56,25 @@ public final class RecallOSAppStore: ObservableObject {
         self.searchResults = searchResults
         self.upcomingEvents = upcomingEvents
         self.defaultSearchQuery = defaultSearchQuery
-        self.syncError = nil
+        self.syncError = syncError
         self.isSyncing = false
-        self.workflowMessage = nil
+        self.workflowMessage = workflowMessage
     }
 
     deinit {
         transcriptTask?.cancel()
     }
 
-    public static func fixture() -> RecallOSAppStore {
+    public static func fixture(syncError: String? = nil, workflowMessage: String? = nil) -> RecallOSAppStore {
         RecallOSAppStore(
             repository: FixtureRecallOSRepository(),
             meetings: [SampleData.meeting],
             selectedMeeting: SampleData.meeting,
             tasks: SampleData.tasks,
             searchResults: SampleData.searchResults,
-            upcomingEvents: SampleData.calendarEvents
+            upcomingEvents: SampleData.calendarEvents,
+            syncError: syncError,
+            workflowMessage: workflowMessage
         )
     }
 
@@ -92,12 +91,9 @@ public final class RecallOSAppStore: ObservableObject {
             selectedMeeting = selectedMeeting.flatMap { selected in
                 meetings.first(where: { $0.id == selected.id })
             } ?? meetings.first
-            tasks = try await repository.listTasks(forMeeting: nil)
-            if var selectedMeeting {
-                selectedMeeting.tasks = tasks.filter { $0.sourceMeetingID == selectedMeeting.id }
-                replaceSelectedMeeting(selectedMeeting)
-            }
-            upcomingEvents = try await calendarProvider.upcomingEvents(limit: 5)
+            tasks = try await repository.listTasks(forMeeting: selectedMeeting?.id)
+            await refreshMeetingLifecycle()
+            await refreshUpcomingEvents(limit: 5)
             searchResults = try await secondBrainSearchProvider.search(query: defaultSearchQuery, meetings: meetings, tasks: tasks)
             syncError = nil
         } catch {
@@ -106,14 +102,9 @@ public final class RecallOSAppStore: ObservableObject {
     }
 
     public func selectMeeting(_ meetingID: UUID) async {
-        guard var meeting = meetings.first(where: { $0.id == meetingID }) else { return }
-        selectedMeeting = meeting
-
+        selectedMeeting = meetings.first { $0.id == meetingID }
         do {
-            let meetingTasks = try await repository.listTasks(forMeeting: meetingID)
-            replaceTasks(forMeeting: meetingID, with: meetingTasks)
-            meeting.tasks = meetingTasks
-            replaceSelectedMeeting(meeting)
+            tasks = try await repository.listTasks(forMeeting: meetingID)
             syncError = nil
         } catch {
             syncError = error.localizedDescription
@@ -134,6 +125,7 @@ public final class RecallOSAppStore: ObservableObject {
             let saved = try await repository.createMeeting(meeting)
             meetings.insert(saved, at: 0)
             selectedMeeting = saved
+            tasks = []
             syncError = nil
             return saved
         } catch {
@@ -142,20 +134,83 @@ public final class RecallOSAppStore: ObservableObject {
         }
     }
 
+    @discardableResult
+    public func createOrSelectMeeting(for event: CalendarEvent, now: Date = Date()) async -> Meeting? {
+        if var existing = meetings.first(where: { $0.calendarEventID == event.id || $0.title == event.title && $0.startsAt == event.startsAt }) {
+            if existing.status == .scheduled || existing.status == .inProgress {
+                existing.title = event.title
+                existing.startsAt = event.startsAt
+                existing.endsAt = event.endsAt
+                existing.attendees = event.attendees
+                existing.calendarEventID = event.id
+                existing.status = MeetingLifecycle.initialStatus(startsAt: event.startsAt, endsAt: event.endsAt, at: now)
+
+                do {
+                    let saved = try await repository.updateMeeting(existing)
+                    upsertMeeting(saved, select: true)
+                    tasks = try await repository.listTasks(forMeeting: saved.id)
+                    syncError = nil
+                    return saved
+                } catch {
+                    syncError = error.localizedDescription
+                    return nil
+                }
+            } else {
+                await selectMeeting(existing.id)
+                return selectedMeeting
+            }
+        }
+
+        let meeting = Meeting(
+            title: event.title,
+            startsAt: event.startsAt,
+            endsAt: event.endsAt,
+            attendees: event.attendees,
+            calendarEventID: event.id,
+            status: MeetingLifecycle.initialStatus(startsAt: event.startsAt, endsAt: event.endsAt, at: now)
+        )
+
+        do {
+            let saved = try await repository.createMeeting(meeting)
+            meetings.insert(saved, at: 0)
+            selectedMeeting = saved
+            tasks = []
+            syncError = nil
+            return saved
+        } catch {
+            syncError = error.localizedDescription
+            return nil
+        }
+    }
+
+    public func refreshUpcomingEvents(limit: Int = 5) async {
+        do {
+            upcomingEvents = try await calendarProvider.upcomingEvents(limit: limit)
+            syncError = nil
+        } catch {
+            upcomingEvents = (try? await MockCalendarEventProvider().upcomingEvents(limit: limit)) ?? []
+            workflowMessage = "Calendar access is unavailable. Showing sample upcoming events."
+        }
+    }
+
+    public func refreshMeetingLifecycle(now: Date = Date()) async {
+        for meeting in meetings {
+            let advanced = meeting.advancedLifecycle(at: now)
+            guard advanced.status != meeting.status else { continue }
+
+            upsertMeeting(advanced)
+            _ = try? await repository.updateMeeting(advanced)
+        }
+    }
+
     public func startRecording() async {
         guard var meeting = selectedMeeting else {
             syncError = RecordingWorkflowError.noSelectedMeeting.localizedDescription
             return
         }
-        guard recordingSession?.isActive != true, !isStartingRecording else {
-            workflowMessage = "Recording already in progress"
-            return
-        }
 
-        isStartingRecording = true
         let previousMeeting = meeting
         var didStartAudioCapture = false
-        defer { isStartingRecording = false }
 
         do {
             guard try await permissionProvider.requestMicrophoneAccess() else {
@@ -167,7 +222,7 @@ public final class RecallOSAppStore: ObservableObject {
             meeting.status = .recording
             meeting.transcriptSegments = []
             meeting.summary = meeting.summary.isEmpty ? "Recording in progress. Notes will enhance after stop." : meeting.summary
-            replaceSelectedMeeting(meeting)
+            upsertMeeting(meeting, select: true)
             _ = try await repository.updateMeeting(meeting)
 
             recordingSession = RecordingSession(
@@ -182,7 +237,7 @@ public final class RecallOSAppStore: ObservableObject {
             if didStartAudioCapture {
                 try? await audioProvider.stop()
             }
-            replaceSelectedMeeting(previousMeeting)
+            upsertMeeting(previousMeeting, select: true)
             markWorkflowFailed(error)
         }
     }
@@ -198,7 +253,7 @@ public final class RecallOSAppStore: ObservableObject {
             workflowMessage = "Recording paused"
             syncError = nil
         } catch {
-            await failActiveRecording(error, meetingID: session.meetingID)
+            markWorkflowFailed(error)
         }
     }
 
@@ -213,18 +268,12 @@ public final class RecallOSAppStore: ObservableObject {
             workflowMessage = "Recording resumed"
             syncError = nil
         } catch {
-            await failActiveRecording(error, meetingID: session.meetingID)
+            markWorkflowFailed(error)
         }
     }
 
     public func stopAndEnhanceRecording() async {
-        guard var session = recordingSession,
-              session.state == .recording || session.state == .paused,
-              !isStoppingRecording,
-              var meeting = meeting(for: session.meetingID) else { return }
-
-        isStoppingRecording = true
-        defer { isStoppingRecording = false }
+        guard var session = recordingSession, var meeting = meeting(withID: session.meetingID) else { return }
 
         do {
             transcriptTask?.cancel()
@@ -238,12 +287,10 @@ public final class RecallOSAppStore: ObservableObject {
             session.stoppedAt = Date()
             recordingSession = session
 
-            guard let currentMeeting = self.meeting(for: session.meetingID) else { return }
-            meeting = currentMeeting
             meeting.status = .enhancing
-            replaceSelectedMeeting(meeting)
+            upsertMeeting(meeting)
 
-            let transcriptSegments = currentMeeting.transcriptSegments
+            let transcriptSegments = meeting.transcriptSegments
             let enhanced = try await enhancementProvider.enhance(meeting: meeting, transcriptSegments: transcriptSegments)
             let extractedTasks = try await taskExtractionProvider.extractTasks(from: meeting, transcriptSegments: transcriptSegments)
 
@@ -253,9 +300,8 @@ public final class RecallOSAppStore: ObservableObject {
             meeting.status = .completed
 
             let saved = try await repository.updateMeeting(meeting)
-            replaceSelectedMeeting(saved)
-            let meetingTasks = try await repository.listTasks(forMeeting: saved.id)
-            replaceTasks(forMeeting: saved.id, with: meetingTasks)
+            upsertMeeting(saved)
+            tasks = try await repository.listTasks(forMeeting: selectedMeeting?.id)
             searchResults = try await secondBrainSearchProvider.search(query: "", meetings: meetings, tasks: tasks)
 
             session.state = .completed
@@ -263,169 +309,75 @@ public final class RecallOSAppStore: ObservableObject {
             workflowMessage = "Notes enhanced and tasks extracted"
             syncError = nil
         } catch {
-            if var restoredMeeting = self.meeting(for: session.meetingID),
-               restoredMeeting.status == .enhancing || restoredMeeting.status == .recording {
-                restoredMeeting.status = .inProgress
-                replaceSelectedMeeting(restoredMeeting)
-                _ = try? await repository.updateMeeting(restoredMeeting)
-            }
             markWorkflowFailed(error)
         }
     }
 
     public func moveTasks(_ taskIDs: [UUID], to status: TaskStatus) async {
-        taskMoveGeneration += 1
-        let moveGeneration = taskMoveGeneration
-        let movedTaskIDs = Set(taskIDs)
-        for taskID in movedTaskIDs {
-            taskMoveGenerationsByID[taskID] = moveGeneration
-        }
-        let previousTasksByID = Dictionary(uniqueKeysWithValues: tasks.filter { movedTaskIDs.contains($0.id) }.map { ($0.id, $0) })
+        let previousTasks = tasks
         tasks = TaskStore.moved(tasks: tasks, taskIDs: taskIDs, to: status)
-        updateSelectedMeetingTasks()
 
         do {
             try await repository.moveTasks(taskIDs, to: status)
-            guard movedTaskIDs.allSatisfy({ taskMoveGenerationsByID[$0] == moveGeneration }) else { return }
-
-            let currentTasksByID = Dictionary(uniqueKeysWithValues: tasks.map { ($0.id, $0) })
-            let persistedTasks = try await repository.listTasks(forMeeting: nil)
-            for taskID in movedTaskIDs where taskMoveGenerationsByID[taskID] == moveGeneration {
-                taskMoveGenerationsByID[taskID] = nil
+            tasks = try await repository.listTasks(forMeeting: selectedMeeting?.id)
+            if var meeting = selectedMeeting {
+                meeting.tasks = tasks.filter { $0.sourceMeetingID == meeting.id }
+                upsertMeeting(meeting, select: true)
             }
-            tasks = persistedTasks.map { task in
-                if taskMoveGenerationsByID[task.id] != nil, let currentTask = currentTasksByID[task.id] {
-                    return currentTask
-                }
-                return task
-            }
-            updateSelectedMeetingTasks()
             syncError = nil
         } catch {
-            let rollbackTaskIDs = movedTaskIDs.filter { taskMoveGenerationsByID[$0] == moveGeneration }
-            if !rollbackTaskIDs.isEmpty {
-                tasks = tasks.map { task in
-                    rollbackTaskIDs.contains(task.id) ? previousTasksByID[task.id] ?? task : task
-                }
-                for taskID in rollbackTaskIDs {
-                    taskMoveGenerationsByID[taskID] = nil
-                }
-                updateSelectedMeetingTasks()
-                syncError = error.localizedDescription
-            }
+            tasks = previousTasks
+            syncError = error.localizedDescription
         }
     }
 
     public func search(_ query: String) async {
-        searchGeneration += 1
-        let generation = searchGeneration
-
         do {
-            let results = try await secondBrainSearchProvider.search(query: query, meetings: meetings, tasks: tasks)
-            guard generation == searchGeneration else { return }
-            searchResults = results
+            searchResults = try await secondBrainSearchProvider.search(query: query, meetings: meetings, tasks: tasks)
             syncError = nil
         } catch {
-            if generation == searchGeneration {
-                syncError = error.localizedDescription
-            }
+            syncError = error.localizedDescription
         }
     }
 
     private func streamTranscript(for meeting: Meeting) {
         transcriptTask?.cancel()
-        let transcriptionProvider = transcriptionProvider
+        transcriptTask = Swift.Task { [weak self] in
+            guard let self else { return }
 
-        transcriptTask = Swift.Task.detached { [weak self, transcriptionProvider, meeting] in
             do {
-                let stream = try await transcriptionProvider.transcriptStream(for: meeting)
+                let stream = try await self.transcriptionProvider.transcriptStream(for: meeting)
                 for try await segment in stream {
-                    guard !Swift.Task.isCancelled else { return }
-                    await self?.appendTranscriptSegment(segment)
+                    self.appendTranscriptSegment(segment)
                 }
-            } catch is CancellationError {
-                return
             } catch {
-                guard !Swift.Task.isCancelled else { return }
-                await self?.handleTranscriptStreamFailure(error, meetingID: meeting.id)
+                self.markWorkflowFailed(RecordingWorkflowError.transcriptionUnavailable(error.localizedDescription))
             }
         }
     }
 
     private func appendTranscriptSegment(_ segment: TranscriptSegment) {
-        guard var meeting = meeting(for: segment.meetingID) else { return }
-        if let recordingSession,
-           recordingSession.meetingID == segment.meetingID,
-           recordingSession.state != .recording,
-           recordingSession.state != .paused {
-            return
-        }
+        guard var meeting = meeting(withID: segment.meetingID) else { return }
         guard !meeting.transcriptSegments.contains(where: { $0.id == segment.id }) else { return }
 
         meeting.transcriptSegments.append(segment)
         meeting.transcriptSegments.sort { $0.startTime < $1.startTime }
-        if selectedMeeting?.id == meeting.id {
+        upsertMeeting(meeting)
+    }
+
+    private func meeting(withID meetingID: UUID) -> Meeting? {
+        meetings.first { $0.id == meetingID }
+    }
+
+    private func upsertMeeting(_ meeting: Meeting, select: Bool = false) {
+        if let index = meetings.firstIndex(where: { $0.id == meeting.id }) {
+            meetings[index] = meeting
+        } else {
+            meetings.insert(meeting, at: 0)
+        }
+
+        if select || selectedMeeting?.id == meeting.id {
             selectedMeeting = meeting
-        }
-        if let index = meetings.firstIndex(where: { $0.id == meeting.id }) {
-            meetings[index] = meeting
-        } else {
-            meetings.insert(meeting, at: 0)
-        }
-    }
-
-    private func meeting(for meetingID: UUID) -> Meeting? {
-        meetings.first { $0.id == meetingID } ?? selectedMeeting.flatMap { selected in
-            selected.id == meetingID ? selected : nil
-        }
-    }
-
-    private func handleTranscriptStreamFailure(_ error: Error, meetingID: UUID) async {
-        guard recordingSession?.meetingID == meetingID, recordingSession?.isActive == true else { return }
-
-        await failActiveRecording(RecordingWorkflowError.transcriptionUnavailable(error.localizedDescription), meetingID: meetingID)
-    }
-
-    private func failActiveRecording(_ error: Error, meetingID: UUID) async {
-        transcriptTask?.cancel()
-        transcriptTask = nil
-        try? await audioProvider.stop()
-        if var meeting = meeting(for: meetingID) {
-            meeting.status = .inProgress
-            replaceSelectedMeeting(meeting)
-            _ = try? await repository.updateMeeting(meeting)
-        }
-        markWorkflowFailed(error)
-    }
-
-    private func replaceSelectedMeeting(_ meeting: Meeting) {
-        selectedMeeting = meeting
-        if let index = meetings.firstIndex(where: { $0.id == meeting.id }) {
-            meetings[index] = meeting
-        } else {
-            meetings.insert(meeting, at: 0)
-        }
-    }
-
-    private func replaceTasks(forMeeting meetingID: UUID, with meetingTasks: [MeetingTask]) {
-        let meetingTaskIDs = Set(meetingTasks.map(\.id))
-        tasks.removeAll { task in
-            task.sourceMeetingID == meetingID && !meetingTaskIDs.contains(task.id)
-        }
-
-        for task in meetingTasks {
-            if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-                tasks[index] = task
-            } else {
-                tasks.append(task)
-            }
-        }
-    }
-
-    private func updateSelectedMeetingTasks() {
-        if var meeting = selectedMeeting {
-            meeting.tasks = tasks.filter { $0.sourceMeetingID == meeting.id }
-            replaceSelectedMeeting(meeting)
         }
     }
 
@@ -437,6 +389,10 @@ public final class RecallOSAppStore: ObservableObject {
         session?.state = .failed
         session?.errorMessage = error.localizedDescription
         recordingSession = session
+        if let meetingID = session?.meetingID, var meeting = meeting(withID: meetingID) {
+            meeting.status = .failed
+            upsertMeeting(meeting)
+        }
         workflowMessage = nil
         syncError = error.localizedDescription
     }

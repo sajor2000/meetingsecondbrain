@@ -61,4 +61,36 @@ public enum MeetingStatus: String, Codable, Hashable, Sendable, CaseIterable {
     case recording
     case enhancing
     case completed
+    case failed
+}
+
+public enum MeetingLifecycle {
+    public static func status(for meeting: Meeting, at now: Date = Date()) -> MeetingStatus {
+        switch meeting.status {
+        case .scheduled:
+            if meeting.startsAt <= now && now <= meeting.endsAt {
+                return .inProgress
+            }
+            return .scheduled
+        case .inProgress:
+            return meeting.endsAt < now ? .scheduled : .inProgress
+        case .recording, .enhancing, .completed, .failed:
+            return meeting.status
+        }
+    }
+
+    public static func initialStatus(startsAt: Date, endsAt: Date, at now: Date = Date()) -> MeetingStatus {
+        if startsAt <= now && now <= endsAt {
+            return .inProgress
+        }
+        return .scheduled
+    }
+}
+
+public extension Meeting {
+    func advancedLifecycle(at now: Date = Date()) -> Meeting {
+        var meeting = self
+        meeting.status = MeetingLifecycle.status(for: self, at: now)
+        return meeting
+    }
 }

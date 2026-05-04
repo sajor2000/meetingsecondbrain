@@ -14,7 +14,8 @@ final class RecordingBannerPanelController: ObservableObject {
         onRecord: @escaping () -> Void = {},
         onPause: @escaping () -> Void = {},
         onResume: @escaping () -> Void = {},
-        onStop: @escaping () -> Void = {}
+        onStop: @escaping () -> Void = {},
+        onDismiss: @escaping () -> Void = {}
     ) {
         let view = RecordingBannerView(
             state: state,
@@ -25,7 +26,10 @@ final class RecordingBannerPanelController: ObservableObject {
             onPause: onPause,
             onResume: onResume,
             onStop: onStop,
-            onDismiss: { [weak self] in self?.dismiss() }
+            onDismiss: { [weak self] in
+                onDismiss()
+                self?.dismiss()
+            }
         )
         let hostingView = NSHostingView(rootView: view)
         let size = NSSize(width: 360, height: 66)

@@ -119,7 +119,7 @@ struct RightRailView: View {
                     .hairlinePanel()
             } else {
                 ForEach(searchResults) { result in
-                    SearchResultCard(result: result, onOpenMeeting: onOpenMeeting)
+                    SearchResultCard(result: result, onShowFullMeeting: onOpenMeeting)
                 }
             }
         }

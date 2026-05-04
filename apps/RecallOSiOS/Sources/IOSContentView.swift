@@ -19,7 +19,7 @@ struct IOSContentView: View {
                         .tabItem { Label("Meetings", systemImage: "square") }
                     TasksView(tasks: store.tasks)
                         .tabItem { Label("Tasks", systemImage: "checkmark") }
-                    BrainView(results: store.searchResults, meetings: store.meetings, tasks: store.tasks) { query in
+                    BrainView(meetings: store.meetings, tasks: store.tasks, results: store.searchResults) { query in
                         Task {
                             await store.search(query)
                         }
@@ -27,7 +27,22 @@ struct IOSContentView: View {
                         .tabItem { Label("Brain", systemImage: "scope") }
                 }
             } else {
-                LoadingStateView(syncError: store.syncError)
+                VStack(spacing: AppSpacing.sm) {
+                    if let syncError = store.syncError {
+                        Image(systemName: "exclamationmark.triangle")
+                            .foregroundStyle(Color.appDanger)
+                        Text("Could not load meetings")
+                            .font(AppFont.sectionHeader)
+                        Text(syncError)
+                            .font(AppFont.secondary)
+                            .foregroundStyle(Color.appMutedText)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: 320)
+                    } else {
+                        ProgressView("Loading meetings")
+                    }
+                }
+                .padding(AppSpacing.lg)
             }
         }
         .tint(Color.appAccent)
@@ -38,28 +53,6 @@ struct IOSContentView: View {
             QuickMemoView()
                 .presentationDetents([.medium, .large])
         }
-    }
-}
-
-private struct LoadingStateView: View {
-    let syncError: String?
-
-    var body: some View {
-        VStack(spacing: AppSpacing.sm) {
-            if let syncError {
-                Image(systemName: "exclamationmark.triangle")
-                    .foregroundStyle(Color.appDanger)
-                Text("Could not load meetings")
-                    .font(AppFont.sectionHeader)
-                Text(syncError)
-                    .font(AppFont.secondary)
-                    .foregroundStyle(Color.appMutedText)
-                    .multilineTextAlignment(.center)
-            } else {
-                ProgressView("Loading meetings")
-            }
-        }
-        .padding(AppSpacing.lg)
     }
 }
 
@@ -76,7 +69,7 @@ private struct TodayView: View {
                         VStack(alignment: .leading, spacing: AppSpacing.xxs) {
                             Text("Today")
                                 .font(AppFont.pageTitle)
-                            Text("Sunday, May 3")
+                            Text(IOSMeetingDateFormat.dateString(Date()))
                                 .font(AppFont.metadata)
                                 .foregroundStyle(Color.appMutedText)
                         }
@@ -168,7 +161,7 @@ private struct MeetingsView: View {
                         VStack(alignment: .leading, spacing: AppSpacing.xs) {
                             Text(meeting.title)
                                 .font(AppFont.sectionHeader)
-                            Text("Sunday, May 3 · 45 min · \(meeting.attendees.count) attendees")
+                            Text("\(IOSMeetingDateFormat.dateString(meeting.startsAt)) · \(IOSMeetingDateFormat.durationString(startsAt: meeting.startsAt, endsAt: meeting.endsAt)) · \(meeting.attendees.count) attendees")
                                 .font(AppFont.metadata)
                                 .foregroundStyle(Color.appMutedText)
                         }
@@ -213,9 +206,9 @@ private struct TasksView: View {
 }
 
 private struct BrainView: View {
-    let results: [SearchResult]
     let meetings: [Meeting]
     let tasks: [MeetingTask]
+    let results: [SearchResult]
     let onSearch: (String) -> Void
     @State private var query = "What did Patrick say about JSL POC?"
     @State private var openedMeeting: Meeting?
@@ -269,7 +262,7 @@ private struct MeetingReadOnlyView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: AppSpacing.lg) {
-                Text("45 min · \(meeting.attendees.count) attendees")
+                Text("\(IOSMeetingDateFormat.durationString(startsAt: meeting.startsAt, endsAt: meeting.endsAt)) · \(meeting.attendees.count) attendees")
                     .font(AppFont.metadata)
                     .foregroundStyle(Color.appMutedText)
 
@@ -341,4 +334,18 @@ private struct QuickMemoView: View {
 
 #Preview {
     IOSContentView(store: RecallOSAppStore.fixture())
+}
+
+private enum IOSMeetingDateFormat {
+    static func dateString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
+    }
+
+    static func durationString(startsAt: Date, endsAt: Date) -> String {
+        let minutes = max(1, Int(endsAt.timeIntervalSince(startsAt) / 60))
+        return "\(minutes) min"
+    }
 }

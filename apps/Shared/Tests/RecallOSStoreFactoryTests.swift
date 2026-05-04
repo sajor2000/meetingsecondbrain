@@ -3,8 +3,8 @@ import RecallOSCore
 
 @MainActor
 final class RecallOSStoreFactoryTests: XCTestCase {
-    func testDefaultFactoryUsesFixtureStore() async {
-        let store = RecallOSStoreFactory.makeAppStore(environment: [:])
+    func testFactoryCanUseFixtureStoreWithoutLiveConvex() async {
+        let store = RecallOSStoreFactory.makeAppStore(environment: [:], usePersistentStore: false)
 
         await store.load()
 

@@ -1,3 +1,4 @@
+import Foundation
 import RecallOSCore
 import SwiftUI
 
@@ -60,15 +61,42 @@ struct RecallOSMacApp: App {
 
     @MainActor
     private func showBannerFromCommand() {
-        let title = store.selectedMeeting?.title ?? "Ad-hoc meeting"
         bannerController.show(
             state: store.recordingSession?.bannerState ?? .preMeeting,
-            title: title,
+            title: recordingMeetingTitle(),
             subtitle: store.workflowMessage ?? "Mock capture · ready for Parakeet",
+            elapsed: elapsedTitle(store.recordingSession),
             onRecord: startRecordingFromCommand,
             onPause: pauseRecordingFromCommand,
             onResume: resumeRecordingFromCommand,
             onStop: stopRecordingFromCommand
         )
     }
+
+    private func recordingMeetingTitle() -> String {
+        if let recordingMeetingID = store.recordingSession?.meetingID,
+           let recordingMeeting = store.meetings.first(where: { $0.id == recordingMeetingID }) {
+            return recordingMeeting.title
+        }
+        return store.selectedMeeting?.title ?? "Ad-hoc meeting"
+    }
+
+    private func elapsedTitle(_ session: RecordingSession?) -> String {
+        guard let session else { return "00:00" }
+        let elapsed: TimeInterval
+        if let startedAt = session.startedAt {
+            let end = session.pausedAt ?? session.stoppedAt ?? Date()
+            elapsed = max(0, end.timeIntervalSince(startedAt))
+        } else {
+            elapsed = session.elapsed
+        }
+        return Self.elapsedFormatter.string(from: elapsed) ?? "00:00"
+    }
+
+    private static let elapsedFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute, .second]
+        formatter.zeroFormattingBehavior = .pad
+        return formatter
+    }()
 }

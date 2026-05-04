@@ -5,20 +5,46 @@ enum RecallOSStoreFactory {
     @MainActor
     static func makeAppStore(
         environment: [String: String] = ProcessInfo.processInfo.environment,
-        supportsLiveUse: Bool = ConvexRecallOSRepository.supportsLiveUse
+        supportsLiveUse: Bool = ConvexRecallOSRepository.supportsLiveUse,
+        usePersistentStore: Bool = true
     ) -> RecallOSAppStore {
         let liveConvexEnabled = environment["RECALLOS_USE_LIVE_CONVEX"] == "1"
         if liveConvexEnabled {
             guard supportsLiveUse else {
                 return unavailableStore("Live Convex was requested, but the Swift Convex adapter is not implemented yet.")
             }
-            guard ConvexRecallOSRepository.fromEnvironment(environment) != nil else {
+            guard let repository = ConvexRecallOSRepository.fromEnvironment(environment) else {
                 return unavailableStore("Live Convex was requested, but CONVEX_URL is not configured.")
             }
-            return unavailableStore("Live Convex was requested, but the Swift Convex adapter is not implemented yet.")
+            return RecallOSAppStore(repository: repository, calendarProvider: calendarProvider())
         }
 
-        return RecallOSAppStore.fixture()
+        guard usePersistentStore else {
+            return RecallOSAppStore.fixture()
+        }
+
+        do {
+            return RecallOSAppStore(
+                repository: try SwiftDataRecallOSRepository.persistent(),
+                calendarProvider: calendarProvider()
+            )
+        } catch {
+            // Convex is kept as a future sync boundary and remains ignored until
+            // live reads/writes exist. If local persistence cannot open, keep the
+            // app usable with fixtures and surface the local-store failure.
+            return RecallOSAppStore.fixture(
+                syncError: error.localizedDescription,
+                workflowMessage: "Using fixture data because the local store could not open."
+            )
+        }
+    }
+
+    private static func calendarProvider() -> any CalendarEventProvider {
+        #if os(macOS)
+        EventKitCalendarEventProvider()
+        #else
+        MockCalendarEventProvider()
+        #endif
     }
 
     @MainActor

@@ -8,9 +8,10 @@ struct SidebarView: View {
     let openTaskCount: Int
     let selectedNavigation: MacNavigation
     let selectedMeetingID: UUID
+    let recordingMeetingID: UUID?
     let onSelectMeeting: (UUID) -> Void
     let onSelectNavigation: (MacNavigation) -> Void
-    let onCreateMeetingFromEvent: (String, Date) -> Void
+    let onCreateMeetingFromEvent: (CalendarEvent) -> Void
     let onCreateMeeting: () -> Void
 
     var body: some View {
@@ -33,13 +34,13 @@ struct SidebarView: View {
                         title: event.title,
                         subtitle: event.location ?? "Calendar",
                         icon: "circle",
-                        badge: event.attendees.isEmpty ? nil : "\(event.attendees.count)",
+                        badge: matchingMeeting?.id == recordingMeetingID ? "now" : event.attendees.isEmpty ? nil : "\(event.attendees.count)",
                         selected: matchingMeeting?.id == selectedMeetingID && selectedNavigation == .meeting
                     ) {
                         if let matchingMeeting {
                             onSelectMeeting(matchingMeeting.id)
                         } else {
-                            onCreateMeetingFromEvent(event.title, event.startsAt)
+                            onCreateMeetingFromEvent(event)
                         }
                     }
                 }
