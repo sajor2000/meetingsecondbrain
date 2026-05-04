@@ -12,6 +12,21 @@ final class RecallOSStoreFactoryTests: XCTestCase {
         XCTAssertNil(store.syncError)
     }
 
+    func testPersistentStoreFailureFallsBackToFixtureStoreWithVisibleError() async {
+        let store = RecallOSStoreFactory.makeAppStore(
+            environment: [:],
+            persistentRepositoryFactory: {
+                throw FactoryTestError(message: "Store unavailable")
+            }
+        )
+
+        await store.load()
+
+        XCTAssertEqual(store.selectedMeeting?.title, SampleData.meeting.title)
+        XCTAssertEqual(store.syncError, "Store unavailable")
+        XCTAssertEqual(store.workflowMessage, "Using fixture data because the local store could not open.")
+    }
+
     func testLiveConvexOptInSurfacesUnsupportedAdapterError() async {
         let store = RecallOSStoreFactory.makeAppStore(
             environment: [
@@ -59,5 +74,13 @@ final class RecallOSStoreFactoryTests: XCTestCase {
 
         XCTAssertEqual(repository?.deploymentURL, "https://example.convex.cloud")
         XCTAssertNil(ConvexRecallOSRepository.fromEnvironment([:]))
+    }
+}
+
+private struct FactoryTestError: LocalizedError {
+    let message: String
+
+    var errorDescription: String? {
+        message
     }
 }

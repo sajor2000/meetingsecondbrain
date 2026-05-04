@@ -22,6 +22,7 @@ public final class RecallOSAppStore: ObservableObject {
     private let calendarProvider: any CalendarEventProvider
     private let secondBrainSearchProvider: any SecondBrainSearchProvider
     private let defaultSearchQuery: String
+    private let preservesInitialSyncError: Bool
     private var transcriptTask: Swift.Task<Void, Never>?
 
     public init(
@@ -40,7 +41,8 @@ public final class RecallOSAppStore: ObservableObject {
         upcomingEvents: [CalendarEvent] = [],
         defaultSearchQuery: String = "",
         syncError: String? = nil,
-        workflowMessage: String? = nil
+        workflowMessage: String? = nil,
+        preservesInitialSyncError: Bool = false
     ) {
         self.repository = repository
         self.permissionProvider = permissionProvider
@@ -56,6 +58,7 @@ public final class RecallOSAppStore: ObservableObject {
         self.searchResults = searchResults
         self.upcomingEvents = upcomingEvents
         self.defaultSearchQuery = defaultSearchQuery
+        self.preservesInitialSyncError = preservesInitialSyncError
         self.syncError = syncError
         self.isSyncing = false
         self.workflowMessage = workflowMessage
@@ -74,7 +77,8 @@ public final class RecallOSAppStore: ObservableObject {
             searchResults: SampleData.searchResults,
             upcomingEvents: SampleData.calendarEvents,
             syncError: syncError,
-            workflowMessage: workflowMessage
+            workflowMessage: workflowMessage,
+            preservesInitialSyncError: syncError != nil
         )
     }
 
@@ -85,6 +89,7 @@ public final class RecallOSAppStore: ObservableObject {
     public func load() async {
         isSyncing = true
         defer { isSyncing = false }
+        let initialSyncError = syncError
 
         do {
             meetings = try await repository.listMeetings()
@@ -95,7 +100,11 @@ public final class RecallOSAppStore: ObservableObject {
             await refreshMeetingLifecycle()
             await refreshUpcomingEvents(limit: 5)
             searchResults = try await secondBrainSearchProvider.search(query: defaultSearchQuery, meetings: meetings, tasks: tasks)
-            syncError = nil
+            if preservesInitialSyncError {
+                syncError = initialSyncError
+            } else {
+                syncError = nil
+            }
         } catch {
             syncError = error.localizedDescription
         }

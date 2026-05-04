@@ -6,7 +6,10 @@ enum RecallOSStoreFactory {
     static func makeAppStore(
         environment: [String: String] = ProcessInfo.processInfo.environment,
         supportsLiveUse: Bool = ConvexRecallOSRepository.supportsLiveUse,
-        usePersistentStore: Bool = true
+        usePersistentStore: Bool = true,
+        persistentRepositoryFactory: () throws -> any RecallOSRepository = {
+            try SwiftDataRecallOSRepository.persistent()
+        }
     ) -> RecallOSAppStore {
         let liveConvexEnabled = environment["RECALLOS_USE_LIVE_CONVEX"] == "1"
         if liveConvexEnabled {
@@ -25,7 +28,7 @@ enum RecallOSStoreFactory {
 
         do {
             return RecallOSAppStore(
-                repository: try SwiftDataRecallOSRepository.persistent(),
+                repository: try persistentRepositoryFactory(),
                 calendarProvider: calendarProvider()
             )
         } catch {
