@@ -2,11 +2,11 @@ import RecallOSCore
 import SwiftUI
 
 struct IOSContentView: View {
-    @StateObject private var store: RecallOSAppStore
+    @ObservedObject private var store: RecallOSAppStore
     @State private var showingQuickMemo = false
 
     init(store: RecallOSAppStore) {
-        _store = StateObject(wrappedValue: store)
+        self.store = store
     }
 
     var body: some View {

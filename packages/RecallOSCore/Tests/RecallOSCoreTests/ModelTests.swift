@@ -92,6 +92,39 @@ final class ModelTests: XCTestCase {
         XCTAssertFalse(sections.contains { $0.title == "Done" })
     }
 
+    func testTaskListTodayFilterOnlyShowsCompletedTasksDoneToday() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+        let doneToday = MeetingTask(title: "Done today", status: .done, completedAt: now)
+        let doneWithoutTimestamp = MeetingTask(title: "Done without timestamp", status: .done)
+        let doneYesterday = MeetingTask(title: "Done yesterday", status: .done, completedAt: yesterday)
+
+        let doneTodaySection = TaskListFilter.today.sections(
+            for: [doneToday, doneWithoutTimestamp, doneYesterday],
+            now: now
+        ).first { $0.title == "Done today" }
+
+        XCTAssertEqual(doneTodaySection?.tasks, [doneToday])
+    }
+
+    func testTaskListTodayFilterDoesNotTreatPriorityAsOverdue() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: now)!
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+        let highNoDue = MeetingTask(title: "High priority no due date", status: .open, priority: .high)
+        let highFutureDue = MeetingTask(title: "High priority future due", status: .open, priority: .high, dueAt: tomorrow)
+        let highToday = MeetingTask(title: "High priority today", status: .today, priority: .high)
+        let overdue = MeetingTask(title: "Actually overdue", status: .open, dueAt: yesterday)
+
+        let sections = TaskListFilter.today.sections(
+            for: [highNoDue, highFutureDue, highToday, overdue],
+            now: now
+        )
+
+        XCTAssertEqual(sections.first { $0.title == "Overdue" }?.tasks, [overdue])
+        XCTAssertEqual(sections.first { $0.title == "Today" }?.tasks, [highToday])
+    }
+
     func testTaskStoreMoveUpdatesStatusAndCompletionDate() {
         let task = MeetingTask(title: "Prepare recap", status: .open)
         let completedAt = Date(timeIntervalSince1970: 42)
@@ -228,6 +261,68 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(store.selectedMeeting?.id, otherMeetingID)
         XCTAssertTrue(store.tasks.isEmpty)
         XCTAssertNil(store.syncError)
+    }
+
+    @MainActor
+    func testStartRecordingIsNoOpWhileRecordingIsActive() async throws {
+        let meeting = SampleData.meeting
+        let audioProvider = RecordingSpyAudioProvider()
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            audioProvider: audioProvider,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000),
+            meetings: [meeting],
+            selectedMeeting: meeting,
+            tasks: []
+        )
+
+        await store.startRecording()
+        try await Task.sleep(nanoseconds: 20_000_000)
+        let streamedSegmentCount = store.selectedMeeting?.transcriptSegments.count
+        await store.startRecording()
+
+        let audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.startCount, 1)
+        XCTAssertEqual(store.recordingSession?.state, .recording)
+        XCTAssertEqual(store.selectedMeeting?.transcriptSegments.count, streamedSegmentCount)
+        XCTAssertEqual(store.workflowMessage, "Recording already in progress")
+    }
+
+    @MainActor
+    func testStopAndEnhanceUsesTranscriptSegmentsYieldedDuringAudioStop() async throws {
+        let start = Date(timeIntervalSince1970: 1_778_270_400)
+        let meeting = Meeting(
+            title: "Final transcript meeting",
+            startsAt: start,
+            endsAt: start.addingTimeInterval(45 * 60),
+            attendees: [SampleData.me]
+        )
+        let finalSegment = TranscriptSegment(
+            meetingID: meeting.id,
+            speaker: SampleData.me,
+            startTime: 321,
+            endTime: 328,
+            text: "Final buffered transcript segment",
+            confidence: 0.91
+        )
+        let captureProvider = FinalSegmentOnStopCaptureProvider(finalSegment: finalSegment)
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            audioProvider: captureProvider,
+            transcriptionProvider: captureProvider,
+            meetings: [meeting],
+            selectedMeeting: meeting,
+            tasks: []
+        )
+
+        await store.startRecording()
+        await captureProvider.waitUntilStreamAttached()
+        await store.stopAndEnhanceRecording()
+
+        let completedMeeting = try XCTUnwrap(store.selectedMeeting)
+        XCTAssertEqual(completedMeeting.status, .completed)
+        XCTAssertTrue(completedMeeting.transcriptSegments.contains(finalSegment))
+        XCTAssertEqual(store.tasks.first?.sourceTimestamp, finalSegment.startTime)
     }
 
     @MainActor
@@ -369,6 +464,39 @@ private actor RecordingSpyAudioProvider: AudioCaptureProvider {
 
     func state() -> (startCount: Int, stopCount: Int) {
         (startCount, stopCount)
+    }
+}
+
+private actor FinalSegmentOnStopCaptureProvider: AudioCaptureProvider, TranscriptionProvider {
+    private let finalSegment: TranscriptSegment
+    private var continuation: AsyncThrowingStream<TranscriptSegment, Error>.Continuation?
+
+    init(finalSegment: TranscriptSegment) {
+        self.finalSegment = finalSegment
+    }
+
+    func start(meeting: Meeting) async throws {}
+
+    func pause() async throws {}
+
+    func resume() async throws {}
+
+    func stop() async throws {
+        continuation?.yield(finalSegment)
+        continuation?.finish()
+        await Task.yield()
+    }
+
+    func transcriptStream(for meeting: Meeting) async throws -> AsyncThrowingStream<TranscriptSegment, Error> {
+        AsyncThrowingStream { continuation in
+            self.continuation = continuation
+        }
+    }
+
+    func waitUntilStreamAttached() async {
+        while continuation == nil {
+            await Task.yield()
+        }
     }
 }
 

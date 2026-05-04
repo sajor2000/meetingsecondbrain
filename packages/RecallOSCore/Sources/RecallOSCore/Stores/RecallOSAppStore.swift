@@ -213,6 +213,12 @@ public final class RecallOSAppStore: ObservableObject {
     }
 
     public func startRecording() async {
+        guard recordingSession?.isActive != true else {
+            workflowMessage = "Recording already in progress"
+            syncError = nil
+            return
+        }
+
         guard var meeting = selectedMeeting else {
             syncError = RecordingWorkflowError.noSelectedMeeting.localizedDescription
             return
@@ -285,13 +291,16 @@ public final class RecallOSAppStore: ObservableObject {
         guard var session = recordingSession, var meeting = meeting(withID: session.meetingID) else { return }
 
         do {
-            transcriptTask?.cancel()
-            transcriptTask = nil
             session.state = .finalizing
             recordingSession = session
             workflowMessage = "Finalizing audio"
 
             try await audioProvider.stop()
+            await Swift.Task.yield()
+            meeting = self.meeting(withID: session.meetingID) ?? meeting
+            transcriptTask?.cancel()
+            transcriptTask = nil
+
             session.state = .enhancing
             session.stoppedAt = Date()
             recordingSession = session
