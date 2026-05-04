@@ -65,12 +65,8 @@ struct MacContentView: View {
                     session: store.recordingSession,
                     workflowMessage: store.workflowMessage,
                     onStart: startRecording,
-                    onPause: {
-                        Swift.Task { await store.pauseRecording() }
-                    },
-                    onResume: {
-                        Swift.Task { await store.resumeRecording() }
-                    },
+                    onPause: pauseRecording,
+                    onResume: resumeRecording,
                     onStop: stopAndEnhance
                 )
             } else {
@@ -175,6 +171,20 @@ struct MacContentView: View {
         }
     }
 
+    private func pauseRecording() {
+        Swift.Task {
+            await store.pauseRecording()
+            showBanner(state: store.recordingSession?.bannerState ?? .adHoc)
+        }
+    }
+
+    private func resumeRecording() {
+        Swift.Task {
+            await store.resumeRecording()
+            showBanner(state: store.recordingSession?.bannerState ?? .adHoc)
+        }
+    }
+
     private func showBanner(state: RecordingBannerState) {
         let meeting = store.selectedMeeting
         bannerController.show(
@@ -185,18 +195,8 @@ struct MacContentView: View {
             onRecord: {
                 startRecording()
             },
-            onPause: {
-                Swift.Task {
-                    await store.pauseRecording()
-                    showBanner(state: store.recordingSession?.bannerState ?? .adHoc)
-                }
-            },
-            onResume: {
-                Swift.Task {
-                    await store.resumeRecording()
-                    showBanner(state: store.recordingSession?.bannerState ?? .adHoc)
-                }
-            },
+            onPause: pauseRecording,
+            onResume: resumeRecording,
             onStop: stopAndEnhance
         )
     }
