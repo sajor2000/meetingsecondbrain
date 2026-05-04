@@ -4,7 +4,10 @@ enum RecallOSStoreFactory {
     @MainActor
     static func makeAppStore() -> RecallOSAppStore {
         do {
-            return RecallOSAppStore(repository: try SwiftDataRecallOSRepository.persistent())
+            return RecallOSAppStore(
+                repository: try SwiftDataRecallOSRepository.persistent(),
+                calendarProvider: calendarProvider()
+            )
         } catch {
             // Convex is kept as a future sync boundary and remains ignored until
             // live reads/writes exist. If local persistence cannot open, keep the
@@ -14,5 +17,13 @@ enum RecallOSStoreFactory {
                 workflowMessage: "Using fixture data because the local store could not open."
             )
         }
+    }
+
+    private static func calendarProvider() -> any CalendarEventProvider {
+        #if os(macOS)
+        EventKitCalendarEventProvider()
+        #else
+        MockCalendarEventProvider()
+        #endif
     }
 }
