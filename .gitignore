@@ -1,0 +1,10 @@
+.DS_Store
+.build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+convex/_generated/
+node_modules/
+open-design/
+.convex.failed-*/

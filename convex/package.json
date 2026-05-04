@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "dev": "convex dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "convex": "^1.19.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
