@@ -25,7 +25,7 @@ RecallOS is a quiet, document-first Apple workspace: white and warm-gray surface
 - Metadata: 12 regular
 - Tiny label: 11 medium
 
-Implemented in `Packages/RecallOSCore/Sources/RecallOSCore/Design`.
+Implemented in `packages/RecallOSCore/Sources/RecallOSCore/Design`.
 
 ## macOS Layout
 

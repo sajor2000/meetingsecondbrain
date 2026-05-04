@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
-    "lib": ["ES2021", "DOM"],
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
     "noEmit": true,
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
-    "skipLibCheck": true
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["./**/*"],
-  "exclude": ["./_generated"]
+  "include": ["./**/*.ts"]
 }

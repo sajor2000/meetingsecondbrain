@@ -13,8 +13,15 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as meetings from "../meetings.js";
+import type * as search from "../search.js";
+import type * as tasks from "../tasks.js";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  meetings: typeof meetings;
+  search: typeof search;
+  tasks: typeof tasks;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.

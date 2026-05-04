@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "convex dev",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "convex": "^1.19.2"
+  },
+  "devDependencies": {
+    "convex-test": "^0.0.51",
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.5"
+  }
+}

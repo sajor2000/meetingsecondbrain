@@ -1,23 +1,20 @@
-# Personal Meeting, Task, and Second Brain App
+# RecallOS
 
-Native macOS and iOS app for meeting capture, notes, tasks, screenshot OCR, audio retention, and a Cognee powered second brain.
+RecallOS is a native Apple-platform meeting second brain inspired by Granola, Things 3, and Notion. It records meetings, supports live and enhanced notes, extracts action items, and connects meetings, transcript evidence, people, topics, decisions, and tasks.
 
-The meeting capture model is bot-free. The app does not join meetings as a participant. On macOS, it records local system audio from the meeting client plus local microphone audio from the user.
+## Design Source
 
-## Status
+The high-fidelity HTML artifact is the visual and UX reference, not implementation code to port:
 
-Phase 1 foundation is complete. Phase 2 core capture proof is in progress, with the macOS recording scaffold implemented and the real meeting capture gate still pending.
+- `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c-4588-adcb-0afebf87b658/index.html`
+- `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c-4588-adcb-0afebf87b658/recallos-meeting-second-brain.html`
 
-Completed foundation items:
+Existing artifact screenshots:
 
-- `SPEC.md` and `DECISIONS.md` exist at the repository root.
-- Convex is initialized with the reviewed schema and generated types.
-- Core Swift package scaffold exists at `packages/Core`.
-- macOS project scaffold exists at `apps/macOS/MeetingApp.xcodeproj`.
-- iOS project scaffold exists at `apps/iOS/MeetingAppMobile.xcodeproj`.
-- Git remote is set to `https://github.com/sajor2000/meetingsecondbrain.git`.
+- `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c-4588-adcb-0afebf87b658/desktop.png`
+- `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c-4588-adcb-0afebf87b658/mobile.png`
 
-Phase 2 capture proof items now present:
+## Repository
 
 - macOS recording session UI scaffold with local capture proof controls.
 - ScreenCaptureKit system audio capture service.
@@ -28,65 +25,81 @@ Phase 2 capture proof items now present:
 - Manual real meeting test plan at `docs/manual-test-plan.md`.
 - Capture hardening learning at `docs/solutions/logic-errors/stabilize-macos-capture-recorder-cleanup-and-activity-state-2026-05-03.md`.
 
-Phase 2 transcription proof items now present:
+Project instruction source names this GitHub repository:
 
-- Core transcript models and transcription provider protocol.
-- FluidAudio Parakeet dependency pinned to version `0.14.3` in a macOS-only package product.
-- Offline-safe Parakeet batch transcription wrapper with token timing mapped to transcript segments.
-- macOS transcription runner that writes transcript JSON and markdown artifacts.
-- Automated tests for transcript modeling, model selection, missing audio files, and transcript artifact writing.
+`https://github.com/sajor2000/meetingsecondbrain`
 
-Real meeting capture, real 30 minute transcription, and Parakeet diarization gates are still pending. Calendar implementation, LLM enhancement, and Cognee code have not been started.
+This local folder is scaffolded as a buildable Apple project. Add the remote when preparing to publish:
 
-## Setup
-
-Install JavaScript dependencies:
-
-```bash
-npm install
+```sh
+git init
+git remote add origin https://github.com/sajor2000/meetingsecondbrain.git
 ```
 
-Install XcodeGen if it is not already installed:
+## Structure
 
-```bash
-brew install xcodegen
+- `project.yml` - XcodeGen project definition for macOS and iOS apps.
+- `packages/RecallOSCore` - shared Swift package for tokens, models, fixtures, and reusable SwiftUI components.
+- `apps/RecallOSMac` - macOS SwiftUI app shell.
+- `apps/RecallOSiOS` - iOS SwiftUI companion app shell.
+- `convex` - Convex schema and backend stubs.
+- `SPEC.md` - product requirements and implementation evidence.
+- `UI_UX_DESIGN.md` - native design translation from the artifact.
+- `DECISIONS.md` - architectural and product decisions.
+
+## Runtime Mode
+
+The current native apps run in demo fixture mode by default while the Swift Convex adapter is still a boundary artifact. Setting `RECALLOS_USE_LIVE_CONVEX=1` intentionally shows a visible configuration error instead of falling back to fixtures, so live-mode mistakes are not hidden.
+
+Live Convex remains Sprint 1/Sprint 2 work: implement the adapter, then flip `ConvexRecallOSRepository.supportsLiveUse` with repository and mapping tests.
+
+## Build
+
+Generate the Xcode project:
+
+```sh
+xcodegen generate
 ```
 
-Regenerate Xcode projects:
+Run shared package tests:
 
-```bash
-npm run xcodegen:macos
-npm run xcodegen:ios
+```sh
+swift test --package-path packages/RecallOSCore
 ```
 
-Run the strict Phase 1 approval gate:
+Build macOS:
 
-```bash
-npm run phase1:check
+```sh
+xcodebuild -project RecallOS.xcodeproj -scheme RecallOSMac -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build
 ```
 
-Running Xcode scheme tests requires a full Xcode developer directory:
+Build iOS:
 
-```bash
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-npm run phase1:check
+```sh
+xcodebuild -project RecallOS.xcodeproj -scheme RecallOSiOS -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
 ```
 
-If the iOS simulator platform is missing, install it with Xcode Settings > Components or:
+## Current Status
 
-```bash
-xcodebuild -downloadPlatform iOS
-```
+Implemented in this pass:
 
-The iOS test runner defaults to `platform=iOS Simulator,name=iPhone 17`. Override it when needed:
+- Shared Core design tokens.
+- Core models for meetings, transcript segments, meeting tasks, screenshots, calendar events, people, topics, and decisions.
+- Reusable hybrid note, timestamp, recording banner, task row, search card, and task board components.
+- Repository protocols, fixture repositories, sync identifiers, and shared app stores for the first data boundary.
+- macOS three-pane shell with notes editor, right rail tabs, grouped tasks, store-backed board mode, recording status bar, and floating `NSPanel` banner.
+- iOS companion shell with store-backed Today, Meetings, Tasks, Brain, quick memo, and read-only meeting views.
+- Convex schema and mutation/query stubs.
+- Swift package unit tests.
 
-```bash
-IOS_TEST_DESTINATION='platform=iOS Simulator,name=iPhone 17' npm run xcode:test:ios
-```
+Not production-complete yet:
+
+- Live Convex Swift adapter/subscriptions/mutations, real audio capture, screen capture, transcription, diarization, AI enhancement, background sync, and Convex deployment.
+- Screenshot preview generation for the native apps.
 
 When only Command Line Tools are selected, use the local sanity check. This is not the approval gate:
 
-```bash
+```sh
 npm run phase1:check:local
 ```
 
@@ -96,33 +109,22 @@ See `SPEC.md` for the locked architecture, stack decisions, build order, and per
 
 ## Development
 
-Workspaces:
-
-- `apps/macOS`
-- `apps/iOS`
-- `packages/Core`
-- `Apps/RecallOSMac`
-- `Apps/RecallOSiOS`
-- `Packages/RecallOSCore`
-- `convex`
-- `mac-studio`
-
 Open the canonical workspace in Xcode:
 
-```bash
+```sh
 open MeetingSecondBrain.xcworkspace
 ```
 
 RecallOS native prototype checks:
 
-```bash
-npm run swift:test:recallos-core
-npm run xcode:build:recallos
+```sh
+npm run swift:test:core
+npm run xcode:build
 ```
 
 Convex local development:
 
-```bash
+```sh
 npm run convex:dev
 ```
 

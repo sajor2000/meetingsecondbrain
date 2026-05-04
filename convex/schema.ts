@@ -59,6 +59,26 @@ const vocabularyCategory = v.union(
   v.literal("program"),
 );
 
+const recallOSUserFields = {
+  userId: v.string(),
+};
+
+const recallOSTaskStatus = v.union(
+  v.literal("open"),
+  v.literal("today"),
+  v.literal("waiting"),
+  v.literal("done"),
+);
+
+const recallOSMeetingStatus = v.union(
+  v.literal("scheduled"),
+  v.literal("inProgress"),
+  v.literal("recording"),
+  v.literal("enhancing"),
+  v.literal("completed"),
+  v.literal("failed"),
+);
+
 export default defineSchema({
   meetings: defineTable({
     title: v.string(),
@@ -243,4 +263,151 @@ export default defineSchema({
     key: v.string(),
     value: v.any(),
   }).index("by_key", ["key"]),
+
+  recallOSMeetings: defineTable({
+    ...recallOSUserFields,
+    localId: v.string(),
+    title: v.string(),
+    startsAt: v.number(),
+    endsAt: v.number(),
+    status: recallOSMeetingStatus,
+    folderId: v.optional(v.id("recallOSFolders")),
+    calendarEventId: v.optional(v.string()),
+    summary: v.optional(v.string()),
+    rawNotes: v.optional(v.string()),
+    enhancedNotes: v.optional(v.string()),
+    noteBlocks: v.optional(v.any()),
+    attendeeIds: v.array(v.id("recallOSPeople")),
+    topicIds: v.array(v.id("recallOSTopics")),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user_start", ["userId", "startsAt"])
+    .index("by_user_local_id", ["userId", "localId"]),
+
+  recallOSTranscriptSegments: defineTable({
+    ...recallOSUserFields,
+    localId: v.string(),
+    meetingId: v.id("recallOSMeetings"),
+    speakerId: v.optional(v.id("recallOSPeople")),
+    startTime: v.number(),
+    endTime: v.number(),
+    text: v.string(),
+    confidence: v.number(),
+  }).index("by_meeting_time", ["meetingId", "startTime"]),
+
+  recallOSTasks: defineTable({
+    ...recallOSUserFields,
+    localId: v.string(),
+    title: v.string(),
+    notes: v.optional(v.string()),
+    status: recallOSTaskStatus,
+    priority: taskPriority,
+    ownerId: v.optional(v.id("recallOSPeople")),
+    dueAt: v.optional(v.number()),
+    completedAt: v.optional(v.number()),
+    sourceMeetingId: v.optional(v.id("recallOSMeetings")),
+    sourceMeetingLocalId: v.optional(v.string()),
+    sourceTimestamp: v.optional(v.number()),
+    extractionConfidence: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user_status", ["userId", "status"])
+    .index("by_user_meeting", ["userId", "sourceMeetingId"])
+    .index("by_user_meeting_local_id", ["userId", "sourceMeetingLocalId"])
+    .index("by_user_local_id", ["userId", "localId"]),
+
+  recallOSScreenshots: defineTable({
+    ...recallOSUserFields,
+    localId: v.string(),
+    meetingId: v.id("recallOSMeetings"),
+    capturedAt: v.number(),
+    storageId: v.id("_storage"),
+    caption: v.optional(v.string()),
+  }).index("by_meeting", ["meetingId"]),
+
+  recallOSDocuments: defineTable({
+    ...recallOSUserFields,
+    meetingId: v.optional(v.id("recallOSMeetings")),
+    title: v.string(),
+    storageId: v.optional(v.id("_storage")),
+    content: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  recallOSTemplates: defineTable({
+    ...recallOSUserFields,
+    name: v.string(),
+    body: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  recallOSRecipes: defineTable({
+    ...recallOSUserFields,
+    name: v.string(),
+    prompt: v.string(),
+    isEnabled: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  recallOSCalendarSources: defineTable({
+    ...recallOSUserFields,
+    provider: v.union(v.literal("eventKit"), v.literal("ics"), v.literal("google"), v.literal("office365")),
+    externalId: v.string(),
+    displayName: v.string(),
+    isEnabled: v.boolean(),
+    lastSyncedAt: v.optional(v.number()),
+  }).index("by_user", ["userId"]),
+
+  recallOSFolders: defineTable({
+    ...recallOSUserFields,
+    name: v.string(),
+    sortOrder: v.number(),
+  }).index("by_user", ["userId"]),
+
+  recallOSVocabulary: defineTable({
+    ...recallOSUserFields,
+    phrase: v.string(),
+    pronunciationHint: v.optional(v.string()),
+    notes: v.optional(v.string()),
+  }).index("by_user_phrase", ["userId", "phrase"]),
+
+  recallOSSettings: defineTable({
+    ...recallOSUserFields,
+    key: v.string(),
+    value: v.any(),
+    updatedAt: v.number(),
+  }).index("by_user_key", ["userId", "key"]),
+
+  recallOSPeople: defineTable({
+    ...recallOSUserFields,
+    localId: v.string(),
+    displayName: v.string(),
+    email: v.optional(v.string()),
+    role: v.optional(v.string()),
+  })
+    .index("by_user_name", ["userId", "displayName"])
+    .index("by_user_local_id", ["userId", "localId"]),
+
+  recallOSTopics: defineTable({
+    ...recallOSUserFields,
+    localId: v.string(),
+    name: v.string(),
+    description: v.optional(v.string()),
+  })
+    .index("by_user_name", ["userId", "name"])
+    .index("by_user_local_id", ["userId", "localId"]),
+
+  recallOSDecisions: defineTable({
+    ...recallOSUserFields,
+    localId: v.string(),
+    meetingId: v.id("recallOSMeetings"),
+    title: v.string(),
+    detail: v.string(),
+    sourceTimestamp: v.optional(v.number()),
+    createdAt: v.number(),
+  }).index("by_meeting", ["meetingId"]),
 });

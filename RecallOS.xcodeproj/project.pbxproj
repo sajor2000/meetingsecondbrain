@@ -7,47 +7,93 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0279EA4E79DEF7E70A434800 /* RecallOSStoreFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683708A90D7C17A2DEAF139F /* RecallOSStoreFactoryTests.swift */; };
 		02A9CFDFA45E1F9A1BC0F3D9 /* RecallOSiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A13E3B8D08079C3540DFE0A /* RecallOSiOSApp.swift */; };
 		041F7B382CF994A7070F0821 /* RecallOSPersistenceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A54413059836AD2D907CC2 /* RecallOSPersistenceMapper.swift */; };
+		04A65DBAF7BFF6C40F57FED5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54808FB62F806CDAD3137C4F /* Assets.xcassets */; };
+		0528BA414C2F719DDDF3EAA8 /* EventKitCalendarEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */; };
 		0810FCD6FDD9C6950A70E167 /* SwiftDataRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */; };
 		15AE1E83E12DE49CCAEDF0FE /* RecallOSPersistentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E90D362DEBD483D3BFF135 /* RecallOSPersistentModels.swift */; };
 		25EA8B9CC185FA34D22BF014 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 533C35D786E1BFEF3BD60F6D /* RecallOSCore */; };
 		26A7EBF2585D29D9F5EFE572 /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */; };
 		27530E75D34600D56BEBE835 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7DDD304382FCC3A23E9D95B5 /* RecallOSCore */; };
+		2BC98AAD6A62E76423E1533B /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */; };
+		2C930F6F0B45488BD3B19F24 /* MacRightRailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7EAAE88DCA68A5E3DA0774 /* MacRightRailView.swift */; };
+		33F895CB3B69A5C42CC6B1DA /* AVFoundationRecordingPermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */; };
+		380DF7F3FF6B126AFF836F0C /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
 		3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD16BDC533757B7B74F015BF /* MacContentView.swift */; };
 		4C99EAB7A9E663714367889D /* EventKitCalendarEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */; };
 		4D5F8725C5E53BA0043B3095 /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
+		545DE430F39954A06BFA6FAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7949ADA899206E8DA404EDEE /* Assets.xcassets */; };
 		554991C995D784AB5831282C /* RecallOSPersistentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E90D362DEBD483D3BFF135 /* RecallOSPersistentModels.swift */; };
+		63BFDEF783FD86C7467A97E5 /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
 		65AC7BF14098D67050770F2E /* RecordingBannerPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ADBF1B498E3784E6D16E5 /* RecordingBannerPanelController.swift */; };
 		741810E9D00346ED848781EC /* ConvexMobile in Frameworks */ = {isa = PBXBuildFile; productRef = F07E83D611C5AC2793296889 /* ConvexMobile */; };
+		785DEB86BC9CBC50C481C7E4 /* RecallOSPersistentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E90D362DEBD483D3BFF135 /* RecallOSPersistentModels.swift */; };
+		7CA31553AF6BAD87BC03DBB3 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E669F72C16DFFDBCE9446A88 /* RecallOSCore */; };
+		7CCA407E4D9DDE6489FEB965 /* MacOverviewViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7EE1D161FE08C4594FA950 /* MacOverviewViews.swift */; };
+		823FBFA32D6DAF3E0E0A84CE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */; };
+		82618DC59276E89EA431C37C /* SwiftDataRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */; };
 		84C4E37283733C5C1355E671 /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
 		98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
 		9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020E5BBB439A3E651DF08A98 /* IOSContentView.swift */; };
+		A27A6DFD1ACDA62927213A43 /* MacNavigationViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEF7C552E518BB5B10D4674 /* MacNavigationViews.swift */; };
+		ABD445D2A67826F2A316B845 /* MacNotesEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558D643CD2E47D6AA3B0BDFD /* MacNotesEditorView.swift */; };
 		B26E58F41EB6EE7D0A9265FB /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */; };
+		C0012DB10FBEB59FBC8B7C73 /* RecallOSiOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1270420C0574F0584375CB35 /* RecallOSiOSTests.swift */; };
 		CED416F844C90E524C328E26 /* MeetingLifecycleScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C05152F095D8924F019A38 /* MeetingLifecycleScheduler.swift */; };
 		D262ABA88025931C67D28A56 /* AVFoundationRecordingPermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */; };
+		D768BE2479BCE41AEB5A46DC /* MacRecordingStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A6C19EA24F6E06C859698 /* MacRecordingStatusBar.swift */; };
+		DAAE407E6D7D5BD027C75D62 /* RecallOSPersistenceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A54413059836AD2D907CC2 /* RecallOSPersistenceMapper.swift */; };
+		DB4A71D8F4066734CEF7F334 /* MacSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD7DA2FA3279C131E5EB86 /* MacSidebarView.swift */; };
+		E23C624860851AA0B0C8BE02 /* MacTasksBrainViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C78003EFDC45106FA92EDB /* MacTasksBrainViews.swift */; };
 		E2DCEFA44EAD9CBB3D726D1E /* EventKitCalendarEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */; };
 		EAD41E5160B570F38CF486B9 /* RecallOSPersistenceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A54413059836AD2D907CC2 /* RecallOSPersistenceMapper.swift */; };
 		EB88C6B69F4AED72BDDAAC8A /* RecallOSMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7E48114726D83D479F481C /* RecallOSMacApp.swift */; };
 		ED13AC36F25D1C70D7741499 /* SwiftDataRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */; };
 		F4A99D3C332E17FF80152016 /* AVFoundationRecordingPermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */; };
+		FD668EAEC0399943650E369A /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8A7A4C5271059BD1498BB33 /* RecallOSCore */; };
 		FDCAEA25F9D1524C43944F3E /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4649543A48B456244F7DF952 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA5F37C10D4D3FC2624D8FEE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6216FB5A8DCF3A543025BA7F;
+			remoteInfo = RecallOSiOS;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		020E5BBB439A3E651DF08A98 /* IOSContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSContentView.swift; sourceTree = "<group>"; };
+		062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1270420C0574F0584375CB35 /* RecallOSiOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSiOSTests.swift; sourceTree = "<group>"; };
 		182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitCalendarEventProvider.swift; sourceTree = "<group>"; };
 		2F7E48114726D83D479F481C /* RecallOSMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSMacApp.swift; sourceTree = "<group>"; };
-		40A6D384B414542A6DEE68A2 /* RecallOSCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RecallOSCore; path = Packages/RecallOSCore; sourceTree = SOURCE_ROOT; };
+		40A6D384B414542A6DEE68A2 /* RecallOSCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RecallOSCore; path = packages/RecallOSCore; sourceTree = SOURCE_ROOT; };
 		4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFoundationRecordingPermissionProvider.swift; sourceTree = "<group>"; };
+		54808FB62F806CDAD3137C4F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		558D643CD2E47D6AA3B0BDFD /* MacNotesEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacNotesEditorView.swift; sourceTree = "<group>"; };
+		5C7EAAE88DCA68A5E3DA0774 /* MacRightRailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacRightRailView.swift; sourceTree = "<group>"; };
+		5E1A6C19EA24F6E06C859698 /* MacRecordingStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacRecordingStatusBar.swift; sourceTree = "<group>"; };
+		5FEA2D232340ACFE41FA9A2E /* RecallOSiOSTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RecallOSiOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataRecallOSRepository.swift; sourceTree = "<group>"; };
+		683708A90D7C17A2DEAF139F /* RecallOSStoreFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSStoreFactoryTests.swift; sourceTree = "<group>"; };
 		6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFoundationMicrophoneAudioCaptureProvider.swift; sourceTree = "<group>"; };
+		73C78003EFDC45106FA92EDB /* MacTasksBrainViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacTasksBrainViews.swift; sourceTree = "<group>"; };
+		7949ADA899206E8DA404EDEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSStoreFactory.swift; sourceTree = "<group>"; };
 		9249171BE8B6BE902CFF0404 /* RecallOSiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RecallOSiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		952043282830E1CC3AA46119 /* RecallOSMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecallOSMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A13E3B8D08079C3540DFE0A /* RecallOSiOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSiOSApp.swift; sourceTree = "<group>"; };
+		A7ACF88EA1379D70B4E13240 /* RecallOSSharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecallOSSharedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvexRecallOSRepository.swift; sourceTree = "<group>"; };
+		C7DD7DA2FA3279C131E5EB86 /* MacSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSidebarView.swift; sourceTree = "<group>"; };
 		CA1ADBF1B498E3784E6D16E5 /* RecordingBannerPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingBannerPanelController.swift; sourceTree = "<group>"; };
+		CB7EE1D161FE08C4594FA950 /* MacOverviewViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOverviewViews.swift; sourceTree = "<group>"; };
+		DFEF7C552E518BB5B10D4674 /* MacNavigationViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacNavigationViews.swift; sourceTree = "<group>"; };
 		E6E90D362DEBD483D3BFF135 /* RecallOSPersistentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSPersistentModels.swift; sourceTree = "<group>"; };
 		E9A54413059836AD2D907CC2 /* RecallOSPersistenceMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSPersistenceMapper.swift; sourceTree = "<group>"; };
 		F3C05152F095D8924F019A38 /* MeetingLifecycleScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingLifecycleScheduler.swift; sourceTree = "<group>"; };
@@ -72,6 +118,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A83C4C8A365221B1DF706354 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CA31553AF6BAD87BC03DBB3 /* RecallOSCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F18EA742123259A0A2B0BDB2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD668EAEC0399943650E369A /* RecallOSCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -81,6 +143,15 @@
 				182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */,
 			);
 			path = Calendar;
+			sourceTree = "<group>";
+		};
+		0BC252C5A48FD0BF3B9E7E3A /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				1270420C0574F0584375CB35 /* RecallOSiOSTests.swift */,
+			);
+			name = Tests;
+			path = apps/RecallOSiOS/Tests;
 			sourceTree = "<group>";
 		};
 		0F6A79FE5BB4866E29E34109 /* Audio */ = {
@@ -114,9 +185,13 @@
 			isa = PBXGroup;
 			children = (
 				22DD1FAE5ED18A7B9390DD01 /* Packages */,
+				6C7DBA600A5E23E1833568DD /* Resources */,
+				76BF3EA170FE72F17E894C1E /* Resources */,
 				F4299D7D0521749D90227E7E /* Sources */,
 				C3A7B495E6D3D54B9F1271D0 /* Sources */,
 				463C3C5418B30C2EB76F1302 /* Sources */,
+				0BC252C5A48FD0BF3B9E7E3A /* Tests */,
+				DCC2430836F88ED956975294 /* Tests */,
 				EBDB9F10D69AA31EBAC56373 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -131,26 +206,63 @@
 				30BC62D3E761B98D2B99D27D /* Persistence */,
 			);
 			name = Sources;
-			path = Apps/Shared/Sources;
+			path = apps/Shared/Sources;
+			sourceTree = "<group>";
+		};
+		6C7DBA600A5E23E1833568DD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				54808FB62F806CDAD3137C4F /* Assets.xcassets */,
+				062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */,
+			);
+			name = Resources;
+			path = apps/RecallOSiOS/Resources;
+			sourceTree = "<group>";
+		};
+		76BF3EA170FE72F17E894C1E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7949ADA899206E8DA404EDEE /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = apps/RecallOSMac/Resources;
 			sourceTree = "<group>";
 		};
 		C3A7B495E6D3D54B9F1271D0 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				FD16BDC533757B7B74F015BF /* MacContentView.swift */,
+				DFEF7C552E518BB5B10D4674 /* MacNavigationViews.swift */,
+				558D643CD2E47D6AA3B0BDFD /* MacNotesEditorView.swift */,
+				CB7EE1D161FE08C4594FA950 /* MacOverviewViews.swift */,
+				5E1A6C19EA24F6E06C859698 /* MacRecordingStatusBar.swift */,
+				5C7EAAE88DCA68A5E3DA0774 /* MacRightRailView.swift */,
+				C7DD7DA2FA3279C131E5EB86 /* MacSidebarView.swift */,
+				73C78003EFDC45106FA92EDB /* MacTasksBrainViews.swift */,
 				F3C05152F095D8924F019A38 /* MeetingLifecycleScheduler.swift */,
 				2F7E48114726D83D479F481C /* RecallOSMacApp.swift */,
 				CA1ADBF1B498E3784E6D16E5 /* RecordingBannerPanelController.swift */,
 			);
 			name = Sources;
-			path = Apps/RecallOSMac/Sources;
+			path = apps/RecallOSMac/Sources;
+			sourceTree = "<group>";
+		};
+		DCC2430836F88ED956975294 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				683708A90D7C17A2DEAF139F /* RecallOSStoreFactoryTests.swift */,
+			);
+			name = Tests;
+			path = apps/Shared/Tests;
 			sourceTree = "<group>";
 		};
 		EBDB9F10D69AA31EBAC56373 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				9249171BE8B6BE902CFF0404 /* RecallOSiOS.app */,
+				5FEA2D232340ACFE41FA9A2E /* RecallOSiOSTests.xctest */,
 				952043282830E1CC3AA46119 /* RecallOSMac.app */,
+				A7ACF88EA1379D70B4E13240 /* RecallOSSharedTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -162,17 +274,57 @@
 				9A13E3B8D08079C3540DFE0A /* RecallOSiOSApp.swift */,
 			);
 			name = Sources;
-			path = Apps/RecallOSiOS/Sources;
+			path = apps/RecallOSiOS/Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0441BC64FDB2BE97FA5B8E74 /* RecallOSiOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E70E4E8EDC413BBFBF5FAE4 /* Build configuration list for PBXNativeTarget "RecallOSiOSTests" */;
+			buildPhases = (
+				4B15334DBEB656AF291D0576 /* Sources */,
+				A83C4C8A365221B1DF706354 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9DE87DBC58780567A47BED2B /* PBXTargetDependency */,
+			);
+			name = RecallOSiOSTests;
+			packageProductDependencies = (
+				E669F72C16DFFDBCE9446A88 /* RecallOSCore */,
+			);
+			productName = RecallOSiOSTests;
+			productReference = 5FEA2D232340ACFE41FA9A2E /* RecallOSiOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		1E3A21FA9EBEF6BCCE9B729C /* RecallOSSharedTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5AC91F066EF6B6327430EA6F /* Build configuration list for PBXNativeTarget "RecallOSSharedTests" */;
+			buildPhases = (
+				EAA6BF201677E6748CF3F8E2 /* Sources */,
+				F18EA742123259A0A2B0BDB2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RecallOSSharedTests;
+			packageProductDependencies = (
+				C8A7A4C5271059BD1498BB33 /* RecallOSCore */,
+			);
+			productName = RecallOSSharedTests;
+			productReference = A7ACF88EA1379D70B4E13240 /* RecallOSSharedTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6216FB5A8DCF3A543025BA7F /* RecallOSiOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7161C61EB4052EC7CD4D110B /* Build configuration list for PBXNativeTarget "RecallOSiOS" */;
 			buildPhases = (
 				E03E430BD42D0E466B3DA413 /* Sources */,
+				3A4A1CB2ECCC8EE3F00EE399 /* Resources */,
 				A36C64FB7162EF343365B36C /* Frameworks */,
 			);
 			buildRules = (
@@ -193,6 +345,7 @@
 			buildConfigurationList = 271910B2A9A901F1CA4FD934 /* Build configuration list for PBXNativeTarget "RecallOSMac" */;
 			buildPhases = (
 				FF5B48E8131AB4C6A578672E /* Sources */,
+				CB69FA4255BA0F8646D3DF47 /* Resources */,
 				7A7F47F39B3FD8A34DCCE40C /* Frameworks */,
 			);
 			buildRules = (
@@ -216,6 +369,12 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					0441BC64FDB2BE97FA5B8E74 = {
+						ProvisioningStyle = Automatic;
+					};
+					1E3A21FA9EBEF6BCCE9B729C = {
+						ProvisioningStyle = Automatic;
+					};
 					6216FB5A8DCF3A543025BA7F = {
 						ProvisioningStyle = Automatic;
 					};
@@ -235,7 +394,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6D0093977A0AB2F0F014A62C /* XCRemoteSwiftPackageReference "convex-swift" */,
-				B93C6C86DB372F9F7E5FB754 /* XCLocalSwiftPackageReference "Packages/RecallOSCore" */,
+				65B66A029C026117FE169F58 /* XCLocalSwiftPackageReference "packages/RecallOSCore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EBDB9F10D69AA31EBAC56373 /* Products */;
@@ -243,12 +402,42 @@
 			projectRoot = "";
 			targets = (
 				82047A6728C391C9538A5A26 /* RecallOSMac */,
+				1E3A21FA9EBEF6BCCE9B729C /* RecallOSSharedTests */,
 				6216FB5A8DCF3A543025BA7F /* RecallOSiOS */,
+				0441BC64FDB2BE97FA5B8E74 /* RecallOSiOSTests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		3A4A1CB2ECCC8EE3F00EE399 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04A65DBAF7BFF6C40F57FED5 /* Assets.xcassets in Resources */,
+				823FBFA32D6DAF3E0E0A84CE /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB69FA4255BA0F8646D3DF47 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				545DE430F39954A06BFA6FAE /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		4B15334DBEB656AF291D0576 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C0012DB10FBEB59FBC8B7C73 /* RecallOSiOSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E03E430BD42D0E466B3DA413 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -266,6 +455,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EAA6BF201677E6748CF3F8E2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2BC98AAD6A62E76423E1533B /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */,
+				33F895CB3B69A5C42CC6B1DA /* AVFoundationRecordingPermissionProvider.swift in Sources */,
+				63BFDEF783FD86C7467A97E5 /* ConvexRecallOSRepository.swift in Sources */,
+				0528BA414C2F719DDDF3EAA8 /* EventKitCalendarEventProvider.swift in Sources */,
+				DAAE407E6D7D5BD027C75D62 /* RecallOSPersistenceMapper.swift in Sources */,
+				785DEB86BC9CBC50C481C7E4 /* RecallOSPersistentModels.swift in Sources */,
+				380DF7F3FF6B126AFF836F0C /* RecallOSStoreFactory.swift in Sources */,
+				0279EA4E79DEF7E70A434800 /* RecallOSStoreFactoryTests.swift in Sources */,
+				82618DC59276E89EA431C37C /* SwiftDataRecallOSRepository.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FF5B48E8131AB4C6A578672E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -275,6 +480,13 @@
 				4D5F8725C5E53BA0043B3095 /* ConvexRecallOSRepository.swift in Sources */,
 				4C99EAB7A9E663714367889D /* EventKitCalendarEventProvider.swift in Sources */,
 				3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */,
+				A27A6DFD1ACDA62927213A43 /* MacNavigationViews.swift in Sources */,
+				ABD445D2A67826F2A316B845 /* MacNotesEditorView.swift in Sources */,
+				7CCA407E4D9DDE6489FEB965 /* MacOverviewViews.swift in Sources */,
+				D768BE2479BCE41AEB5A46DC /* MacRecordingStatusBar.swift in Sources */,
+				2C930F6F0B45488BD3B19F24 /* MacRightRailView.swift in Sources */,
+				DB4A71D8F4066734CEF7F334 /* MacSidebarView.swift in Sources */,
+				E23C624860851AA0B0C8BE02 /* MacTasksBrainViews.swift in Sources */,
 				CED416F844C90E524C328E26 /* MeetingLifecycleScheduler.swift in Sources */,
 				EB88C6B69F4AED72BDDAAC8A /* RecallOSMacApp.swift in Sources */,
 				041F7B382CF994A7070F0821 /* RecallOSPersistenceMapper.swift in Sources */,
@@ -287,6 +499,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		9DE87DBC58780567A47BED2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6216FB5A8DCF3A543025BA7F /* RecallOSiOS */;
+			targetProxy = 4649543A48B456244F7DF952 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		0026696020582B30ABD99E91 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -296,7 +516,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
-				INFOPLIST_FILE = Apps/RecallOSiOS/Resources/Info.plist;
+				INFOPLIST_FILE = apps/RecallOSiOS/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -315,7 +535,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = Apps/RecallOSMac/Resources/Info.plist;
+				INFOPLIST_FILE = apps/RecallOSMac/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -325,6 +545,24 @@
 				SDKROOT = macosx;
 			};
 			name = Debug;
+		};
+		41CED0682E8D98A5A182623D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.recallos.ios-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RecallOSiOS.app/RecallOSiOS";
+			};
+			name = Release;
 		};
 		4AE145CA2DBE4DE7C73BC08E /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -391,6 +629,24 @@
 			};
 			name = Debug;
 		};
+		7134AFB927B6E1E64C7B957E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.recallos.ios-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RecallOSiOS.app/RecallOSiOS";
+			};
+			name = Debug;
+		};
 		71CA972B02E3BA368077BF6D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -398,7 +654,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = Apps/RecallOSMac/Resources/Info.plist;
+				INFOPLIST_FILE = apps/RecallOSMac/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -408,6 +664,40 @@
 				SDKROOT = macosx;
 			};
 			name = Release;
+		};
+		856B9B7B539B031EB98C342B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.recallos.shared-tests";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		ABEF96E0C267C35CF475943F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.recallos.shared-tests";
+				SDKROOT = macosx;
+			};
+			name = Debug;
 		};
 		BAAB29F24689EB8C1BFC0290 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -475,7 +765,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
-				INFOPLIST_FILE = Apps/RecallOSiOS/Resources/Info.plist;
+				INFOPLIST_FILE = apps/RecallOSiOS/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -495,6 +785,24 @@
 			buildConfigurations = (
 				37B389F2F5ECD784861B08F9 /* Debug */,
 				71CA972B02E3BA368077BF6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2E70E4E8EDC413BBFBF5FAE4 /* Build configuration list for PBXNativeTarget "RecallOSiOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7134AFB927B6E1E64C7B957E /* Debug */,
+				41CED0682E8D98A5A182623D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5AC91F066EF6B6327430EA6F /* Build configuration list for PBXNativeTarget "RecallOSSharedTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABEF96E0C267C35CF475943F /* Debug */,
+				856B9B7B539B031EB98C342B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -520,9 +828,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		B93C6C86DB372F9F7E5FB754 /* XCLocalSwiftPackageReference "Packages/RecallOSCore" */ = {
+		65B66A029C026117FE169F58 /* XCLocalSwiftPackageReference "packages/RecallOSCore" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/RecallOSCore;
+			relativePath = packages/RecallOSCore;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -543,6 +851,14 @@
 			productName = RecallOSCore;
 		};
 		7DDD304382FCC3A23E9D95B5 /* RecallOSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RecallOSCore;
+		};
+		C8A7A4C5271059BD1498BB33 /* RecallOSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RecallOSCore;
+		};
+		E669F72C16DFFDBCE9446A88 /* RecallOSCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RecallOSCore;
 		};
