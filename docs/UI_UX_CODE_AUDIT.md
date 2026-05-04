@@ -68,17 +68,17 @@ Fix:
 
 ## Code Findings
 
-### Fixed: App Shells Now Use Store-Backed Fixtures
+### Fixed: App Shells Now Use Store-Backed Demo Fixtures
 
 The first shell pass used `SampleData` directly in macOS and iOS views. The app shells now render through `RecallOSAppStore.fixture()`, with fixture data contained behind repository/store boundaries.
 
 Remaining caveat:
 
-- The store currently uses fixture repositories by default. Real Convex subscriptions are planned for Sprint 2.
+- The app runtime intentionally uses fixture repositories by default for the foundation PR. If `RECALLOS_USE_LIVE_CONVEX=1` is set before the Swift adapter is implemented, startup shows a visible configuration error instead of silently falling back to fixtures.
 
 ### P2: Convex Repository Is Boundary-Only
 
-The project now has repository protocols and an app-layer `ConvexRecallOSRepository`, but live Convex list/search/mutation implementations are intentionally not complete yet.
+The project now has repository protocols and an app-layer `ConvexRecallOSRepository` configuration boundary, but live Convex list/search/mutation implementations are intentionally not complete yet.
 
 Recommendation:
 

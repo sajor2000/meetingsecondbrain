@@ -55,6 +55,37 @@ describe("RecallOS Convex function contracts", () => {
     });
   });
 
+  test("meeting create is idempotent and rejects non-uuid local IDs", async () => {
+    const t = makeConvexTest().withIdentity(identity);
+
+    await expect(
+      t.mutation(functions.meetings.create, {
+        localId: "not-a-uuid",
+        title: "Invalid local ID",
+        startsAt: 1,
+        endsAt: 2,
+      }),
+    ).rejects.toThrow("UUID");
+
+    const meetingId = await t.mutation(functions.meetings.create, {
+      localId: "99999999-9999-4999-8999-999999999999",
+      title: "Retry-safe meeting",
+      startsAt: 1,
+      endsAt: 2,
+    });
+    const retriedMeetingId = await t.mutation(functions.meetings.create, {
+      localId: "99999999-9999-4999-8999-999999999999",
+      title: "Retry-safe meeting duplicate",
+      startsAt: 3,
+      endsAt: 4,
+    });
+
+    expect(retriedMeetingId).toBe(meetingId);
+    const meetings = await t.query(functions.meetings.list, {});
+    expect(meetings.map((meeting: any) => meeting._id)).toEqual([meetingId]);
+    expect(meetings[0].title).toBe("Retry-safe meeting");
+  });
+
   test("tasks support create, list, move, local-id move, and search result shape", async () => {
     const t = makeConvexTest().withIdentity(identity);
 
@@ -87,6 +118,20 @@ describe("RecallOS Convex function contracts", () => {
     const meetingTasks = await t.query(functions.tasks.listForMeeting, { meetingId });
     expect(meetingTasks.map((task: any) => task._id)).toEqual([taskId]);
 
+    const otherMeetingId = await t.mutation(functions.meetings.create, {
+      localId: "55555555-5555-4555-8555-555555555555",
+      title: "Other task source",
+      startsAt: 3,
+      endsAt: 4,
+    });
+    const otherTaskId = await t.mutation(functions.tasks.createFromMeeting, {
+      localId: "66666666-6666-4666-8666-666666666666",
+      title: "Other task",
+      sourceMeetingId: otherMeetingId,
+    });
+    const allTasks = await t.query(functions.tasks.listForMeeting, {});
+    expect(new Set(allTasks.map((task: any) => task._id))).toEqual(new Set([taskId, otherTaskId]));
+
     await t.mutation(functions.tasks.move, { taskId, status: "done" });
     const doneTasks = await t.query(functions.tasks.listForMeeting, { meetingId });
     expect(doneTasks[0].status).toBe("done");
@@ -109,6 +154,20 @@ describe("RecallOS Convex function contracts", () => {
     expect(retriedTaskId).toBe(taskId);
     const tasksAfterRetry = await t.query(functions.tasks.listForMeeting, { meetingId });
     expect(tasksAfterRetry.map((task: any) => task._id)).toEqual([taskId]);
+
+    await expect(
+      t.mutation(functions.tasks.createFromMeeting, {
+        localId: "not-a-uuid",
+        title: "Invalid task local ID",
+        sourceMeetingId: meetingId,
+      }),
+    ).rejects.toThrow("UUID");
+    await expect(
+      t.mutation(functions.tasks.moveByLocalIds, {
+        localIds: ["not-a-uuid"],
+        status: "done",
+      }),
+    ).rejects.toThrow("UUID");
 
     const results = await t.query(functions.search.brain, { query: "Searchable" });
     expect(results).toEqual([

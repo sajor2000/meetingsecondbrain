@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireUserId } from "./auth";
+import { requireUUIDLocalId } from "./localIds";
 
 export const list = query({
   args: {},
@@ -24,12 +25,21 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const userId = await requireUserId(ctx);
+    requireUUIDLocalId(args.localId);
     const attendeeIds = args.attendeeIds ?? [];
     for (const attendeeId of attendeeIds) {
       const attendee = await ctx.db.get(attendeeId);
       if (attendee === null || attendee.userId !== userId) {
         throw new Error("Attendee not found.");
       }
+    }
+
+    const existingMeeting = await ctx.db
+      .query("recallOSMeetings")
+      .withIndex("by_user_local_id", (q) => q.eq("userId", userId).eq("localId", args.localId))
+      .unique();
+    if (existingMeeting !== null) {
+      return existingMeeting._id;
     }
 
     const now = Date.now();

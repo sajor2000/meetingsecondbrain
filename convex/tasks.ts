@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireUserId } from "./auth";
+import { requireUUIDLocalId } from "./localIds";
 
 export const listOpen = query({
   args: {},
@@ -47,6 +48,7 @@ export const createFromMeeting = mutation({
   },
   handler: async (ctx, args) => {
     const userId = await requireUserId(ctx);
+    requireUUIDLocalId(args.localId);
     const existingTask = await ctx.db
       .query("recallOSTasks")
       .withIndex("by_user_local_id", (q) => q.eq("userId", userId).eq("localId", args.localId))
@@ -109,6 +111,7 @@ export const moveByLocalIds = mutation({
     const movedTaskIds = [];
 
     for (const localId of args.localIds) {
+      requireUUIDLocalId(localId);
       const task = await ctx.db
         .query("recallOSTasks")
         .withIndex("by_user_local_id", (q) => q.eq("userId", userId).eq("localId", localId))

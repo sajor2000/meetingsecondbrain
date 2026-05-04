@@ -143,6 +143,21 @@ describe("RecallOS Convex auth boundaries", () => {
     });
     expect(movedByLocalId).toEqual([]);
 
+    const betaMeetingId = await asBeta.mutation(functions.meetings.create, {
+      localId: "99999999-9999-4999-8999-999999999999",
+      title: "Beta task meeting",
+      startsAt: 3,
+      endsAt: 4,
+    });
+    const betaTaskId = await asBeta.mutation(functions.tasks.createFromMeeting, {
+      localId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      title: "Beta task",
+      sourceMeetingId: betaMeetingId,
+    });
+    const betaGlobalTasks = await asBeta.query(functions.tasks.listForMeeting, {});
+    expect(betaGlobalTasks.map((task: any) => task._id)).toEqual([betaTaskId]);
+    expect(betaGlobalTasks).not.toEqual(expect.arrayContaining([expect.objectContaining({ _id: taskId })]));
+
     const alphaTask = await t.run(async (ctx) => await ctx.db.get(taskId));
     expect(alphaTask?.status).toBe("open");
   });

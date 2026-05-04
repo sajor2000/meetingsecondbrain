@@ -917,9 +917,9 @@ private struct GroupedTaskList: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.lg) {
-            TaskGroup(title: "Overdue", tasks: tasks.filter { $0.priority == .high && $0.status != .done })
-            TaskGroup(title: "Today", tasks: tasks.filter { $0.status == .today })
-            TaskGroup(title: "Done today", tasks: tasks.filter { $0.status == .done })
+            ForEach(TaskListFilter.today.sections(for: tasks)) { section in
+                TaskGroup(title: section.title, tasks: section.tasks)
+            }
         }
     }
 }

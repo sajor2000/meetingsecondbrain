@@ -25,3 +25,15 @@ The floating macOS recording banner uses `NSPanel` with a SwiftUI-hosted `Record
 ## 2026-05-03: Convex First, Capture Later
 
 Convex schema and stubs are created before real AVFoundation/ScreenCaptureKit capture. This keeps product entities and sync boundaries explicit before implementing provider-specific capture pipelines.
+
+## 2026-05-04: Explicit Demo Runtime Until Live Convex Adapter Exists
+
+The macOS and iOS apps run with fixture-backed demo data by default for the foundation PR. `RECALLOS_USE_LIVE_CONVEX=1` is an explicit opt-in, but it now produces a visible configuration error until the Swift Convex adapter has real list/query/mutation behavior.
+
+Rationale: the Pilot MVP plan keeps live Convex disabled until repository methods are implemented and tested. A requested live mode must not silently fall back to fixtures, because that hides deployment/configuration mistakes.
+
+## 2026-05-04: RecallOS Convex Tables Are The Pilot Namespace
+
+The `recallOS*` Convex tables are the canonical Pilot MVP namespace for the new native RecallOS client. Existing unprefixed meeting/task/document tables remain legacy data until a dedicated migration/deprecation sprint decides whether to backfill, quarantine, or remove them.
+
+Rationale: PR #11 introduces RecallOS side by side with the older implementation. The new public RecallOS functions read and mutate only the `recallOS*` tables, so future schema work should treat cross-namespace migration as explicit Sprint 2+ work rather than assuming both models stay in sync automatically.

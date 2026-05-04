@@ -38,6 +38,12 @@ git remote add origin https://github.com/sajor2000/meetingsecondbrain.git
 - `UI_UX_DESIGN.md` - native design translation from the artifact.
 - `DECISIONS.md` - architectural and product decisions.
 
+## Runtime Mode
+
+The current native apps run in demo fixture mode by default while the Swift Convex adapter is still a boundary artifact. Setting `RECALLOS_USE_LIVE_CONVEX=1` intentionally shows a visible configuration error instead of falling back to fixtures, so live-mode mistakes are not hidden.
+
+Live Convex remains Sprint 1/Sprint 2 work: implement the adapter, then flip `ConvexRecallOSRepository.supportsLiveUse` with repository and mapping tests.
+
 ## Build
 
 Generate the Xcode project:
@@ -79,5 +85,5 @@ Implemented in this pass:
 
 Not production-complete yet:
 
-- Live Convex subscriptions/mutations, real audio capture, screen capture, transcription, diarization, AI enhancement, background sync, and Convex deployment.
+- Live Convex Swift adapter/subscriptions/mutations, real audio capture, screen capture, transcription, diarization, AI enhancement, background sync, and Convex deployment.
 - Screenshot preview generation for the native apps.
