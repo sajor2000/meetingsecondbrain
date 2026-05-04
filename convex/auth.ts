@@ -6,5 +6,5 @@ export async function requireUserId(ctx: QueryCtx | MutationCtx): Promise<string
     throw new Error("RecallOS requires an authenticated user.");
   }
 
-  return identity.subject;
+  return identity.tokenIdentifier;
 }

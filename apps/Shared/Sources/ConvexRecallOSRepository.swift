@@ -17,6 +17,8 @@ enum ConvexRecallOSRepositoryError: LocalizedError {
 }
 
 actor ConvexRecallOSRepository: RecallOSRepository {
+    static let supportsLiveUse = false
+
     private let deploymentURL: String
 
     init(deploymentURL: String) {

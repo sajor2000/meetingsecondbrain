@@ -20,6 +20,19 @@
   <string>public.app-category.productivity</string>
   <key>UILaunchStoryboardName</key>
   <string>LaunchScreen</string>
+  <key>UISupportedInterfaceOrientations</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+    <string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
+  <key>UISupportedInterfaceOrientations~ipad</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+    <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    <string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
   <key>NSMicrophoneUsageDescription</key>
   <string>RecallOS records quick voice memos so they can become notes and tasks.</string>
   <key>NSCalendarsUsageDescription</key>

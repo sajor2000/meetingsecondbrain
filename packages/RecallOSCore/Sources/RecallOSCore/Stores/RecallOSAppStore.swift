@@ -134,6 +134,10 @@ public final class RecallOSAppStore: ObservableObject {
             syncError = RecordingWorkflowError.noSelectedMeeting.localizedDescription
             return
         }
+        guard recordingSession?.isActive != true else {
+            workflowMessage = "Recording already in progress"
+            return
+        }
 
         let previousMeeting = meeting
         var didStartAudioCapture = false
@@ -276,8 +280,11 @@ public final class RecallOSAppStore: ObservableObject {
                 for try await segment in stream {
                     self.appendTranscriptSegment(segment)
                 }
+            } catch is CancellationError {
+                return
             } catch {
-                self.markWorkflowFailed(RecordingWorkflowError.transcriptionUnavailable(error.localizedDescription))
+                guard !Swift.Task.isCancelled else { return }
+                await self.handleTranscriptStreamFailure(error, meetingID: meeting.id)
             }
         }
     }
@@ -302,6 +309,18 @@ public final class RecallOSAppStore: ObservableObject {
         meetings.first { $0.id == meetingID } ?? selectedMeeting.flatMap { selected in
             selected.id == meetingID ? selected : nil
         }
+    }
+
+    private func handleTranscriptStreamFailure(_ error: Error, meetingID: UUID) async {
+        guard recordingSession?.meetingID == meetingID, recordingSession?.isActive == true else { return }
+
+        try? await audioProvider.stop()
+        transcriptTask = nil
+        if var meeting = meeting(for: meetingID) {
+            meeting.status = .inProgress
+            replaceSelectedMeeting(meeting)
+        }
+        markWorkflowFailed(RecordingWorkflowError.transcriptionUnavailable(error.localizedDescription))
     }
 
     private func replaceSelectedMeeting(_ meeting: Meeting) {

@@ -75,6 +75,16 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(doneTodayTasks.map(\.id), [doneToday.id])
     }
 
+    func testTaskListTodayDoesNotDuplicateHighPriorityTodayTasksAsOverdue() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let highPriorityToday = MeetingTask(title: "High focus", status: .today, priority: .high)
+
+        let sections = TaskListFilter.today.sections(for: [highPriorityToday], now: now)
+
+        XCTAssertNil(sections.first { $0.title == "Overdue" })
+        XCTAssertEqual(sections.first { $0.title == "Today" }?.tasks.map(\.id), [highPriorityToday.id])
+    }
+
     func testTaskStoreMoveUpdatesStatusAndCompletionDate() {
         let task = MeetingTask(title: "Prepare recap", status: .open)
         let completedAt = Date(timeIntervalSince1970: 42)
@@ -188,6 +198,50 @@ final class ModelTests: XCTestCase {
     }
 
     @MainActor
+    func testStartRecordingIsIdempotentWhileActive() async {
+        let meeting = SampleData.meeting
+        let audioProvider = RecordingSpyAudioProvider()
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            audioProvider: audioProvider,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000_000_000),
+            meetings: [meeting],
+            selectedMeeting: meeting
+        )
+
+        await store.startRecording()
+        await store.startRecording()
+
+        let audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.startCount, 1)
+        XCTAssertEqual(store.recordingSession?.state, .recording)
+        XCTAssertEqual(store.workflowMessage, "Recording already in progress")
+    }
+
+    @MainActor
+    func testTranscriptionFailureStopsCaptureAndMarksWorkflowFailed() async throws {
+        let meeting = SampleData.meeting
+        let audioProvider = RecordingSpyAudioProvider()
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            audioProvider: audioProvider,
+            transcriptionProvider: ThrowingTranscriptionProvider(),
+            meetings: [meeting],
+            selectedMeeting: meeting
+        )
+
+        await store.startRecording()
+        try await Task.sleep(nanoseconds: 20_000_000)
+
+        let audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.startCount, 1)
+        XCTAssertEqual(audioState.stopCount, 1)
+        XCTAssertEqual(store.recordingSession?.state, .failed)
+        XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
+        XCTAssertNotNil(store.syncError)
+    }
+
+    @MainActor
     func testStopAndEnhanceUsesRecordingMeetingAfterSelectionChanges() async throws {
         let recordingMeeting = Meeting(
             title: "Recording meeting",
@@ -223,19 +277,102 @@ final class ModelTests: XCTestCase {
     }
 
     @MainActor
-    func testAppStoreLocalSearchFindsTranscriptTasksAndDecisions() async throws {
-        let meeting = SampleData.meeting
+    func testLateTranscriptSegmentsStayWithRecordingMeetingAfterSelectionChanges() async throws {
+        let recordingMeeting = Meeting(
+            title: "Recording meeting",
+            startsAt: Date(),
+            endsAt: Date().addingTimeInterval(1_800),
+            attendees: [SampleData.me]
+        )
+        let otherMeeting = Meeting(
+            title: "Other meeting",
+            startsAt: Date().addingTimeInterval(3_600),
+            endsAt: Date().addingTimeInterval(5_400),
+            attendees: [SampleData.patrick]
+        )
+        let lateSegment = TranscriptSegment(
+            meetingID: recordingMeeting.id,
+            speaker: SampleData.me,
+            startTime: 42,
+            endTime: 51,
+            text: "late routing needle",
+            confidence: 0.9
+        )
         let store = RecallOSAppStore(
-            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: SampleData.tasks),
-            meetings: [meeting],
-            selectedMeeting: meeting,
-            tasks: SampleData.tasks
+            repository: FixtureRecallOSRepository(meetings: [recordingMeeting, otherMeeting], tasks: []),
+            transcriptionProvider: DelayedSingleSegmentTranscriptionProvider(segment: lateSegment),
+            meetings: [recordingMeeting, otherMeeting],
+            selectedMeeting: recordingMeeting,
+            tasks: []
         )
 
-        await store.search("Kevin")
+        await store.startRecording()
+        await store.selectMeeting(otherMeeting.id)
+        try await Task.sleep(nanoseconds: 60_000_000)
 
-        XCTAssertFalse(store.searchResults.isEmpty)
-        XCTAssertTrue(store.searchResults.contains { $0.snippet.localizedCaseInsensitiveContains("Kevin") || $0.title.localizedCaseInsensitiveContains("Kevin") })
+        XCTAssertTrue(store.meetings.first { $0.id == recordingMeeting.id }?.transcriptSegments.contains(lateSegment) ?? false)
+        XCTAssertFalse(store.meetings.first { $0.id == otherMeeting.id }?.transcriptSegments.contains(lateSegment) ?? true)
+    }
+
+    @MainActor
+    func testAppStoreLocalSearchFindsTranscriptText() async throws {
+        let meeting = Meeting(
+            title: "Search test",
+            startsAt: Date(),
+            endsAt: Date().addingTimeInterval(600),
+            summary: "",
+            transcriptSegments: [
+                TranscriptSegment(meetingID: SampleData.meetingID, speaker: SampleData.me, startTime: 1, endTime: 2, text: "transcript-only-needle", confidence: 0.9)
+            ]
+        )
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            meetings: [meeting],
+            selectedMeeting: meeting,
+            tasks: []
+        )
+
+        await store.search("transcript-only-needle")
+
+        XCTAssertTrue(store.searchResults.contains { $0.snippet == "transcript-only-needle" })
+    }
+
+    @MainActor
+    func testAppStoreLocalSearchFindsTaskText() async throws {
+        let meeting = Meeting(title: "Search test", startsAt: Date(), endsAt: Date().addingTimeInterval(600))
+        let task = MeetingTask(title: "task-only-needle", notes: "task note", sourceMeetingID: meeting.id)
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: [task]),
+            meetings: [meeting],
+            selectedMeeting: meeting,
+            tasks: [task]
+        )
+
+        await store.search("task-only-needle")
+
+        XCTAssertTrue(store.searchResults.contains { $0.title == "task-only-needle" })
+    }
+
+    @MainActor
+    func testAppStoreLocalSearchFindsDecisionText() async throws {
+        let meeting = Meeting(
+            title: "Search test",
+            startsAt: Date(),
+            endsAt: Date().addingTimeInterval(600),
+            decisions: [
+                MeetingDecision(title: "decision-only-needle", detail: "decision detail", sourceMeetingID: SampleData.meetingID)
+            ]
+        )
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            meetings: [meeting],
+            selectedMeeting: meeting,
+            tasks: []
+        )
+
+        await store.search("decision-only-needle")
+
+        XCTAssertTrue(store.searchResults.contains { $0.title == "decision-only-needle" })
     }
 }
 
@@ -261,6 +398,33 @@ private actor RecordingSpyAudioProvider: AudioCaptureProvider {
 
     func state() -> (startCount: Int, stopCount: Int) {
         (startCount, stopCount)
+    }
+}
+
+private struct ThrowingTranscriptionProvider: TranscriptionProvider {
+    func transcriptStream(for meeting: Meeting) async throws -> AsyncThrowingStream<TranscriptSegment, Error> {
+        throw TestRepositoryError.updateFailed
+    }
+}
+
+private struct DelayedSingleSegmentTranscriptionProvider: TranscriptionProvider {
+    let segment: TranscriptSegment
+
+    func transcriptStream(for meeting: Meeting) async throws -> AsyncThrowingStream<TranscriptSegment, Error> {
+        AsyncThrowingStream { continuation in
+            let task = Task {
+                try? await Task.sleep(nanoseconds: 25_000_000)
+                guard !Task.isCancelled else {
+                    continuation.finish()
+                    return
+                }
+                continuation.yield(segment)
+                continuation.finish()
+            }
+            continuation.onTermination = { _ in
+                task.cancel()
+            }
+        }
     }
 }
 

@@ -27,7 +27,7 @@ struct IOSContentView: View {
                         .tabItem { Label("Brain", systemImage: "scope") }
                 }
             } else {
-                ProgressView("Loading meetings")
+                LoadingStateView(syncError: store.syncError)
             }
         }
         .tint(Color.appAccent)
@@ -38,6 +38,28 @@ struct IOSContentView: View {
             QuickMemoView()
                 .presentationDetents([.medium, .large])
         }
+    }
+}
+
+private struct LoadingStateView: View {
+    let syncError: String?
+
+    var body: some View {
+        VStack(spacing: AppSpacing.sm) {
+            if let syncError {
+                Image(systemName: "exclamationmark.triangle")
+                    .foregroundStyle(Color.appDanger)
+                Text("Could not load meetings")
+                    .font(AppFont.sectionHeader)
+                Text(syncError)
+                    .font(AppFont.secondary)
+                    .foregroundStyle(Color.appMutedText)
+                    .multilineTextAlignment(.center)
+            } else {
+                ProgressView("Loading meetings")
+            }
+        }
+        .padding(AppSpacing.lg)
     }
 }
 

@@ -24,6 +24,14 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const userId = await requireUserId(ctx);
+    const attendeeIds = args.attendeeIds ?? [];
+    for (const attendeeId of attendeeIds) {
+      const attendee = await ctx.db.get(attendeeId);
+      if (attendee === null || attendee.userId !== userId) {
+        throw new Error("Attendee not found.");
+      }
+    }
+
     const now = Date.now();
     return await ctx.db.insert("recallOSMeetings", {
       userId,
@@ -31,7 +39,7 @@ export const create = mutation({
       title: args.title,
       startsAt: args.startsAt,
       endsAt: args.endsAt,
-      attendeeIds: args.attendeeIds ?? [],
+      attendeeIds,
       topicIds: [],
       status: "scheduled",
       createdAt: now,

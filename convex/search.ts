@@ -22,6 +22,7 @@ export const brain = query({
         return meeting.title.toLowerCase().includes(normalized) || summary.toLowerCase().includes(normalized);
       })
       .map((meeting) => ({
+        id: meeting.localId,
         title: meeting.title,
         source: "Meeting",
         snippet: meeting.summary ?? "No summary yet.",
@@ -34,6 +35,7 @@ export const brain = query({
         return task.title.toLowerCase().includes(normalized) || notes.toLowerCase().includes(normalized);
       })
       .map((task) => ({
+        id: task.localId,
         title: task.title,
         source: "Task",
         snippet: task.notes ?? "Meeting task",
