@@ -147,12 +147,23 @@ describe("RecallOS Convex auth boundaries", () => {
     const t = makeConvexTest();
     const asAlpha = t.withIdentity(alphaIdentity);
 
-    const betaPersonId = await t.run(async (ctx) => {
-      return await ctx.db.insert("recallOSPeople", {
+    const { betaPersonId, betaTopicId, betaFolderId } = await t.run(async (ctx) => {
+      const betaPersonId = await ctx.db.insert("recallOSPeople", {
         userId: betaIdentity.tokenIdentifier,
         localId: "44444444-4444-4444-8444-444444444444",
         displayName: "Beta Person",
       });
+      const betaTopicId = await ctx.db.insert("recallOSTopics", {
+        userId: betaIdentity.tokenIdentifier,
+        localId: "56565656-5656-4656-8656-565656565656",
+        name: "Beta Topic",
+      });
+      const betaFolderId = await ctx.db.insert("recallOSFolders", {
+        userId: betaIdentity.tokenIdentifier,
+        name: "Beta Folder",
+        sortOrder: 1,
+      });
+      return { betaPersonId, betaTopicId, betaFolderId };
     });
 
     await expect(
@@ -164,6 +175,24 @@ describe("RecallOS Convex auth boundaries", () => {
         attendeeIds: [betaPersonId],
       }),
     ).rejects.toThrow("Attendee not found");
+    await expect(
+      asAlpha.mutation(functions.meetings.create, {
+        localId: "34343434-3434-4434-8434-343434343434",
+        title: "Cross-user topic attempt",
+        startsAt: 1,
+        endsAt: 2,
+        topicIds: [betaTopicId],
+      }),
+    ).rejects.toThrow("Topic not found");
+    await expect(
+      asAlpha.mutation(functions.meetings.create, {
+        localId: "78787878-7878-4878-8878-787878787878",
+        title: "Cross-user folder attempt",
+        startsAt: 1,
+        endsAt: 2,
+        folderId: betaFolderId,
+      }),
+    ).rejects.toThrow("Folder not found");
 
     const alphaMeetingId = await asAlpha.mutation(functions.meetings.create, {
       localId: "12121212-1212-4212-8212-121212121212",
@@ -177,6 +206,18 @@ describe("RecallOS Convex auth boundaries", () => {
         attendeeIds: [betaPersonId],
       }),
     ).rejects.toThrow("Attendee not found");
+    await expect(
+      asAlpha.mutation(functions.meetings.update, {
+        meetingId: alphaMeetingId,
+        topicIds: [betaTopicId],
+      }),
+    ).rejects.toThrow("Topic not found");
+    await expect(
+      asAlpha.mutation(functions.meetings.update, {
+        meetingId: alphaMeetingId,
+        folderId: betaFolderId,
+      }),
+    ).rejects.toThrow("Folder not found");
   });
 
   test("task queries and moves reject cross-user meeting/task access", async () => {

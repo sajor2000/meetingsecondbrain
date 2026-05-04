@@ -4,7 +4,8 @@
   "scripts": {
     "convex:dev": "npm --prefix convex run dev",
     "convex:check": "npm run convex:typecheck && npm run convex:codegen",
-    "convex:codegen": "sh -c 'if [ -n \"${CONVEX_DEPLOYMENT:-}\" ]; then npm --prefix convex exec -- convex codegen --dry-run --typecheck enable; else echo \"Skipping Convex codegen dry-run because CONVEX_DEPLOYMENT is not configured.\"; fi'",
+    "convex:codegen": "sh -c 'test -n \"${CONVEX_DEPLOYMENT:-}\" || { echo \"CONVEX_DEPLOYMENT is required for Convex codegen dry-run. Run npx convex dev or set CONVEX_DEPLOYMENT.\" >&2; exit 1; }; npm --prefix convex exec -- convex codegen --dry-run --typecheck enable'",
+    "convex:codegen:local": "sh -c 'if [ -n \"${CONVEX_DEPLOYMENT:-}\" ]; then npm run convex:codegen; else echo \"Skipping Convex codegen dry-run because CONVEX_DEPLOYMENT is not configured.\"; fi'",
     "convex:typecheck": "npm --prefix convex run typecheck",
     "convex:test": "npm --prefix convex test",
     "xcodegen": "xcodegen generate",
@@ -17,7 +18,7 @@
     "xcode:build:macos": "xcodebuild -project RecallOS.xcodeproj -scheme RecallOSMac -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build",
     "xcode:build:ios": "xcodebuild -project RecallOS.xcodeproj -scheme RecallOSiOS -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build",
     "xcode:build": "npm run xcode:build:macos && npm run xcode:build:ios",
-    "phase1:check:local": "npm run convex:check && npm run swift:build:core",
+    "phase1:check:local": "npm run convex:typecheck && npm run convex:codegen:local && npm run swift:build:core",
     "phase1:check": "npm run convex:check && npm run convex:test && npm run swift:test:core && npm run xcode:test && npm run xcode:build"
   },
   "dependencies": {

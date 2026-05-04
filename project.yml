@@ -71,6 +71,19 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.recallos.shared-tests
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGN_STYLE: Automatic
+  RecallOSiOSTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - apps/RecallOSiOS/Tests
+    dependencies:
+      - target: RecallOSiOS
+      - package: RecallOSCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.recallos.ios-tests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
 schemes:
   RecallOSMac:
     build:
@@ -82,8 +95,12 @@ schemes:
     build:
       targets:
         RecallOSiOS: all
+        RecallOSiOSTests: [test]
     run:
       config: Debug
+    test:
+      targets:
+        - RecallOSiOSTests
   RecallOSSharedTests:
     build:
       targets:

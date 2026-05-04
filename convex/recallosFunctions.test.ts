@@ -65,7 +65,14 @@ describe("RecallOS Convex function contracts", () => {
 
   test("meeting create and update round-trip repository-shaped fields", async () => {
     const t = makeConvexTest().withIdentity(identity);
-    const { attendeeId, replacementAttendeeId, topicId, folderId } = await t.run(async (ctx) => {
+    const {
+      attendeeId,
+      replacementAttendeeId,
+      topicId,
+      replacementTopicId,
+      folderId,
+      replacementFolderId,
+    } = await t.run(async (ctx) => {
       const attendeeId = await ctx.db.insert("recallOSPeople", {
         userId: identity.tokenIdentifier,
         localId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
@@ -81,12 +88,29 @@ describe("RecallOS Convex function contracts", () => {
         localId: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
         name: "Launch",
       });
+      const replacementTopicId = await ctx.db.insert("recallOSTopics", {
+        userId: identity.tokenIdentifier,
+        localId: "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+        name: "Follow-up",
+      });
       const folderId = await ctx.db.insert("recallOSFolders", {
         userId: identity.tokenIdentifier,
         name: "Pilot",
         sortOrder: 1,
       });
-      return { attendeeId, replacementAttendeeId, topicId, folderId };
+      const replacementFolderId = await ctx.db.insert("recallOSFolders", {
+        userId: identity.tokenIdentifier,
+        name: "Customer",
+        sortOrder: 2,
+      });
+      return {
+        attendeeId,
+        replacementAttendeeId,
+        topicId,
+        replacementTopicId,
+        folderId,
+        replacementFolderId,
+      };
     });
 
     const meetingId = await t.mutation(functions.meetings.create, {
@@ -128,8 +152,14 @@ describe("RecallOS Convex function contracts", () => {
       startsAt: 300,
       endsAt: 450,
       status: "recording",
+      folderId: replacementFolderId,
       calendarEventId: "event-456",
+      summary: "Updated summary",
+      rawNotes: "Updated raw notes",
+      enhancedNotes: "Updated enhanced notes",
+      noteBlocks: [{ kind: "ai", body: "Updated block" }],
       attendeeIds: [replacementAttendeeId],
+      topicIds: [replacementTopicId],
     });
 
     meetings = await t.query(functions.meetings.list, {});
@@ -139,9 +169,14 @@ describe("RecallOS Convex function contracts", () => {
       startsAt: 300,
       endsAt: 450,
       status: "recording",
+      folderId: replacementFolderId,
       calendarEventId: "event-456",
+      summary: "Updated summary",
+      rawNotes: "Updated raw notes",
+      enhancedNotes: "Updated enhanced notes",
+      noteBlocks: [{ kind: "ai", body: "Updated block" }],
       attendeeIds: [replacementAttendeeId],
-      topicIds: [topicId],
+      topicIds: [replacementTopicId],
     });
   });
 
