@@ -37,9 +37,8 @@ Backend:
 
 Do not recreate the foundation from this artifact folder.
 
-The native app implementation already lives at:
+The native app implementation already lives in the project repository:
 
-- Local project: this Git checkout. Common local checkouts include `/Users/jcrmacstudio/Desktop/Notes:Second Brain` and CE worktrees such as `/Users/jcrmacstudio/Desktop/meetingsecondbrain-recallos-commit`.
 - GitHub repo: `https://github.com/sajor2000/meetingsecondbrain`
 
 Current foundation inventory:
@@ -134,7 +133,7 @@ You are building RecallOS, a native Mac-first meeting second brain with an iOS c
 
 Read the external design artifact, SPEC.md, UI_UX_DESIGN.md, DECISIONS.md, and docs/plans/recallos-pilot-mvp-sprint-plan.md before coding.
 
-Use the existing implementation repo at /Users/jcrmacstudio/Desktop/Notes:Second Brain. Do not recreate the repo structure, Swift package, app targets, Convex folder, or foundation docs from scratch.
+Use this checkout of https://github.com/sajor2000/meetingsecondbrain. Do not recreate the repo structure, Swift package, app targets, Convex folder, or foundation docs from scratch.
 
 Treat the HTML as design reference only. Build native SwiftUI apps.
 
