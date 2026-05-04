@@ -127,16 +127,18 @@ enum AudioFileWriter {
             do {
                 let asset = AVURLAsset(url: url)
                 let tracks = try await asset.loadTracks(withMediaType: .audio)
-                guard let sourceTrack = tracks.first,
-                      let compositionTrack = composition.addMutableTrack(
-                        withMediaType: .audio,
-                        preferredTrackID: kCMPersistentTrackID_Invalid
-                      ) else {
+                let duration = try await asset.load(.duration)
+                guard let sourceTrack = tracks.first else {
                     diagnostics.skippedInputCount += 1
                     continue
                 }
-
-                let duration = try await asset.load(.duration)
+                guard let compositionTrack = composition.addMutableTrack(
+                    withMediaType: .audio,
+                    preferredTrackID: kCMPersistentTrackID_Invalid
+                ) else {
+                    diagnostics.skippedInputCount += 1
+                    continue
+                }
                 try compositionTrack.insertTimeRange(
                     CMTimeRange(start: .zero, duration: duration),
                     of: sourceTrack,
@@ -149,7 +151,7 @@ enum AudioFileWriter {
             }
         }
 
-        guard !composition.tracks.isEmpty else {
+        guard diagnostics.insertedTrackCount > 0 else {
             diagnostics.exportStatus = "no-audio-tracks"
             return AudioMixResult(outputURL: nil, diagnostics: diagnostics)
         }
