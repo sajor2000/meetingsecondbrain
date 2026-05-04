@@ -27,6 +27,34 @@ final class ModelTests: XCTestCase {
         XCTAssertTrue(paused.isActive)
     }
 
+    func testScheduledMeetingAdvancesToInProgressInsideMeetingWindow() {
+        let start = Date(timeIntervalSince1970: 1_778_270_400)
+        let meeting = Meeting(
+            title: "Calendar sync",
+            startsAt: start,
+            endsAt: start.addingTimeInterval(1_800),
+            status: .scheduled
+        )
+
+        let advanced = meeting.advancedLifecycle(at: start.addingTimeInterval(60))
+
+        XCTAssertEqual(advanced.status, .inProgress)
+    }
+
+    func testCompletedMeetingDoesNotReopenFromCalendarWindow() {
+        let start = Date(timeIntervalSince1970: 1_778_270_400)
+        let meeting = Meeting(
+            title: "Finished sync",
+            startsAt: start,
+            endsAt: start.addingTimeInterval(1_800),
+            status: .completed
+        )
+
+        let advanced = meeting.advancedLifecycle(at: start.addingTimeInterval(60))
+
+        XCTAssertEqual(advanced.status, .completed)
+    }
+
     func testSampleMeetingContainsRequiredDomainGraph() {
         let meeting = SampleData.meeting
 
@@ -203,6 +231,78 @@ final class ModelTests: XCTestCase {
     }
 
     @MainActor
+    func testCreateOrSelectMeetingFromCalendarEventAvoidsDuplicates() async throws {
+        let event = CalendarEvent(
+            id: UUID(uuidString: "44444444-4444-4444-4444-444444444444")!,
+            externalID: "external-event",
+            title: "Calendar planning",
+            startsAt: Date(timeIntervalSince1970: 1_778_270_400),
+            endsAt: Date(timeIntervalSince1970: 1_778_273_100),
+            attendees: [SampleData.me, SampleData.patrick]
+        )
+        let repository = FixtureRecallOSRepository(meetings: [], tasks: [])
+        let store = RecallOSAppStore(repository: repository, meetings: [], tasks: [])
+
+        let first = await store.createOrSelectMeeting(for: event, now: event.startsAt.addingTimeInterval(60))
+        let second = await store.createOrSelectMeeting(for: event, now: event.startsAt.addingTimeInterval(60))
+
+        XCTAssertEqual(first?.id, second?.id)
+        XCTAssertEqual(store.meetings.count, 1)
+        XCTAssertEqual(store.selectedMeeting?.calendarEventID, event.id)
+        XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
+    }
+
+    @MainActor
+    func testCreateOrSelectMeetingUpdatesScheduledEventBackedMeeting() async throws {
+        let eventID = UUID(uuidString: "55555555-5555-5555-5555-555555555555")!
+        let start = Date(timeIntervalSince1970: 1_778_270_400)
+        let existing = Meeting(
+            title: "Old title",
+            startsAt: start,
+            endsAt: start.addingTimeInterval(1_800),
+            attendees: [SampleData.me],
+            calendarEventID: eventID,
+            status: .scheduled
+        )
+        let updatedEvent = CalendarEvent(
+            id: eventID,
+            externalID: "updated-event",
+            title: "Updated calendar planning",
+            startsAt: start.addingTimeInterval(300),
+            endsAt: start.addingTimeInterval(3_000),
+            location: "Zoom",
+            attendees: [SampleData.me, SampleData.patrick, SampleData.lily]
+        )
+        let repository = FixtureRecallOSRepository(meetings: [existing], tasks: [])
+        let store = RecallOSAppStore(repository: repository, meetings: [existing], selectedMeeting: existing, tasks: [])
+
+        let selected = await store.createOrSelectMeeting(for: updatedEvent, now: updatedEvent.startsAt.addingTimeInterval(60))
+
+        XCTAssertEqual(selected?.id, existing.id)
+        XCTAssertEqual(store.meetings.count, 1)
+        XCTAssertEqual(store.selectedMeeting?.title, updatedEvent.title)
+        XCTAssertEqual(store.selectedMeeting?.attendees.count, 3)
+        XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
+    }
+
+    @MainActor
+    func testCalendarProviderFailureFallsBackToMockEvents() async {
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [SampleData.meeting], tasks: SampleData.tasks),
+            calendarProvider: ThrowingCalendarEventProvider(),
+            meetings: [SampleData.meeting],
+            selectedMeeting: SampleData.meeting,
+            tasks: SampleData.tasks
+        )
+
+        await store.refreshUpcomingEvents(limit: 2)
+
+        XCTAssertEqual(store.upcomingEvents.count, 2)
+        XCTAssertEqual(store.workflowMessage, "Calendar access is unavailable. Showing sample upcoming events.")
+        XCTAssertNil(store.syncError)
+    }
+
+    @MainActor
     func testStartRecordingStopsAudioCaptureWhenMeetingUpdateFails() async {
         let meeting = SampleData.meeting
         let audioProvider = RecordingSpyAudioProvider()
@@ -218,7 +318,7 @@ final class ModelTests: XCTestCase {
         let audioState = await audioProvider.state()
         XCTAssertEqual(audioState.startCount, 1)
         XCTAssertEqual(audioState.stopCount, 1)
-        XCTAssertEqual(store.selectedMeeting?.status, meeting.status)
+        XCTAssertEqual(store.selectedMeeting?.status, .failed)
         XCTAssertEqual(store.recordingSession?.state, .failed)
         XCTAssertNotNil(store.syncError)
     }
@@ -242,6 +342,13 @@ final class ModelTests: XCTestCase {
 
 private enum TestRepositoryError: Error {
     case updateFailed
+    case calendarFailed
+}
+
+private struct ThrowingCalendarEventProvider: CalendarEventProvider {
+    func upcomingEvents(limit: Int) async throws -> [CalendarEvent] {
+        throw TestRepositoryError.calendarFailed
+    }
 }
 
 private actor RecordingSpyAudioProvider: AudioCaptureProvider {

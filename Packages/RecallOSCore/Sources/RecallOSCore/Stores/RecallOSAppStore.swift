@@ -92,7 +92,8 @@ public final class RecallOSAppStore: ObservableObject {
                 meetings.first(where: { $0.id == selected.id })
             } ?? meetings.first
             tasks = try await repository.listTasks(forMeeting: selectedMeeting?.id)
-            upcomingEvents = try await calendarProvider.upcomingEvents(limit: 5)
+            await refreshMeetingLifecycle()
+            await refreshUpcomingEvents(limit: 5)
             searchResults = try await secondBrainSearchProvider.search(query: defaultSearchQuery, meetings: meetings, tasks: tasks)
             syncError = nil
         } catch {
@@ -130,6 +131,75 @@ public final class RecallOSAppStore: ObservableObject {
         } catch {
             syncError = error.localizedDescription
             return nil
+        }
+    }
+
+    @discardableResult
+    public func createOrSelectMeeting(for event: CalendarEvent, now: Date = Date()) async -> Meeting? {
+        if var existing = meetings.first(where: { $0.calendarEventID == event.id || $0.title == event.title && $0.startsAt == event.startsAt }) {
+            if existing.status == .scheduled || existing.status == .inProgress {
+                existing.title = event.title
+                existing.startsAt = event.startsAt
+                existing.endsAt = event.endsAt
+                existing.attendees = event.attendees
+                existing.calendarEventID = event.id
+                existing.status = MeetingLifecycle.initialStatus(startsAt: event.startsAt, endsAt: event.endsAt, at: now)
+
+                do {
+                    let saved = try await repository.updateMeeting(existing)
+                    upsertMeeting(saved, select: true)
+                    tasks = try await repository.listTasks(forMeeting: saved.id)
+                    syncError = nil
+                    return saved
+                } catch {
+                    syncError = error.localizedDescription
+                    return nil
+                }
+            } else {
+                await selectMeeting(existing.id)
+                return selectedMeeting
+            }
+        }
+
+        let meeting = Meeting(
+            title: event.title,
+            startsAt: event.startsAt,
+            endsAt: event.endsAt,
+            attendees: event.attendees,
+            calendarEventID: event.id,
+            status: MeetingLifecycle.initialStatus(startsAt: event.startsAt, endsAt: event.endsAt, at: now)
+        )
+
+        do {
+            let saved = try await repository.createMeeting(meeting)
+            meetings.insert(saved, at: 0)
+            selectedMeeting = saved
+            tasks = []
+            syncError = nil
+            return saved
+        } catch {
+            syncError = error.localizedDescription
+            return nil
+        }
+    }
+
+    public func refreshUpcomingEvents(limit: Int = 5) async {
+        do {
+            upcomingEvents = try await calendarProvider.upcomingEvents(limit: limit)
+            syncError = nil
+        } catch {
+            upcomingEvents = (try? await MockCalendarEventProvider().upcomingEvents(limit: limit)) ?? []
+            workflowMessage = "Calendar access is unavailable. Showing sample upcoming events."
+        }
+    }
+
+    public func refreshMeetingLifecycle(now: Date = Date()) async {
+        for meeting in meetings {
+            let advanced = meeting.advancedLifecycle(at: now)
+            guard advanced.status != meeting.status else { continue }
+
+            upsertMeeting(advanced)
+            _ = try? await repository.updateMeeting(advanced)
         }
     }
 
@@ -319,6 +389,10 @@ public final class RecallOSAppStore: ObservableObject {
         session?.state = .failed
         session?.errorMessage = error.localizedDescription
         recordingSession = session
+        if let meetingID = session?.meetingID, var meeting = meeting(withID: meetingID) {
+            meeting.status = .failed
+            upsertMeeting(meeting)
+        }
         workflowMessage = nil
         syncError = error.localizedDescription
     }

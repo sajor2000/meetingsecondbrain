@@ -24,5 +24,7 @@
   <string>RecallOS captures meeting screenshots when you add visual context to notes.</string>
   <key>NSCalendarsUsageDescription</key>
   <string>RecallOS matches recordings to calendar events and meeting attendees.</string>
+  <key>NSCalendarsFullAccessUsageDescription</key>
+  <string>RecallOS reads upcoming calendar events so it can prepare meeting notes and show pre-meeting recording controls.</string>
 </dict>
 </plist>
