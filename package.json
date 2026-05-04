@@ -8,11 +8,12 @@
     "xcodegen": "xcodegen generate",
     "swift:build:core": "swift build --package-path packages/RecallOSCore",
     "swift:test:core": "swift test --package-path packages/RecallOSCore",
+    "xcode:test:shared": "xcodebuild test -project RecallOS.xcodeproj -scheme RecallOSSharedTests -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO",
     "xcode:build:macos": "xcodebuild -project RecallOS.xcodeproj -scheme RecallOSMac -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build",
     "xcode:build:ios": "xcodebuild -project RecallOS.xcodeproj -scheme RecallOSiOS -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build",
     "xcode:build": "npm run xcode:build:macos && npm run xcode:build:ios",
     "phase1:check:local": "npm run convex:typecheck && npm run swift:build:core",
-    "phase1:check": "npm run convex:typecheck && npm run convex:test && npm run swift:test:core && npm run xcode:build"
+    "phase1:check": "npm run convex:typecheck && npm run convex:test && npm run swift:test:core && npm run xcode:test:shared && npm run xcode:build"
   },
   "dependencies": {
     "convex": "^1.29.3"

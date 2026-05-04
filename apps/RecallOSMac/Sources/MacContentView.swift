@@ -183,14 +183,19 @@ struct MacContentView: View {
             subtitle: store.recordingSession?.state == .paused ? "Paused" : "Mock capture · ready for Parakeet",
             elapsed: elapsedTitle(store.recordingSession),
             onRecord: {
-                if store.recordingSession?.state == .paused {
-                    Swift.Task { await store.resumeRecording() }
-                } else {
-                    startRecording()
-                }
+                startRecording()
             },
             onPause: {
-                Swift.Task { await store.pauseRecording() }
+                Swift.Task {
+                    await store.pauseRecording()
+                    showBanner(state: store.recordingSession?.bannerState ?? .adHoc)
+                }
+            },
+            onResume: {
+                Swift.Task {
+                    await store.resumeRecording()
+                    showBanner(state: store.recordingSession?.bannerState ?? .adHoc)
+                }
             },
             onStop: stopAndEnhance
         )

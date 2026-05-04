@@ -7,6 +7,7 @@ public struct RecordingBannerView: View {
     private let elapsed: String
     private let onRecord: () -> Void
     private let onPause: () -> Void
+    private let onResume: () -> Void
     private let onStop: () -> Void
     private let onDismiss: () -> Void
     @State private var pulsing = false
@@ -18,6 +19,7 @@ public struct RecordingBannerView: View {
         elapsed: String = "00:00",
         onRecord: @escaping () -> Void = {},
         onPause: @escaping () -> Void = {},
+        onResume: @escaping () -> Void = {},
         onStop: @escaping () -> Void = {},
         onDismiss: @escaping () -> Void = {}
     ) {
@@ -27,6 +29,7 @@ public struct RecordingBannerView: View {
         self.elapsed = elapsed
         self.onRecord = onRecord
         self.onPause = onPause
+        self.onResume = onResume
         self.onStop = onStop
         self.onDismiss = onDismiss
     }
@@ -111,7 +114,7 @@ public struct RecordingBannerView: View {
             }
         } else if state == .paused {
             HStack(spacing: AppSpacing.xs) {
-                Button("Resume", action: onRecord)
+                Button("Resume", action: onResume)
                     .buttonStyle(.borderedProminent)
                     .tint(Color.appAccent)
                     .controlSize(.small)

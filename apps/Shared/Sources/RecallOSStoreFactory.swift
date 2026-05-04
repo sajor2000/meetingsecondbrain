@@ -3,13 +3,16 @@ import RecallOSCore
 
 enum RecallOSStoreFactory {
     @MainActor
-    static func makeAppStore() -> RecallOSAppStore {
-        let liveConvexEnabled = ProcessInfo.processInfo.environment["RECALLOS_USE_LIVE_CONVEX"] == "1"
+    static func makeAppStore(
+        environment: [String: String] = ProcessInfo.processInfo.environment,
+        supportsLiveUse: Bool = ConvexRecallOSRepository.supportsLiveUse
+    ) -> RecallOSAppStore {
+        let liveConvexEnabled = environment["RECALLOS_USE_LIVE_CONVEX"] == "1"
         if liveConvexEnabled {
-            guard ConvexRecallOSRepository.supportsLiveUse else {
+            guard supportsLiveUse else {
                 return unavailableStore("Live Convex was requested, but the Swift Convex adapter is not implemented yet.")
             }
-            guard ConvexRecallOSRepository.fromEnvironment() != nil else {
+            guard ConvexRecallOSRepository.fromEnvironment(environment) != nil else {
                 return unavailableStore("Live Convex was requested, but CONVEX_URL is not configured.")
             }
             return unavailableStore("Live Convex was requested, but the Swift Convex adapter is not implemented yet.")

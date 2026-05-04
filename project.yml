@@ -58,6 +58,18 @@ targets:
         ENABLE_PREVIEWS: YES
         ONLY_ACTIVE_ARCH: YES
         EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
+  RecallOSSharedTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - apps/Shared/Sources
+      - apps/Shared/Tests
+    dependencies:
+      - package: RecallOSCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.recallos.shared-tests
+        CODE_SIGN_STYLE: Automatic
 schemes:
   RecallOSMac:
     build:
@@ -71,3 +83,10 @@ schemes:
         RecallOSiOS: all
     run:
       config: Debug
+  RecallOSSharedTests:
+    build:
+      targets:
+        RecallOSSharedTests: all
+    test:
+      targets:
+        - RecallOSSharedTests

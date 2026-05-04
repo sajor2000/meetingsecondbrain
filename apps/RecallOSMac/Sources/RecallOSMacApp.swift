@@ -44,6 +44,20 @@ struct RecallOSMacApp: App {
         }
     }
 
+    private func pauseRecordingFromCommand() {
+        Task {
+            await store.pauseRecording()
+            showBannerFromCommand()
+        }
+    }
+
+    private func resumeRecordingFromCommand() {
+        Task {
+            await store.resumeRecording()
+            showBannerFromCommand()
+        }
+    }
+
     @MainActor
     private func showBannerFromCommand() {
         let title = store.selectedMeeting?.title ?? "Ad-hoc meeting"
@@ -52,9 +66,8 @@ struct RecallOSMacApp: App {
             title: title,
             subtitle: store.workflowMessage ?? "Mock capture · ready for Parakeet",
             onRecord: startRecordingFromCommand,
-            onPause: {
-                Task { await store.pauseRecording() }
-            },
+            onPause: pauseRecordingFromCommand,
+            onResume: resumeRecordingFromCommand,
             onStop: stopRecordingFromCommand
         )
     }

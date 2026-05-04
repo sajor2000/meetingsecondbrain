@@ -13,8 +13,8 @@ struct ConvexRecallOSRepository {
         self.deploymentURL = deploymentURL
     }
 
-    static func fromEnvironment() -> ConvexRecallOSRepository? {
-        guard let url = ProcessInfo.processInfo.environment["CONVEX_URL"], !url.isEmpty else {
+    static func fromEnvironment(_ environment: [String: String] = ProcessInfo.processInfo.environment) -> ConvexRecallOSRepository? {
+        guard let url = environment["CONVEX_URL"], !url.isEmpty else {
             return nil
         }
         return ConvexRecallOSRepository(deploymentURL: url)

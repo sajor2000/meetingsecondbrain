@@ -144,6 +144,11 @@ describe("RecallOS Convex function contracts", () => {
     expect(doneTasks[0].status).toBe("done");
     expect(doneTasks[0].completedAt).toBeTypeOf("number");
 
+    await t.mutation(functions.tasks.move, { taskId, status: "open" });
+    const reopenedTasks = await t.query(functions.tasks.listForMeeting, { meetingId });
+    expect(reopenedTasks[0].status).toBe("open");
+    expect(reopenedTasks[0].completedAt).toBeUndefined();
+
     const movedByLocalId = await t.mutation(functions.tasks.moveByLocalIds, {
       localIds: ["44444444-4444-4444-8444-444444444444"],
       status: "waiting",

@@ -13,6 +13,7 @@ final class RecordingBannerPanelController: ObservableObject {
         elapsed: String = "00:00",
         onRecord: @escaping () -> Void = {},
         onPause: @escaping () -> Void = {},
+        onResume: @escaping () -> Void = {},
         onStop: @escaping () -> Void = {}
     ) {
         let view = RecordingBannerView(
@@ -22,6 +23,7 @@ final class RecordingBannerPanelController: ObservableObject {
             elapsed: elapsed,
             onRecord: onRecord,
             onPause: onPause,
+            onResume: onResume,
             onStop: onStop,
             onDismiss: { [weak self] in self?.dismiss() }
         )
