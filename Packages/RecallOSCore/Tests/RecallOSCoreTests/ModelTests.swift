@@ -156,6 +156,53 @@ final class ModelTests: XCTestCase {
     }
 
     @MainActor
+    func testRecordingContinuesAgainstSessionMeetingWhenSelectionChanges() async throws {
+        let recordingMeetingID = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
+        let otherMeetingID = UUID(uuidString: "33333333-3333-3333-3333-333333333333")!
+        let start = Date(timeIntervalSince1970: 1_778_270_400)
+        let recordingMeeting = Meeting(
+            id: recordingMeetingID,
+            title: "Recording meeting",
+            startsAt: start,
+            endsAt: start.addingTimeInterval(45 * 60),
+            attendees: [SampleData.me, SampleData.patrick]
+        )
+        let otherMeeting = Meeting(
+            id: otherMeetingID,
+            title: "Other meeting",
+            startsAt: start.addingTimeInterval(3_600),
+            endsAt: start.addingTimeInterval(5_400),
+            attendees: [SampleData.lily]
+        )
+        let repository = FixtureRecallOSRepository(meetings: [recordingMeeting, otherMeeting], tasks: [])
+        let store = RecallOSAppStore(
+            repository: repository,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000),
+            meetings: [recordingMeeting, otherMeeting],
+            selectedMeeting: recordingMeeting,
+            tasks: []
+        )
+
+        await store.startRecording()
+        await store.selectMeeting(otherMeetingID)
+        try await Task.sleep(nanoseconds: 20_000_000)
+
+        let streamedRecordingMeeting = try XCTUnwrap(store.meetings.first { $0.id == recordingMeetingID })
+        XCTAssertFalse(streamedRecordingMeeting.transcriptSegments.isEmpty)
+        XCTAssertEqual(store.selectedMeeting?.id, otherMeetingID)
+
+        await store.stopAndEnhanceRecording()
+
+        let completedRecordingMeeting = try XCTUnwrap(store.meetings.first { $0.id == recordingMeetingID })
+        XCTAssertEqual(completedRecordingMeeting.status, .completed)
+        XCTAssertFalse(completedRecordingMeeting.userNotes.isEmpty)
+        XCTAssertEqual(store.recordingSession?.state, .completed)
+        XCTAssertEqual(store.selectedMeeting?.id, otherMeetingID)
+        XCTAssertTrue(store.tasks.isEmpty)
+        XCTAssertNil(store.syncError)
+    }
+
+    @MainActor
     func testStartRecordingStopsAudioCaptureWhenMeetingUpdateFails() async {
         let meeting = SampleData.meeting
         let audioProvider = RecordingSpyAudioProvider()

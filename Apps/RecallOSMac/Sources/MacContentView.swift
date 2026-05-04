@@ -51,6 +51,7 @@ struct MacContentView: View {
                         onSearch: { query in
                             Swift.Task { await store.search(query) }
                         },
+                        onShowFullMeeting: selectMeeting,
                         onMoveTasks: { ids, status in
                             Task {
                                 await store.moveTasks(ids, to: status)
@@ -64,12 +65,8 @@ struct MacContentView: View {
                     session: store.recordingSession,
                     workflowMessage: store.workflowMessage,
                     onStart: startRecording,
-                    onPause: {
-                        Swift.Task { await store.pauseRecording() }
-                    },
-                    onResume: {
-                        Swift.Task { await store.resumeRecording() }
-                    },
+                    onPause: pauseRecording,
+                    onResume: resumeRecording,
                     onStop: stopAndEnhance
                 )
             } else {
@@ -123,9 +120,13 @@ struct MacContentView: View {
                 Swift.Task { await store.moveTasks(ids, to: status) }
             })
         case .secondBrain:
-            SecondBrainContentView(searchResults: store.searchResults) { query in
-                Swift.Task { await store.search(query) }
-            }
+            SecondBrainContentView(
+                searchResults: store.searchResults,
+                onSearch: { query in
+                    Swift.Task { await store.search(query) }
+                },
+                onShowFullMeeting: selectMeeting
+            )
         case .people:
             PlaceholderContentView(title: "People", message: "People profiles will collect recurring speakers, owners, and meeting context.")
         case let .folder(folder):
@@ -172,21 +173,33 @@ struct MacContentView: View {
     }
 
     private func showBanner(state: RecordingBannerState) {
-        let meeting = store.selectedMeeting
+        let meeting = store.recordingSession.flatMap { session in
+            store.meetings.first { $0.id == session.meetingID }
+        } ?? store.selectedMeeting
         bannerController.show(
             state: state,
             title: meeting?.title ?? "Ad-hoc meeting",
             subtitle: store.recordingSession?.state == .paused ? "Paused" : "Mock capture · ready for Parakeet",
             elapsed: elapsedTitle(store.recordingSession),
             onRecord: startRecording,
-            onPause: {
-                Swift.Task { await store.pauseRecording() }
-            },
-            onResume: {
-                Swift.Task { await store.resumeRecording() }
-            },
+            onPause: pauseRecording,
+            onResume: resumeRecording,
             onStop: stopAndEnhance
         )
+    }
+
+    private func pauseRecording() {
+        Swift.Task {
+            await store.pauseRecording()
+            showBanner(state: store.recordingSession?.bannerState ?? .paused)
+        }
+    }
+
+    private func resumeRecording() {
+        Swift.Task {
+            await store.resumeRecording()
+            showBanner(state: store.recordingSession?.bannerState ?? .recording)
+        }
     }
 
     private func selectMeeting(_ meetingID: UUID) {
@@ -537,6 +550,7 @@ private struct RightRailView: View {
     let highlightedSegmentID: UUID?
     let onTimestampSelected: (TimeInterval) -> Void
     let onSearch: (String) -> Void
+    let onShowFullMeeting: (UUID) -> Void
     let onMoveTasks: ([UUID], TaskStatus) -> Void
     @State private var brainQuery = "What did Patrick say about JSL POC?"
 
@@ -645,7 +659,7 @@ private struct RightRailView: View {
                     .hairlinePanel()
             } else {
                 ForEach(searchResults) { result in
-                    SearchResultCard(result: result)
+                    SearchResultCard(result: result, onShowFullMeeting: onShowFullMeeting)
                 }
             }
         }
@@ -814,6 +828,7 @@ private struct MacTasksContentView: View {
 private struct SecondBrainContentView: View {
     let searchResults: [SearchResult]
     let onSearch: (String) -> Void
+    let onShowFullMeeting: (UUID) -> Void
     @State private var query = "What did Patrick say about JSL POC?"
 
     var body: some View {
@@ -850,7 +865,7 @@ private struct SecondBrainContentView: View {
                         .hairlinePanel()
                 } else {
                     ForEach(searchResults) { result in
-                        SearchResultCard(result: result)
+                        SearchResultCard(result: result, onShowFullMeeting: onShowFullMeeting)
                     }
                 }
             }

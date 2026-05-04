@@ -45,23 +45,40 @@ struct RecallOSMacApp: App {
         }
     }
 
+    private func pauseRecordingFromCommand() {
+        Task {
+            await store.pauseRecording()
+            showBannerFromCommand()
+        }
+    }
+
+    private func resumeRecordingFromCommand() {
+        Task {
+            await store.resumeRecording()
+            showBannerFromCommand()
+        }
+    }
+
     @MainActor
     private func showBannerFromCommand() {
-        let title = store.selectedMeeting?.title ?? "Ad-hoc meeting"
         bannerController.show(
             state: store.recordingSession?.bannerState ?? .preMeeting,
-            title: title,
+            title: recordingMeetingTitle(),
             subtitle: store.workflowMessage ?? "Mock capture · ready for Parakeet",
             elapsed: elapsedTitle(store.recordingSession),
             onRecord: startRecordingFromCommand,
-            onPause: {
-                Task { await store.pauseRecording() }
-            },
-            onResume: {
-                Task { await store.resumeRecording() }
-            },
+            onPause: pauseRecordingFromCommand,
+            onResume: resumeRecordingFromCommand,
             onStop: stopRecordingFromCommand
         )
+    }
+
+    private func recordingMeetingTitle() -> String {
+        if let recordingMeetingID = store.recordingSession?.meetingID,
+           let recordingMeeting = store.meetings.first(where: { $0.id == recordingMeetingID }) {
+            return recordingMeeting.title
+        }
+        return store.selectedMeeting?.title ?? "Ad-hoc meeting"
     }
 
     private func elapsedTitle(_ session: RecordingSession?) -> String {
