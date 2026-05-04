@@ -2,20 +2,6 @@ import { query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireUserId } from "./auth";
 
-const MAX_SEARCH_RESULTS = 50;
-
-function normalizedQuery(queryText: string) {
-  return queryText.trim();
-}
-
-function clampLimit(limit: number | undefined, max = MAX_SEARCH_RESULTS) {
-  if (limit === undefined) {
-    return 20;
-  }
-
-  return Math.max(1, Math.min(Math.floor(limit), max));
-}
-
 export const brain = query({
   args: { query: v.string() },
   handler: async (ctx, args) => {
@@ -57,51 +43,5 @@ export const brain = query({
       }));
 
     return [...meetingResults, ...taskResults].slice(0, 12);
-  },
-});
-
-export const meetings = query({
-  args: {
-    query: v.string(),
-    folderId: v.optional(v.id("folders")),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const queryText = normalizedQuery(args.query);
-    if (queryText.length === 0) {
-      return [];
-    }
-
-    const search = ctx.db
-      .query("meetings")
-      .withSearchIndex("search_notes", (q) => {
-        const builder = q.search("searchableText", queryText);
-        return args.folderId === undefined ? builder : builder.eq("folderId", args.folderId);
-      });
-
-    return await search.take(clampLimit(args.limit));
-  },
-});
-
-export const transcriptSegments = query({
-  args: {
-    query: v.string(),
-    meetingId: v.optional(v.id("meetings")),
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const queryText = normalizedQuery(args.query);
-    if (queryText.length === 0) {
-      return [];
-    }
-
-    const search = ctx.db
-      .query("transcriptSegments")
-      .withSearchIndex("search_transcripts", (q) => {
-        const builder = q.search("text", queryText);
-        return args.meetingId === undefined ? builder : builder.eq("meetingId", args.meetingId);
-      });
-
-    return await search.take(clampLimit(args.limit));
   },
 });
