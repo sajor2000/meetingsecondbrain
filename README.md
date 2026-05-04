@@ -100,6 +100,9 @@ Workspaces:
 - `apps/macOS`
 - `apps/iOS`
 - `packages/Core`
+- `Apps/RecallOSMac`
+- `Apps/RecallOSiOS`
+- `Packages/RecallOSCore`
 - `convex`
 - `mac-studio`
 
@@ -107,6 +110,13 @@ Open the canonical workspace in Xcode:
 
 ```bash
 open MeetingSecondBrain.xcworkspace
+```
+
+RecallOS native prototype checks:
+
+```bash
+npm run swift:test:recallos-core
+npm run xcode:build:recallos
 ```
 
 Convex local development:

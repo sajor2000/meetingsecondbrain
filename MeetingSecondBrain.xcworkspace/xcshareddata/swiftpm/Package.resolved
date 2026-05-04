@@ -1,6 +1,15 @@
 {
-  "originHash" : "0cadaf0eb3ea74d3f7718f3e564910e2e7a456c637fdebb2fad555d05c8b12f4",
+  "originHash" : "7d060b9c39dd6cc797e2f3386e73a7548315404dbd09c93001e9042074ead3bc",
   "pins" : [
+    {
+      "identity" : "convex-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/get-convex/convex-swift",
+      "state" : {
+        "revision" : "125b71b2f8725931a5b0e8252f0799ef2adad120",
+        "version" : "0.8.1"
+      }
+    },
     {
       "identity" : "fluidaudio",
       "kind" : "remoteSourceControl",
