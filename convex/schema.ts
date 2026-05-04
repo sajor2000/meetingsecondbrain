@@ -140,7 +140,10 @@ export default defineSchema({
     confidence: v.optional(v.number()),
   })
     .index("by_meeting", ["meetingId", "startMs"])
-    .searchIndex("search_transcripts", { searchField: "text" }),
+    .searchIndex("search_transcripts", {
+      searchField: "text",
+      filterFields: ["meetingId"],
+    }),
 
   tasks: defineTable({
     title: v.string(),
