@@ -1,5 +1,19 @@
 import Foundation
 
+struct ManualEvidenceCheckItem: Equatable, Identifiable {
+    let label: String
+    let passed: Bool
+    let detail: String
+
+    var id: String {
+        label
+    }
+
+    var statusText: String {
+        passed ? "PASS" : "FAIL"
+    }
+}
+
 struct ManualEvidenceSummaryBuilder {
     func build(
         artifact: RecordingArtifact,
@@ -24,6 +38,16 @@ struct ManualEvidenceSummaryBuilder {
             fileLine("Transcript JSON", transcriptJSONURL(loadResult: loadResult, transcriptionArtifact: transcriptionArtifact), row: nil),
             fileLine("Transcript markdown", transcriptMarkdownURL(loadResult: loadResult, transcriptionArtifact: transcriptionArtifact), row: nil),
             "",
+            "### Evidence Checklist"
+        ]
+        lines.append(contentsOf: buildChecks(
+            artifact: artifact,
+            audioRows: audioRows,
+            loadResult: loadResult,
+            transcriptionArtifact: transcriptionArtifact
+        ).map { "- [\($0.statusText)] \($0.label): \($0.detail)" })
+        lines.append(contentsOf: [
+            "",
             "### Capture Diagnostics",
             "- System samples seen: \(artifact.captureDiagnostics.systemSampleCount)",
             "- System samples written: \(artifact.captureDiagnostics.systemWrittenSampleCount)",
@@ -45,7 +69,7 @@ struct ManualEvidenceSummaryBuilder {
             "- Speaker label quality:",
             "- Notes:",
             ""
-        ]
+        ])
 
         let warnings = loadResult?.warnings ?? []
         if !warnings.isEmpty {
@@ -55,6 +79,28 @@ struct ManualEvidenceSummaryBuilder {
         }
 
         return lines.joined(separator: "\n")
+    }
+
+    func buildChecks(
+        artifact: RecordingArtifact,
+        audioRows: [AudioInspectionRow],
+        loadResult: RecordingArtifactLoadResult?,
+        transcriptionArtifact: TranscriptionArtifact?
+    ) -> [ManualEvidenceCheckItem] {
+        [
+            audioCheck("System audio", url: artifact.systemAudioURL, row: row(.system, in: audioRows)),
+            audioCheck("Microphone audio", url: artifact.microphoneAudioURL, row: row(.microphone, in: audioRows)),
+            audioCheck("Mixed audio", url: artifact.mixedAudioURL, row: row(.mixed, in: audioRows)),
+            pathCheck("Metadata", url: artifact.metadataURL),
+            pathCheck("Transcript JSON", url: transcriptJSONURL(
+                loadResult: loadResult,
+                transcriptionArtifact: transcriptionArtifact
+            )),
+            pathCheck("Transcript markdown", url: transcriptMarkdownURL(
+                loadResult: loadResult,
+                transcriptionArtifact: transcriptionArtifact
+            ))
+        ]
     }
 
     private func fileLine(_ label: String, _ url: URL?, row: AudioInspectionRow?) -> String {
@@ -70,6 +116,35 @@ struct ManualEvidenceSummaryBuilder {
         }
 
         return "- \(label): \(url.path)"
+    }
+
+    private func audioCheck(_ label: String, url: URL?, row: AudioInspectionRow?) -> ManualEvidenceCheckItem {
+        guard let url else {
+            return ManualEvidenceCheckItem(label: label, passed: false, detail: "missing URL")
+        }
+
+        guard let row else {
+            return ManualEvidenceCheckItem(label: label, passed: false, detail: "not inspected at \(url.path)")
+        }
+
+        let detail: String
+        if row.exists {
+            let duration = row.duration.map(formatDuration) ?? "duration unknown"
+            let size = row.byteSize.map(formatBytes) ?? "size unknown"
+            detail = "present, \(duration), \(size)"
+        } else {
+            detail = "missing at \(url.path)"
+        }
+
+        return ManualEvidenceCheckItem(label: label, passed: row.exists, detail: detail)
+    }
+
+    private func pathCheck(_ label: String, url: URL?) -> ManualEvidenceCheckItem {
+        guard let url else {
+            return ManualEvidenceCheckItem(label: label, passed: false, detail: "missing URL")
+        }
+
+        return ManualEvidenceCheckItem(label: label, passed: true, detail: url.path)
     }
 
     private func row(_ kind: AudioArtifactKind, in rows: [AudioInspectionRow]) -> AudioInspectionRow? {

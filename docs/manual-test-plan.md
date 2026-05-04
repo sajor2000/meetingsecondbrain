@@ -26,30 +26,64 @@ Documented capture hardening:
 
 ### Real Zoom or Equivalent Capture Gate
 
+Use this section for one real bot-free capture run. Start with a short call that has remote speaker audio and local mic audio. After Stop, inspect all three audio files in the proof UI, then use Copy Evidence and paste the copied block below.
+
 - Bot-free requirement:
   - App does not join the meeting.
   - No meeting bot, external recorder, browser automation participant, or invited capture account appears in the participant list.
   - Capture uses only local system audio and local microphone audio from the Mac running the app.
+
+#### Run Details
+
 - Date:
 - Meeting app build:
 - macOS version:
 - Meeting client:
+- Meeting client version:
+- Meeting type:
+- Remote speaker source:
+- Local microphone:
 - Recording start latency:
 - Output folder:
-- System audio file audible:
-- Microphone file audible:
-- Mixed file audible:
 - No bot or external recorder joined:
 - Stop leaves no active capture indicators:
 - Artifact directory contains unique session ID:
 - Live system meter active:
 - Live microphone meter active:
+- Screen recording permission prompt behavior:
+- Microphone permission prompt behavior:
 - Notes:
+
+#### Artifact Checks
+
+- System audio checklist status:
+- System audio audible:
+- System audio content notes:
+- Microphone checklist status:
+- Microphone audible:
+- Microphone content notes:
+- Mixed audio checklist status:
+- Mixed audio audible:
+- Mixed audio content notes:
+- Metadata checklist status:
+- Transcript JSON checklist status:
+- Transcript markdown checklist status:
+
+#### Copied Evidence
+
+Paste the full proof UI evidence block here:
+
+```markdown
+
+```
 
 ### Acceptance
 
 - Remote speaker audio is audible in the system audio artifact.
 - Local microphone audio is audible in the microphone artifact.
+- Mixed audio is present and audible, or its diagnostics explain the failure.
+- Metadata is present.
+- The proof UI evidence checklist clearly marks system, microphone, mixed, metadata, transcript JSON, and transcript markdown as PASS or FAIL.
 - No bot, external recorder, or extra participant joins the meeting.
 - Start latency is recorded.
 - Any capture permission or audio quality issue is added to `DECISIONS.md` or a follow-up issue before Phase 2 continues.
