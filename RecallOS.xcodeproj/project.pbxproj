@@ -13,6 +13,7 @@
 		04A65DBAF7BFF6C40F57FED5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54808FB62F806CDAD3137C4F /* Assets.xcassets */; };
 		0528BA414C2F719DDDF3EAA8 /* EventKitCalendarEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */; };
 		0810FCD6FDD9C6950A70E167 /* SwiftDataRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */; };
+		0E6210BB3BE8C632223D1277 /* RecallOSConvexDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDE8EB4CE50D6CC361AAE8 /* RecallOSConvexDTOs.swift */; };
 		15AE1E83E12DE49CCAEDF0FE /* RecallOSPersistentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E90D362DEBD483D3BFF135 /* RecallOSPersistentModels.swift */; };
 		25EA8B9CC185FA34D22BF014 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 533C35D786E1BFEF3BD60F6D /* RecallOSCore */; };
 		27530E75D34600D56BEBE835 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7DDD304382FCC3A23E9D95B5 /* RecallOSCore */; };
@@ -32,10 +33,12 @@
 		823FBFA32D6DAF3E0E0A84CE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */; };
 		82618DC59276E89EA431C37C /* SwiftDataRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */; };
 		84C4E37283733C5C1355E671 /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
+		8C86D72BF4D935A81593F326 /* RecallOSConvexDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDE8EB4CE50D6CC361AAE8 /* RecallOSConvexDTOs.swift */; };
 		98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
 		9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020E5BBB439A3E651DF08A98 /* IOSContentView.swift */; };
 		A27A6DFD1ACDA62927213A43 /* MacNavigationViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEF7C552E518BB5B10D4674 /* MacNavigationViews.swift */; };
 		ABD445D2A67826F2A316B845 /* MacNotesEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558D643CD2E47D6AA3B0BDFD /* MacNotesEditorView.swift */; };
+		B93CA9BB285C247FD0672350 /* RecallOSConvexDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDE8EB4CE50D6CC361AAE8 /* RecallOSConvexDTOs.swift */; };
 		C0012DB10FBEB59FBC8B7C73 /* RecallOSiOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1270420C0574F0584375CB35 /* RecallOSiOSTests.swift */; };
 		CED416F844C90E524C328E26 /* MeetingLifecycleScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C05152F095D8924F019A38 /* MeetingLifecycleScheduler.swift */; };
 		D768BE2479BCE41AEB5A46DC /* MacRecordingStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A6C19EA24F6E06C859698 /* MacRecordingStatusBar.swift */; };
@@ -80,6 +83,7 @@
 		9249171BE8B6BE902CFF0404 /* RecallOSiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RecallOSiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		952043282830E1CC3AA46119 /* RecallOSMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecallOSMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A13E3B8D08079C3540DFE0A /* RecallOSiOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSiOSApp.swift; sourceTree = "<group>"; };
+		A0DDE8EB4CE50D6CC361AAE8 /* RecallOSConvexDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSConvexDTOs.swift; sourceTree = "<group>"; };
 		A7ACF88EA1379D70B4E13240 /* RecallOSSharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecallOSSharedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvexRecallOSRepository.swift; sourceTree = "<group>"; };
 		C7DD7DA2FA3279C131E5EB86 /* MacSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSidebarView.swift; sourceTree = "<group>"; };
@@ -183,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */,
+				A0DDE8EB4CE50D6CC361AAE8 /* RecallOSConvexDTOs.swift */,
 				80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */,
 				03E8C28FEFB1E89917D54A9E /* Calendar */,
 				30BC62D3E761B98D2B99D27D /* Persistence */,
@@ -427,6 +432,7 @@
 				98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */,
 				E2DCEFA44EAD9CBB3D726D1E /* EventKitCalendarEventProvider.swift in Sources */,
 				9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */,
+				0E6210BB3BE8C632223D1277 /* RecallOSConvexDTOs.swift in Sources */,
 				EAD41E5160B570F38CF486B9 /* RecallOSPersistenceMapper.swift in Sources */,
 				554991C995D784AB5831282C /* RecallOSPersistentModels.swift in Sources */,
 				84C4E37283733C5C1355E671 /* RecallOSStoreFactory.swift in Sources */,
@@ -441,6 +447,7 @@
 			files = (
 				63BFDEF783FD86C7467A97E5 /* ConvexRecallOSRepository.swift in Sources */,
 				0528BA414C2F719DDDF3EAA8 /* EventKitCalendarEventProvider.swift in Sources */,
+				B93CA9BB285C247FD0672350 /* RecallOSConvexDTOs.swift in Sources */,
 				DAAE407E6D7D5BD027C75D62 /* RecallOSPersistenceMapper.swift in Sources */,
 				785DEB86BC9CBC50C481C7E4 /* RecallOSPersistentModels.swift in Sources */,
 				380DF7F3FF6B126AFF836F0C /* RecallOSStoreFactory.swift in Sources */,
@@ -464,6 +471,7 @@
 				DB4A71D8F4066734CEF7F334 /* MacSidebarView.swift in Sources */,
 				E23C624860851AA0B0C8BE02 /* MacTasksBrainViews.swift in Sources */,
 				CED416F844C90E524C328E26 /* MeetingLifecycleScheduler.swift in Sources */,
+				8C86D72BF4D935A81593F326 /* RecallOSConvexDTOs.swift in Sources */,
 				EB88C6B69F4AED72BDDAAC8A /* RecallOSMacApp.swift in Sources */,
 				041F7B382CF994A7070F0821 /* RecallOSPersistenceMapper.swift in Sources */,
 				15AE1E83E12DE49CCAEDF0FE /* RecallOSPersistentModels.swift in Sources */,

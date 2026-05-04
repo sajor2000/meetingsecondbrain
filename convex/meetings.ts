@@ -68,6 +68,7 @@ export const create = mutation({
     status: v.optional(meetingStatus),
     folderId: v.optional(v.id("recallOSFolders")),
     calendarEventId: v.optional(v.string()),
+    calendarEventLocalId: v.optional(v.string()),
     summary: v.optional(v.string()),
     rawNotes: v.optional(v.string()),
     enhancedNotes: v.optional(v.string()),
@@ -78,6 +79,9 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const userId = await requireUserId(ctx);
     requireUUIDLocalId(args.localId);
+    if (args.calendarEventLocalId !== undefined) {
+      requireUUIDLocalId(args.calendarEventLocalId);
+    }
     const attendeeIds = args.attendeeIds ?? [];
     const topicIds = args.topicIds ?? [];
     await validateMeetingLinks(ctx, userId, attendeeIds, topicIds, args.folderId);
@@ -100,6 +104,7 @@ export const create = mutation({
       status: args.status ?? "scheduled",
       folderId: args.folderId,
       calendarEventId: args.calendarEventId,
+      calendarEventLocalId: args.calendarEventLocalId,
       summary: args.summary,
       rawNotes: args.rawNotes,
       enhancedNotes: args.enhancedNotes,
@@ -121,6 +126,7 @@ export const update = mutation({
     status: v.optional(meetingStatus),
     folderId: v.optional(v.id("recallOSFolders")),
     calendarEventId: v.optional(v.string()),
+    calendarEventLocalId: v.optional(v.string()),
     summary: v.optional(v.string()),
     rawNotes: v.optional(v.string()),
     enhancedNotes: v.optional(v.string()),
@@ -152,6 +158,10 @@ export const update = mutation({
     if (args.status !== undefined) patch.status = args.status;
     if (args.folderId !== undefined) patch.folderId = args.folderId;
     if (args.calendarEventId !== undefined) patch.calendarEventId = args.calendarEventId;
+    if (args.calendarEventLocalId !== undefined) {
+      requireUUIDLocalId(args.calendarEventLocalId);
+      patch.calendarEventLocalId = args.calendarEventLocalId;
+    }
     if (args.summary !== undefined) patch.summary = args.summary;
     if (args.rawNotes !== undefined) patch.rawNotes = args.rawNotes;
     if (args.enhancedNotes !== undefined) patch.enhancedNotes = args.enhancedNotes;

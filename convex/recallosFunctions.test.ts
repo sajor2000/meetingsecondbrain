@@ -121,6 +121,7 @@ describe("RecallOS Convex function contracts", () => {
       status: "inProgress",
       folderId,
       calendarEventId: "event-123",
+      calendarEventLocalId: "13131313-1313-4313-8313-131313131313",
       summary: "Initial summary",
       rawNotes: "Initial raw notes",
       enhancedNotes: "Initial enhanced notes",
@@ -138,6 +139,7 @@ describe("RecallOS Convex function contracts", () => {
       status: "inProgress",
       folderId,
       calendarEventId: "event-123",
+      calendarEventLocalId: "13131313-1313-4313-8313-131313131313",
       summary: "Initial summary",
       rawNotes: "Initial raw notes",
       enhancedNotes: "Initial enhanced notes",
@@ -154,6 +156,7 @@ describe("RecallOS Convex function contracts", () => {
       status: "recording",
       folderId: replacementFolderId,
       calendarEventId: "event-456",
+      calendarEventLocalId: "14141414-1414-4414-8414-141414141414",
       summary: "Updated summary",
       rawNotes: "Updated raw notes",
       enhancedNotes: "Updated enhanced notes",
@@ -171,6 +174,7 @@ describe("RecallOS Convex function contracts", () => {
       status: "recording",
       folderId: replacementFolderId,
       calendarEventId: "event-456",
+      calendarEventLocalId: "14141414-1414-4414-8414-141414141414",
       summary: "Updated summary",
       rawNotes: "Updated raw notes",
       enhancedNotes: "Updated enhanced notes",
@@ -192,6 +196,17 @@ describe("RecallOS Convex function contracts", () => {
       }),
     ).rejects.toThrow("UUID");
 
+    await expect(
+      t.mutation(functions.meetings.create, {
+        localId: "99999999-9999-4999-8999-999999999999",
+        title: "Invalid calendar local ID",
+        startsAt: 1,
+        endsAt: 2,
+        calendarEventId: "external-event-id",
+        calendarEventLocalId: "not-a-uuid",
+      }),
+    ).rejects.toThrow("UUID");
+
     const meetingId = await t.mutation(functions.meetings.create, {
       localId: "99999999-9999-4999-8999-999999999999",
       title: "Retry-safe meeting",
@@ -209,6 +224,34 @@ describe("RecallOS Convex function contracts", () => {
     const meetings = await t.query(functions.meetings.list, {});
     expect(meetings.map((meeting: any) => meeting._id)).toEqual([meetingId]);
     expect(meetings[0].title).toBe("Retry-safe meeting");
+  });
+
+  test("meeting update rejects non-uuid calendar event local IDs", async () => {
+    const t = makeConvexTest().withIdentity(identity);
+
+    const meetingId = await t.mutation(functions.meetings.create, {
+      localId: "15151515-1515-4515-8515-151515151515",
+      title: "Calendar local ID validation",
+      startsAt: 1,
+      endsAt: 2,
+      calendarEventId: "external-event-id",
+      calendarEventLocalId: "16161616-1616-4616-8616-161616161616",
+    });
+
+    await expect(
+      t.mutation(functions.meetings.update, {
+        meetingId,
+        calendarEventId: "new-external-event-id",
+        calendarEventLocalId: "not-a-uuid",
+      }),
+    ).rejects.toThrow("UUID");
+
+    const meetings = await t.query(functions.meetings.list, {});
+    expect(meetings[0]).toMatchObject({
+      _id: meetingId,
+      calendarEventId: "external-event-id",
+      calendarEventLocalId: "16161616-1616-4616-8616-161616161616",
+    });
   });
 
   test("tasks support create, list, move, local-id move, and search result shape", async () => {
