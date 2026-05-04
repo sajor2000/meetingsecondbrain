@@ -1,6 +1,6 @@
 # UI/UX and Code Audit
 
-Run date: 2026-05-03
+Run date: 2026-05-04
 
 Scope:
 
@@ -78,12 +78,12 @@ Remaining caveat:
 
 ### P2: Convex Repository Is Boundary-Only
 
-The project now has repository protocols and an app-layer `ConvexRecallOSRepository`, but live Convex list/search/mutation implementations are intentionally not complete yet.
+The project now has repository protocols, an app-layer `ConvexRecallOSRepository`, explicit live-mode gating, and DTO mapping from Convex document identity to UUID-backed Core models. Live Convex list/search/mutation implementations are intentionally not complete yet.
 
 Recommendation:
 
 - Implement `ConvexRecallOSRepository` subscriptions and task move mutation in Sprint 2.
-- Add mapping tests for Convex document IDs to Core `convexID` fields.
+- Keep live mode opt-in until those repository methods are implemented and validated.
 
 ### P2: Recording Banner Needs Scenario Tests
 
@@ -117,13 +117,16 @@ Commands run after fixes:
 
 ```sh
 swift test --package-path packages/RecallOSCore
+xcodebuild test -project RecallOS.xcodeproj -scheme RecallOSSharedTests -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
 xcodebuild -project RecallOS.xcodeproj -scheme RecallOSMac -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build
 xcodebuild -project RecallOS.xcodeproj -scheme RecallOSiOS -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
 ```
 
 Results:
 
-- Core tests passed: 4 tests.
+- Core tests passed: 25 tests.
+- Shared app-boundary tests passed: 13 tests.
+- Convex tests passed: 10 tests.
 - macOS build succeeded.
 - iOS build succeeded.
 - iOS simulator install and launch succeeded.

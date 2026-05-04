@@ -276,6 +276,7 @@ export default defineSchema({
     status: recallOSMeetingStatus,
     folderId: v.optional(v.id("recallOSFolders")),
     calendarEventId: v.optional(v.string()),
+    calendarEventLocalId: v.optional(v.string()),
     summary: v.optional(v.string()),
     rawNotes: v.optional(v.string()),
     enhancedNotes: v.optional(v.string()),
@@ -380,6 +381,7 @@ export default defineSchema({
 
   recallOSSettings: defineTable({
     ...recallOSUserFields,
+    localId: v.string(),
     key: v.string(),
     value: v.any(),
     updatedAt: v.number(),

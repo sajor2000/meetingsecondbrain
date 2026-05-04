@@ -51,7 +51,7 @@ git remote add origin https://github.com/sajor2000/meetingsecondbrain.git
 
 The current native apps run in demo fixture mode by default while the Swift Convex adapter is still a boundary artifact. Setting `RECALLOS_USE_LIVE_CONVEX=1` intentionally shows a visible configuration error instead of falling back to fixtures, so live-mode mistakes are not hidden.
 
-Live Convex remains Sprint 1/Sprint 2 work: implement the adapter, then flip `ConvexRecallOSRepository.supportsLiveUse` with repository and mapping tests.
+Sprint 1 now includes repository/store boundaries, explicit live-mode gating, and DTO mapping tests for Convex document identity into local UUID-backed models. Live Convex remains Sprint 2 work: implement subscriptions/mutations, then flip `ConvexRecallOSRepository.supportsLiveUse` with repository tests.
 
 ## Build
 
@@ -87,10 +87,11 @@ Implemented in this pass:
 - Core models for meetings, transcript segments, meeting tasks, screenshots, calendar events, people, topics, and decisions.
 - Reusable hybrid note, timestamp, recording banner, task row, search card, and task board components.
 - Repository protocols, fixture repositories, sync identifiers, and shared app stores for the first data boundary.
+- Convex DTO mapping for local UUID identity plus optional `convexID`, with live mode disabled by default.
 - macOS three-pane shell with notes editor, right rail tabs, grouped tasks, store-backed board mode, recording status bar, and floating `NSPanel` banner.
 - iOS companion shell with store-backed Today, Meetings, Tasks, Brain, quick memo, and read-only meeting views.
 - Convex schema and mutation/query stubs.
-- Swift package unit tests.
+- Swift package, shared app-boundary, and Convex tests.
 
 Not production-complete yet:
 

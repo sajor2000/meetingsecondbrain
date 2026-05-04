@@ -20,6 +20,7 @@ RecallOS will ship toward a Pilot MVP through milestone-sprints, not fixed calen
 - Add sync-backed model identifiers via optional `convexID` while preserving UUID local identity.
 - Add fixture repositories and shared stores so app shells render from stores instead of direct fixtures.
 - Add `ConvexMobile` dependency and an app-layer `ConvexRecallOSRepository` boundary.
+- Add DTO mapping tests that keep Convex document IDs separate from local UUID-backed model identity.
 
 ### Sprint 2: Convex Schema and Sync Completeness
 

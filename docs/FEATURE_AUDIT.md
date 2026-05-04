@@ -1,6 +1,6 @@
 # Feature Audit
 
-Run date: 2026-05-03
+Run date: 2026-05-04
 
 Design sources:
 
@@ -9,7 +9,10 @@ Design sources:
 
 ## Validation Evidence
 
-- `swift test --package-path packages/RecallOSCore`: passed, 10 tests.
+- `swift test --package-path packages/RecallOSCore`: passed, 25 tests.
+- `xcodebuild test -project RecallOS.xcodeproj -scheme RecallOSSharedTests -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO`: passed, 13 tests.
+- `npm --prefix convex run typecheck`: passed.
+- `npm --prefix convex test`: passed, 10 tests.
 - `xcodegen generate`: passed, generated `RecallOS.xcodeproj`.
 - `xcodebuild -project RecallOS.xcodeproj -scheme RecallOSMac -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build`: passed.
 - `xcodebuild -project RecallOS.xcodeproj -scheme RecallOSiOS -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build`: passed.
@@ -30,8 +33,10 @@ Design sources:
 | Task system | Store-backed fixture UI | `TaskRowView`, `TaskBoardView`, `TaskStore`, `RecallOSAppStore` |
 | iOS companion | Implemented shell | `apps/RecallOSiOS/Sources/IOSContentView.swift` |
 | Second brain UI | Implemented sample UI | `SearchResultCard`, Brain tab/rail |
-| Convex backend | Stubbed | `convex/schema.ts`, `meetings.ts`, `tasks.ts`, `search.ts` |
-| Tests | Partial | Shared model tests only |
+| App data boundary | Implemented boundary | `RecallOSAppStore`, repository protocols, fixture/local repositories, `RecallOSStoreFactory` |
+| Convex client boundary | Opt-in boundary only | `ConvexRecallOSRepository`, `RecallOSConvexDTOs`, live mode guarded by `RECALLOS_USE_LIVE_CONVEX=1` |
+| Convex backend | Stubbed with checks | `convex/schema.ts`, `meetings.ts`, `tasks.ts`, `search.ts`, Convex tests |
+| Tests | Partial but expanded | Core tests, shared app-store/factory tests, Convex tests |
 | Screenshots | Partial | iOS screenshot captured; macOS capture blocked |
 
 ## UI_UX_DESIGN.md Coverage
@@ -51,7 +56,7 @@ Needs iteration:
 
 - Native macOS screenshot verification is blocked until the runtime has screen capture access.
 - iOS visual scale should be reviewed on physical device and at default accessibility settings.
-- Board drag/drop mutates parent task state through store boundaries; live Convex persistence remains Sprint 2 work.
+- Board drag/drop mutates parent task state through store/repository boundaries; live Convex persistence remains Sprint 2 work.
 - AppKit banner is implemented but needs scenario tests for multi-display, fullscreen, and meeting transitions.
 
 ## Not Complete
@@ -60,7 +65,7 @@ Needs iteration:
 - ScreenCaptureKit screenshot capture.
 - Local transcription providers.
 - AI enhancement pipeline.
-- Convex client wiring.
+- Live Convex subscriptions and mutations.
 - Authentication and multi-user sync.
 - Real Convex-backed second brain search/indexing.
 - End-to-end UI tests.
