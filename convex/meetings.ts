@@ -67,6 +67,7 @@ export const updateNotes = mutation({
       v.literal("recording"),
       v.literal("enhancing"),
       v.literal("completed"),
+      v.literal("failed"),
     )),
     rawNotes: v.optional(v.string()),
     enhancedNotes: v.optional(v.string()),

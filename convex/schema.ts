@@ -76,6 +76,7 @@ const recallOSMeetingStatus = v.union(
   v.literal("recording"),
   v.literal("enhancing"),
   v.literal("completed"),
+  v.literal("failed"),
 );
 
 export default defineSchema({

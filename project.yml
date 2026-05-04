@@ -69,6 +69,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.recallos.shared-tests
+        GENERATE_INFOPLIST_FILE: YES
         CODE_SIGN_STYLE: Automatic
 schemes:
   RecallOSMac:

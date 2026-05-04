@@ -53,6 +53,14 @@ describe("RecallOS Convex function contracts", () => {
       enhancedNotes: "Enhanced notes",
       noteBlocks: [{ title: "Block", body: "Body" }],
     });
+
+    await t.mutation(functions.meetings.updateNotes, {
+      meetingId: olderMeetingId,
+      status: "failed",
+    });
+
+    const failedMeetings = await t.query(functions.meetings.list, {});
+    expect(failedMeetings[1].status).toBe("failed");
   });
 
   test("meeting create is idempotent and rejects non-uuid local IDs", async () => {
@@ -157,6 +165,23 @@ describe("RecallOS Convex function contracts", () => {
     const waitingTasks = await t.query(functions.tasks.listForMeeting, { meetingId });
     expect(waitingTasks[0].status).toBe("waiting");
     expect(waitingTasks[0].completedAt).toBeUndefined();
+
+    const completedByLocalId = await t.mutation(functions.tasks.moveByLocalIds, {
+      localIds: ["44444444-4444-4444-8444-444444444444"],
+      status: "done",
+    });
+    expect(completedByLocalId).toEqual([taskId]);
+    const completedByLocalIdTasks = await t.query(functions.tasks.listForMeeting, { meetingId });
+    expect(completedByLocalIdTasks[0].status).toBe("done");
+    expect(completedByLocalIdTasks[0].completedAt).toBeTypeOf("number");
+
+    await t.mutation(functions.tasks.moveByLocalIds, {
+      localIds: ["44444444-4444-4444-8444-444444444444"],
+      status: "open",
+    });
+    const reopenedByLocalIdTasks = await t.query(functions.tasks.listForMeeting, { meetingId });
+    expect(reopenedByLocalIdTasks[0].status).toBe("open");
+    expect(reopenedByLocalIdTasks[0].completedAt).toBeUndefined();
 
     const retriedTaskId = await t.mutation(functions.tasks.createFromMeeting, {
       localId: "44444444-4444-4444-8444-444444444444",

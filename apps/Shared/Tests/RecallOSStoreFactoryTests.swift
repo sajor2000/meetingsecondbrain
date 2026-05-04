@@ -39,6 +39,21 @@ final class RecallOSStoreFactoryTests: XCTestCase {
         XCTAssertEqual(store.syncError, "Live Convex was requested, but CONVEX_URL is not configured.")
     }
 
+    func testLiveConvexOptInUsesConfiguredConvexBoundaryWhenAdapterIsSupported() async {
+        let store = RecallOSStoreFactory.makeAppStore(
+            environment: [
+                "RECALLOS_USE_LIVE_CONVEX": "1",
+                "CONVEX_URL": "https://example.convex.cloud",
+            ],
+            supportsLiveUse: true
+        )
+
+        await store.load()
+
+        XCTAssertNil(store.selectedMeeting)
+        XCTAssertEqual(store.syncError, "Convex repository is configured as a boundary, but live subscriptions are not implemented yet.")
+    }
+
     func testConvexRepositoryReadsDeploymentURLFromInjectedEnvironment() {
         let repository = ConvexRecallOSRepository.fromEnvironment(["CONVEX_URL": "https://example.convex.cloud"])
 
