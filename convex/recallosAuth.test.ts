@@ -66,6 +66,10 @@ describe("RecallOS Convex auth boundaries", () => {
         meetingId,
         summary: "Unauth notes",
       }),
+      () => t.mutation(functions.meetings.update, {
+        meetingId,
+        title: "Unauth update",
+      }),
       () => t.query(functions.tasks.listOpen, {}),
       () => t.query(functions.tasks.listForMeeting, {}),
       () => t.query(functions.tasks.listForMeeting, { meetingId }),
@@ -131,6 +135,12 @@ describe("RecallOS Convex auth boundaries", () => {
         summary: "Stolen notes",
       }),
     ).rejects.toThrow("Meeting not found");
+    await expect(
+      asBeta.mutation(functions.meetings.update, {
+        meetingId: alphaMeetingId,
+        title: "Stolen title",
+      }),
+    ).rejects.toThrow("Meeting not found");
   });
 
   test("meeting creation rejects attendee IDs from another user", async () => {
@@ -151,6 +161,19 @@ describe("RecallOS Convex auth boundaries", () => {
         title: "Cross-user attendee attempt",
         startsAt: 1,
         endsAt: 2,
+        attendeeIds: [betaPersonId],
+      }),
+    ).rejects.toThrow("Attendee not found");
+
+    const alphaMeetingId = await asAlpha.mutation(functions.meetings.create, {
+      localId: "12121212-1212-4212-8212-121212121212",
+      title: "Alpha attendee update target",
+      startsAt: 1,
+      endsAt: 2,
+    });
+    await expect(
+      asAlpha.mutation(functions.meetings.update, {
+        meetingId: alphaMeetingId,
         attendeeIds: [betaPersonId],
       }),
     ).rejects.toThrow("Attendee not found");

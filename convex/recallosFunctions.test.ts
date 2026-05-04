@@ -63,6 +63,88 @@ describe("RecallOS Convex function contracts", () => {
     expect(failedMeetings[1].status).toBe("failed");
   });
 
+  test("meeting create and update round-trip repository-shaped fields", async () => {
+    const t = makeConvexTest().withIdentity(identity);
+    const { attendeeId, replacementAttendeeId, topicId, folderId } = await t.run(async (ctx) => {
+      const attendeeId = await ctx.db.insert("recallOSPeople", {
+        userId: identity.tokenIdentifier,
+        localId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        displayName: "Alpha Attendee",
+      });
+      const replacementAttendeeId = await ctx.db.insert("recallOSPeople", {
+        userId: identity.tokenIdentifier,
+        localId: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        displayName: "Replacement Attendee",
+      });
+      const topicId = await ctx.db.insert("recallOSTopics", {
+        userId: identity.tokenIdentifier,
+        localId: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+        name: "Launch",
+      });
+      const folderId = await ctx.db.insert("recallOSFolders", {
+        userId: identity.tokenIdentifier,
+        name: "Pilot",
+        sortOrder: 1,
+      });
+      return { attendeeId, replacementAttendeeId, topicId, folderId };
+    });
+
+    const meetingId = await t.mutation(functions.meetings.create, {
+      localId: "12121212-1212-4212-8212-121212121212",
+      title: "Calendar-backed meeting",
+      startsAt: 100,
+      endsAt: 200,
+      status: "inProgress",
+      folderId,
+      calendarEventId: "event-123",
+      summary: "Initial summary",
+      rawNotes: "Initial raw notes",
+      enhancedNotes: "Initial enhanced notes",
+      noteBlocks: [{ kind: "user", body: "Initial block" }],
+      attendeeIds: [attendeeId],
+      topicIds: [topicId],
+    });
+
+    let meetings = await t.query(functions.meetings.list, {});
+    expect(meetings[0]).toMatchObject({
+      _id: meetingId,
+      title: "Calendar-backed meeting",
+      startsAt: 100,
+      endsAt: 200,
+      status: "inProgress",
+      folderId,
+      calendarEventId: "event-123",
+      summary: "Initial summary",
+      rawNotes: "Initial raw notes",
+      enhancedNotes: "Initial enhanced notes",
+      noteBlocks: [{ kind: "user", body: "Initial block" }],
+      attendeeIds: [attendeeId],
+      topicIds: [topicId],
+    });
+
+    await t.mutation(functions.meetings.update, {
+      meetingId,
+      title: "Rescheduled meeting",
+      startsAt: 300,
+      endsAt: 450,
+      status: "recording",
+      calendarEventId: "event-456",
+      attendeeIds: [replacementAttendeeId],
+    });
+
+    meetings = await t.query(functions.meetings.list, {});
+    expect(meetings[0]).toMatchObject({
+      _id: meetingId,
+      title: "Rescheduled meeting",
+      startsAt: 300,
+      endsAt: 450,
+      status: "recording",
+      calendarEventId: "event-456",
+      attendeeIds: [replacementAttendeeId],
+      topicIds: [topicId],
+    });
+  });
+
   test("meeting create is idempotent and rejects non-uuid local IDs", async () => {
     const t = makeConvexTest().withIdentity(identity);
 
