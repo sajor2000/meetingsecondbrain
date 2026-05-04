@@ -48,7 +48,6 @@ public struct TaskBoardView: View {
                         .frame(maxWidth: .infinity, minHeight: 120, alignment: .top)
                         .dropDestination(for: String.self) { items, _ in
                             move(items: items, to: status)
-                            return true
                         }
                     }
                     .padding(AppSpacing.sm)
@@ -61,7 +60,7 @@ public struct TaskBoardView: View {
         }
     }
 
-    private func move(items: [String], to status: TaskStatus) {
+    private func move(items: [String], to status: TaskStatus) -> Bool {
         TaskBoardDropHandler.apply(items: items, to: status, tasks: &tasks, onMove: onMove)
     }
 

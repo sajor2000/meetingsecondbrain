@@ -99,6 +99,16 @@ describe("RecallOS Convex function contracts", () => {
     expect(movedByLocalId).toEqual([taskId]);
     const waitingTasks = await t.query(functions.tasks.listForMeeting, { meetingId });
     expect(waitingTasks[0].status).toBe("waiting");
+    expect(waitingTasks[0].completedAt).toBeUndefined();
+
+    const retriedTaskId = await t.mutation(functions.tasks.createFromMeeting, {
+      localId: "44444444-4444-4444-8444-444444444444",
+      title: "Duplicate retry should not create another task",
+      sourceMeetingId: meetingId,
+    });
+    expect(retriedTaskId).toBe(taskId);
+    const tasksAfterRetry = await t.query(functions.tasks.listForMeeting, { meetingId });
+    expect(tasksAfterRetry.map((task: any) => task._id)).toEqual([taskId]);
 
     const results = await t.query(functions.search.brain, { query: "Searchable" });
     expect(results).toEqual([

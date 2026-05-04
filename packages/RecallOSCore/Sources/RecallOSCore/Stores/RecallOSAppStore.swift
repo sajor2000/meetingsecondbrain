@@ -248,7 +248,8 @@ public final class RecallOSAppStore: ObservableObject {
             workflowMessage = "Notes enhanced and tasks extracted"
             syncError = nil
         } catch {
-            if var restoredMeeting = self.meeting(for: session.meetingID), restoredMeeting.status == .enhancing {
+            if var restoredMeeting = self.meeting(for: session.meetingID),
+               restoredMeeting.status == .enhancing || restoredMeeting.status == .recording {
                 restoredMeeting.status = .inProgress
                 replaceSelectedMeeting(restoredMeeting)
                 _ = try? await repository.updateMeeting(restoredMeeting)

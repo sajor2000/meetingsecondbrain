@@ -129,6 +129,13 @@ describe("RecallOS Convex auth boundaries", () => {
     });
 
     await expect(asBeta.query(functions.tasks.listForMeeting, { meetingId })).rejects.toThrow("Meeting not found");
+    await expect(
+      asBeta.mutation(functions.tasks.createFromMeeting, {
+        localId: "88888888-8888-4888-8888-888888888888",
+        title: "Cross-user task attempt",
+        sourceMeetingId: meetingId,
+      }),
+    ).rejects.toThrow("Meeting not found");
     await expect(asBeta.mutation(functions.tasks.move, { taskId, status: "done" })).rejects.toThrow("Task not found");
     const movedByLocalId = await asBeta.mutation(functions.tasks.moveByLocalIds, {
       localIds: ["77777777-7777-4777-8777-777777777777"],

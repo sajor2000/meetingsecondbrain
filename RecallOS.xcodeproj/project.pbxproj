@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		02A9CFDFA45E1F9A1BC0F3D9 /* RecallOSiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A13E3B8D08079C3540DFE0A /* RecallOSiOSApp.swift */; };
+		04A65DBAF7BFF6C40F57FED5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54808FB62F806CDAD3137C4F /* Assets.xcassets */; };
 		25EA8B9CC185FA34D22BF014 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 533C35D786E1BFEF3BD60F6D /* RecallOSCore */; };
 		27530E75D34600D56BEBE835 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7DDD304382FCC3A23E9D95B5 /* RecallOSCore */; };
 		3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD16BDC533757B7B74F015BF /* MacContentView.swift */; };
 		4D5F8725C5E53BA0043B3095 /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
+		545DE430F39954A06BFA6FAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7949ADA899206E8DA404EDEE /* Assets.xcassets */; };
 		65AC7BF14098D67050770F2E /* RecordingBannerPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ADBF1B498E3784E6D16E5 /* RecordingBannerPanelController.swift */; };
 		741810E9D00346ED848781EC /* ConvexMobile in Frameworks */ = {isa = PBXBuildFile; productRef = F07E83D611C5AC2793296889 /* ConvexMobile */; };
 		823FBFA32D6DAF3E0E0A84CE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */; };
@@ -27,6 +29,8 @@
 		062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2F7E48114726D83D479F481C /* RecallOSMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSMacApp.swift; sourceTree = "<group>"; };
 		40A6D384B414542A6DEE68A2 /* RecallOSCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RecallOSCore; path = packages/RecallOSCore; sourceTree = SOURCE_ROOT; };
+		54808FB62F806CDAD3137C4F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7949ADA899206E8DA404EDEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSStoreFactory.swift; sourceTree = "<group>"; };
 		9249171BE8B6BE902CFF0404 /* RecallOSiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RecallOSiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		952043282830E1CC3AA46119 /* RecallOSMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecallOSMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +74,7 @@
 			children = (
 				22DD1FAE5ED18A7B9390DD01 /* Packages */,
 				6C7DBA600A5E23E1833568DD /* Resources */,
+				76BF3EA170FE72F17E894C1E /* Resources */,
 				F4299D7D0521749D90227E7E /* Sources */,
 				C3A7B495E6D3D54B9F1271D0 /* Sources */,
 				463C3C5418B30C2EB76F1302 /* Sources */,
@@ -90,10 +95,20 @@
 		6C7DBA600A5E23E1833568DD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				54808FB62F806CDAD3137C4F /* Assets.xcassets */,
 				062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */,
 			);
 			name = Resources;
 			path = apps/RecallOSiOS/Resources;
+			sourceTree = "<group>";
+		};
+		76BF3EA170FE72F17E894C1E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7949ADA899206E8DA404EDEE /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = apps/RecallOSMac/Resources;
 			sourceTree = "<group>";
 		};
 		C3A7B495E6D3D54B9F1271D0 /* Sources */ = {
@@ -155,6 +170,7 @@
 			buildConfigurationList = 271910B2A9A901F1CA4FD934 /* Build configuration list for PBXNativeTarget "RecallOSMac" */;
 			buildPhases = (
 				FF5B48E8131AB4C6A578672E /* Sources */,
+				CB69FA4255BA0F8646D3DF47 /* Resources */,
 				7A7F47F39B3FD8A34DCCE40C /* Frameworks */,
 			);
 			buildRules = (
@@ -215,7 +231,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04A65DBAF7BFF6C40F57FED5 /* Assets.xcassets in Resources */,
 				823FBFA32D6DAF3E0E0A84CE /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB69FA4255BA0F8646D3DF47 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				545DE430F39954A06BFA6FAE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

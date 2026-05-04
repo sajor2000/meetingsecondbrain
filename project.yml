@@ -22,8 +22,10 @@ targets:
     sources:
       - apps/Shared/Sources
       - apps/RecallOSMac/Sources
-    resources:
-      - apps/RecallOSMac/Resources
+      - path: apps/RecallOSMac/Resources
+        buildPhase: resources
+        excludes:
+          - Info.plist
     dependencies:
       - package: RecallOSCore
     settings:
@@ -39,7 +41,10 @@ targets:
     sources:
       - apps/Shared/Sources
       - apps/RecallOSiOS/Sources
-      - path: apps/RecallOSiOS/Resources/LaunchScreen.storyboard
+      - path: apps/RecallOSiOS/Resources
+        buildPhase: resources
+        excludes:
+          - Info.plist
     dependencies:
       - package: RecallOSCore
       - package: ConvexSwift

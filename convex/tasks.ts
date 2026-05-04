@@ -47,6 +47,14 @@ export const createFromMeeting = mutation({
   },
   handler: async (ctx, args) => {
     const userId = await requireUserId(ctx);
+    const existingTask = await ctx.db
+      .query("recallOSTasks")
+      .withIndex("by_user_local_id", (q) => q.eq("userId", userId).eq("localId", args.localId))
+      .unique();
+    if (existingTask !== null) {
+      return existingTask._id;
+    }
+
     const meeting = await ctx.db.get(args.sourceMeetingId);
     if (meeting === null || meeting.userId !== userId) {
       throw new Error("Meeting not found.");

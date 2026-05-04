@@ -303,6 +303,57 @@ final class ModelTests: XCTestCase {
     }
 
     @MainActor
+    func testPauseAndResumeRecordingUpdateSessionAndProvider() async {
+        let meeting = SampleData.meeting
+        let audioProvider = RecordingSpyAudioProvider()
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            audioProvider: audioProvider,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000_000_000),
+            meetings: [meeting],
+            selectedMeeting: meeting
+        )
+
+        await store.startRecording()
+        await store.pauseRecording()
+
+        var audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.pauseCount, 1)
+        XCTAssertEqual(store.recordingSession?.state, .paused)
+        XCTAssertNotNil(store.recordingSession?.pausedAt)
+        XCTAssertEqual(store.workflowMessage, "Recording paused")
+
+        await store.resumeRecording()
+
+        audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.resumeCount, 1)
+        XCTAssertEqual(store.recordingSession?.state, .recording)
+        XCTAssertNil(store.recordingSession?.pausedAt)
+        XCTAssertEqual(store.workflowMessage, "Recording resumed")
+    }
+
+    @MainActor
+    func testPauseRecordingFailureMarksWorkflowFailed() async {
+        let meeting = SampleData.meeting
+        let audioProvider = RecordingSpyAudioProvider(failOnPause: true)
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            audioProvider: audioProvider,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000_000_000),
+            meetings: [meeting],
+            selectedMeeting: meeting
+        )
+
+        await store.startRecording()
+        await store.pauseRecording()
+
+        let audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.pauseCount, 1)
+        XCTAssertEqual(store.recordingSession?.state, .failed)
+        XCTAssertNotNil(store.syncError)
+    }
+
+    @MainActor
     func testTranscriptionFailureStopsCaptureAndMarksWorkflowFailed() async throws {
         let meeting = SampleData.meeting
         let audioProvider = RecordingSpyAudioProvider()
@@ -343,6 +394,30 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(store.recordingSession?.state, .failed)
         XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
         XCTAssertNotEqual(store.meetings.first { $0.id == meeting.id }?.status, .enhancing)
+        XCTAssertNotNil(store.syncError)
+    }
+
+    @MainActor
+    func testStopFailureRestoresRecordingMeetingStatus() async throws {
+        let meeting = SampleData.meeting
+        let audioProvider = RecordingSpyAudioProvider(failOnStop: true)
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            audioProvider: audioProvider,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000),
+            meetings: [meeting],
+            selectedMeeting: meeting
+        )
+
+        await store.startRecording()
+        try await Task.sleep(nanoseconds: 20_000_000)
+        await store.stopAndEnhanceRecording()
+
+        let audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.stopCount, 1)
+        XCTAssertEqual(store.recordingSession?.state, .failed)
+        XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
+        XCTAssertNotEqual(store.meetings.first { $0.id == meeting.id }?.status, .recording)
         XCTAssertNotNil(store.syncError)
     }
 
@@ -492,23 +567,47 @@ private struct DenyingRecordingPermissionProvider: RecordingPermissionProvider {
 }
 
 private actor RecordingSpyAudioProvider: AudioCaptureProvider {
+    private let failOnPause: Bool
+    private let failOnResume: Bool
+    private let failOnStop: Bool
     private var startCount = 0
+    private var pauseCount = 0
+    private var resumeCount = 0
     private var stopCount = 0
+
+    init(failOnPause: Bool = false, failOnResume: Bool = false, failOnStop: Bool = false) {
+        self.failOnPause = failOnPause
+        self.failOnResume = failOnResume
+        self.failOnStop = failOnStop
+    }
 
     func start(meeting: Meeting) async throws {
         startCount += 1
     }
 
-    func pause() async throws {}
+    func pause() async throws {
+        pauseCount += 1
+        if failOnPause {
+            throw TestRepositoryError.updateFailed
+        }
+    }
 
-    func resume() async throws {}
+    func resume() async throws {
+        resumeCount += 1
+        if failOnResume {
+            throw TestRepositoryError.updateFailed
+        }
+    }
 
     func stop() async throws {
         stopCount += 1
+        if failOnStop {
+            throw TestRepositoryError.updateFailed
+        }
     }
 
-    func state() -> (startCount: Int, stopCount: Int) {
-        (startCount, stopCount)
+    func state() -> (startCount: Int, pauseCount: Int, resumeCount: Int, stopCount: Int) {
+        (startCount, pauseCount, resumeCount, stopCount)
     }
 }
 
