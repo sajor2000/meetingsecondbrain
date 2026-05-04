@@ -38,7 +38,9 @@ public final class RecallOSAppStore: ObservableObject {
         tasks: [MeetingTask] = [],
         searchResults: [SearchResult] = [],
         upcomingEvents: [CalendarEvent] = [],
-        defaultSearchQuery: String = ""
+        defaultSearchQuery: String = "",
+        syncError: String? = nil,
+        workflowMessage: String? = nil
     ) {
         self.repository = repository
         self.permissionProvider = permissionProvider
@@ -54,23 +56,25 @@ public final class RecallOSAppStore: ObservableObject {
         self.searchResults = searchResults
         self.upcomingEvents = upcomingEvents
         self.defaultSearchQuery = defaultSearchQuery
-        self.syncError = nil
+        self.syncError = syncError
         self.isSyncing = false
-        self.workflowMessage = nil
+        self.workflowMessage = workflowMessage
     }
 
     deinit {
         transcriptTask?.cancel()
     }
 
-    public static func fixture() -> RecallOSAppStore {
+    public static func fixture(syncError: String? = nil, workflowMessage: String? = nil) -> RecallOSAppStore {
         RecallOSAppStore(
             repository: FixtureRecallOSRepository(),
             meetings: [SampleData.meeting],
             selectedMeeting: SampleData.meeting,
             tasks: SampleData.tasks,
             searchResults: SampleData.searchResults,
-            upcomingEvents: SampleData.calendarEvents
+            upcomingEvents: SampleData.calendarEvents,
+            syncError: syncError,
+            workflowMessage: workflowMessage
         )
     }
 
