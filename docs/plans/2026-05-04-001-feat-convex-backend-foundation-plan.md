@@ -1,93 +1,88 @@
 ---
-title: feat: Convex backend foundation
-type: feat
+title: fix: Convex backend search index hardening
+type: fix
 status: completed
 date: 2026-05-04
-origin: SPEC.md
+origin: CE review feedback on PR #16
 ---
 
-# feat: Convex backend foundation
+# fix: Convex backend search index hardening
 
 ## Summary
 
-Build the first Convex backend function layer on a parallel branch from `main`, away from the microphone capture sprint. The branch should expose schema-aligned meeting, task, and search functions that native clients can call in a later integration sprint.
+Harden the parallel Convex backend branch after review found that the first backend-foundation pass exposed unauthenticated legacy-table functions. This PR now keeps only the safe schema and repository hygiene changes, and defers auth-scoped meeting, task, and search APIs to a separate plan.
 
 ## Scope Boundaries
 
-- Do not modify microphone capture, audio artifact, SwiftData persistence, Xcode project, or RecallOS Mac UI files.
-- Do not add authentication, OpenRouter enhancement actions, Cognee ingestion, calendar sync, or file upload flows.
-- Do not change `convex/schema.ts` unless an existing field is impossible to use safely from functions.
+- Do not reintroduce public functions for legacy `meetings`, `tasks`, or `transcriptSegments` tables.
+- Do not modify microphone capture, audio artifacts, SwiftData persistence, Xcode project files, or RecallOS Mac UI files.
+- Do not include unrelated web app, dependency, or `open-design/` changes.
 
 ## Implementation Units
 
-### U1: Meeting Functions
+### U1: Search Index Hardening
 
 Files:
 
-- Create: `convex/meetings.ts`
+- Modify: `convex/schema.ts`
 
 Approach:
 
-- Add public queries for retrieving a meeting by ID and listing meetings in a start-time window.
-- Add public mutations for creating manual meetings, updating note content, and updating enhancement/second-brain state.
-- Default required schema arrays and status fields inside creation so clients do not need to duplicate boilerplate.
-- Keep `searchableText` synchronized with title, raw notes, enhanced notes, summary, decisions, and open questions where those fields are updated.
+- Add `meetingId` as a filter field on `transcriptSegments.search_transcripts`.
+- Keep the change schema-only until a future auth-scoped transcript search API is designed.
 
 Test scenarios:
 
-- Create a meeting with only required client-facing fields and confirm defaults satisfy the schema.
-- List meetings by date window in descending start-time order.
-- Updating notes updates `updatedAt` and `searchableText`.
-- Updating enhancement status accepts only schema-backed status values.
+- Confirm the schema defines `search_transcripts` with `searchField: "text"` and `filterFields: ["meetingId"]`.
+- Confirm no public transcript search function is added on the legacy `transcriptSegments` table.
 
-### U2: Task Functions
+### U2: Repository Hygiene
 
 Files:
 
-- Create: `convex/tasks.ts`
+- Modify: `.gitignore`
 
 Approach:
 
-- Add public queries for listing tasks by status, due-date range, meeting source, and user/others assignee.
-- Add public mutations for creating tasks, updating task metadata, and updating task status.
-- Set `completedAt` when status becomes `done`, and clear it when a done task is reopened.
-- Preserve source meeting evidence fields without requiring a meeting for manually created tasks.
+- Ignore `.DS_Store` so local macOS metadata is not accidentally staged with Convex work.
 
 Test scenarios:
 
-- Create manual and meeting-sourced tasks with schema defaults.
-- Filter tasks by status, assignee, due date, and source meeting.
-- Marking a task done sets `completedAt`; reopening clears it.
-- Metadata updates refresh `updatedAt` without overwriting omitted fields.
+- Confirm `.DS_Store` appears in `.gitignore`.
+- Confirm no unrelated web app, dependency, or design assets are included in the PR diff.
 
-### U3: Search Functions
+### U3: Auth-Risk Cleanup
 
 Files:
 
-- Create: `convex/search.ts`
+- Review: `convex/meetings.ts`
+- Review: `convex/tasks.ts`
+- Review: `convex/search.ts`
 
 Approach:
 
-- Add public meeting note search using the existing `meetings.search_notes` index.
-- Add public transcript search using the existing `transcriptSegments.search_transcripts` index.
-- Keep optional limits bounded so callers cannot request unbounded result sets.
-- Return enough meeting/transcript context for clients to render search results without adding new schema fields.
+- Remove the unauthenticated legacy-table meeting, task, and search exports from this PR.
+- Preserve existing RecallOS APIs that derive `userId` with `requireUserId` and enforce ownership checks.
 
 Test scenarios:
 
-- Meeting search supports a text query and optional folder filter.
-- Transcript search supports a text query and optional meeting filter after search.
-- Empty or whitespace query returns an empty list.
-- Limit arguments are clamped to a small backend maximum.
+- Confirm no public legacy meeting endpoints such as `get`, `listByStartTime`, `createManual`, or `updateState` remain in the PR diff.
+- Confirm no public legacy task endpoints such as `list`, `create`, `updateMetadata`, or `updateStatus` remain in the PR diff.
+- Confirm no public legacy `meetings` or `transcriptSegments` search exports remain in the PR diff.
+
+## Deferred Work
+
+- Auth-scoped RecallOS meeting, task, and search APIs remain valuable, but they require a separate CE plan.
+- Any future implementation must use `requireUserId`, tenant ownership checks, and auth-scoped RecallOS tables instead of the legacy tenantless tables.
 
 ## Verification
 
-- Run `npm run convex:check`.
-- Run `npm run convex:codegen`.
-- Run `ce-code-review mode:report-only base:main plan:docs/plans/2026-05-04-001-feat-convex-backend-foundation-plan.md` before PR.
+- Run `git diff --check`.
+- Confirm the PR diff contains only `.gitignore`, `convex/schema.ts`, and this plan artifact.
+- Run `ce-code-review mode:report-only base:main plan:docs/plans/2026-05-04-001-feat-convex-backend-foundation-plan.md`.
+- Do not block on `npm run convex:codegen` while `CONVEX_DEPLOYMENT` is unset.
 
 ## Assumptions
 
-- Branch name: `codex/convex-backend-foundation`.
-- `open-design/` remains untracked.
-- Native Swift app integration will happen in a later branch.
+- PR #16 should stay small and auth-safe instead of rebuilding the broader backend foundation in this branch.
+- The larger Convex backend foundation will be planned and implemented later against auth-scoped RecallOS data.
