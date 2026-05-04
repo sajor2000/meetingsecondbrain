@@ -38,6 +38,29 @@ export const listForMeeting = query({
   },
 });
 
+export const listForMeetingByLocalId = query({
+  args: { meetingLocalId: v.string() },
+  handler: async (ctx, args) => {
+    const userId = await requireUserId(ctx);
+    requireUUIDLocalId(args.meetingLocalId);
+
+    const meeting = await ctx.db
+      .query("recallOSMeetings")
+      .withIndex("by_user_local_id", (q) => q.eq("userId", userId).eq("localId", args.meetingLocalId))
+      .unique();
+    if (meeting === null) {
+      throw new Error("Meeting not found.");
+    }
+
+    return await ctx.db
+      .query("recallOSTasks")
+      .withIndex("by_user_meeting_local_id", (q) =>
+        q.eq("userId", userId).eq("sourceMeetingLocalId", args.meetingLocalId),
+      )
+      .collect();
+  },
+});
+
 export const createFromMeeting = mutation({
   args: {
     localId: v.string(),

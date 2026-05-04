@@ -9,7 +9,7 @@ Design sources:
 
 ## Validation Evidence
 
-- `swift test --package-path packages/RecallOSCore`: passed, 10 tests.
+- `swift test --package-path packages/RecallOSCore`: passed.
 - `xcodegen generate`: passed, generated `RecallOS.xcodeproj`.
 - `xcodebuild -project RecallOS.xcodeproj -scheme RecallOSMac -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build`: passed.
 - `xcodebuild -project RecallOS.xcodeproj -scheme RecallOSiOS -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build`: passed.
@@ -31,7 +31,7 @@ Design sources:
 | iOS companion | Implemented shell | `apps/RecallOSiOS/Sources/IOSContentView.swift` |
 | Second brain UI | Implemented sample UI | `SearchResultCard`, Brain tab/rail |
 | Convex backend | Stubbed | `convex/schema.ts`, `meetings.ts`, `tasks.ts`, `search.ts` |
-| Tests | Partial | Shared model tests only |
+| Tests | Partial | Shared model and store tests |
 | Screenshots | Partial | iOS screenshot captured; macOS capture blocked |
 
 ## UI_UX_DESIGN.md Coverage

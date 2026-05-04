@@ -401,7 +401,9 @@ final class ModelTests: XCTestCase {
 
         let audioState = await audioProvider.state()
         XCTAssertEqual(audioState.pauseCount, 1)
+        XCTAssertEqual(audioState.stopCount, 1)
         XCTAssertEqual(store.recordingSession?.state, .failed)
+        XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
         XCTAssertNotNil(store.syncError)
     }
 
@@ -424,8 +426,10 @@ final class ModelTests: XCTestCase {
 
         let audioState = await audioProvider.state()
         XCTAssertEqual(audioState.resumeCount, 1)
+        XCTAssertEqual(audioState.stopCount, 1)
         XCTAssertEqual(store.recordingSession?.state, .failed)
         XCTAssertEqual(store.recordingSession?.pausedAt, pausedAt)
+        XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
         XCTAssertNotNil(store.syncError)
     }
 
@@ -456,6 +460,70 @@ final class ModelTests: XCTestCase {
 
         XCTAssertEqual(store.tasks.first { $0.id == task.id }?.status, .today)
         XCTAssertEqual(store.selectedMeeting?.tasks.first { $0.id == task.id }?.status, .today)
+        XCTAssertNil(store.syncError)
+    }
+
+    @MainActor
+    func testOlderFailedTaskMoveRollsBackWhenNewerMoveIsForDifferentTask() async {
+        let meeting = SampleData.meeting
+        let firstTask = MeetingTask(title: "First race move", status: .open, sourceMeetingID: meeting.id)
+        let secondTask = MeetingTask(title: "Second race move", status: .open, sourceMeetingID: meeting.id)
+        var selected = meeting
+        selected.tasks = [firstTask, secondTask]
+        let repository = OverlappingMoveRepository(meetings: [selected], tasks: [firstTask, secondTask])
+        let store = RecallOSAppStore(
+            repository: repository,
+            meetings: [selected],
+            selectedMeeting: selected,
+            tasks: [firstTask, secondTask]
+        )
+
+        let firstMove = Task { @MainActor in
+            await store.moveTasks([firstTask.id], to: .done)
+        }
+        await waitUntilAsync {
+            await repository.isFirstMoveWaiting
+        }
+
+        await store.moveTasks([secondTask.id], to: .today)
+        await repository.failFirstMove()
+        await firstMove.value
+
+        XCTAssertEqual(store.tasks.first { $0.id == firstTask.id }?.status, .open)
+        XCTAssertEqual(store.tasks.first { $0.id == secondTask.id }?.status, .today)
+        XCTAssertEqual(store.selectedMeeting?.tasks.first { $0.id == firstTask.id }?.status, .open)
+        XCTAssertEqual(store.selectedMeeting?.tasks.first { $0.id == secondTask.id }?.status, .today)
+        XCTAssertNotNil(store.syncError)
+    }
+
+    @MainActor
+    func testOlderSuccessfulTaskMoveDoesNotOverwriteNewerMoveForSameTask() async {
+        let meeting = SampleData.meeting
+        let task = MeetingTask(title: "Race move success", status: .open, sourceMeetingID: meeting.id)
+        var selected = meeting
+        selected.tasks = [task]
+        let repository = OverlappingMoveRepository(meetings: [selected], tasks: [task])
+        let store = RecallOSAppStore(
+            repository: repository,
+            meetings: [selected],
+            selectedMeeting: selected,
+            tasks: [task]
+        )
+
+        let firstMove = Task { @MainActor in
+            await store.moveTasks([task.id], to: .done)
+        }
+        await waitUntilAsync {
+            await repository.isFirstMoveWaiting
+        }
+
+        await store.moveTasks([task.id], to: .today)
+        await repository.completeFirstMove()
+        await firstMove.value
+
+        XCTAssertEqual(store.tasks.first { $0.id == task.id }?.status, .today)
+        XCTAssertEqual(store.selectedMeeting?.tasks.first { $0.id == task.id }?.status, .today)
+        XCTAssertNil(store.syncError)
     }
 
     @MainActor
@@ -534,6 +602,34 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
         XCTAssertNotEqual(store.meetings.first { $0.id == meeting.id }?.status, .recording)
         XCTAssertNotNil(store.syncError)
+    }
+
+    @MainActor
+    func testCompletedRecordingCannotBeEnhancedAgainViaStopAction() async throws {
+        let meeting = SampleData.meeting
+        let audioProvider = RecordingSpyAudioProvider()
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            audioProvider: audioProvider,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000),
+            meetings: [meeting],
+            selectedMeeting: meeting
+        )
+
+        await store.startRecording()
+        await waitUntil {
+            !(store.selectedMeeting?.transcriptSegments.isEmpty ?? true)
+        }
+        await store.stopAndEnhanceRecording()
+        let audioStateAfterCompletion = await audioProvider.state()
+
+        await store.stopAndEnhanceRecording()
+
+        let finalAudioState = await audioProvider.state()
+        XCTAssertEqual(audioStateAfterCompletion.stopCount, 1)
+        XCTAssertEqual(finalAudioState.stopCount, audioStateAfterCompletion.stopCount)
+        XCTAssertEqual(store.recordingSession?.state, .completed)
+        XCTAssertEqual(store.selectedMeeting?.status, .completed)
     }
 
     @MainActor
@@ -633,16 +729,22 @@ final class ModelTests: XCTestCase {
             text: "late routing needle",
             confidence: 0.9
         )
+        let transcriptProvider = ControlledTranscriptionProvider()
         let store = RecallOSAppStore(
             repository: FixtureRecallOSRepository(meetings: [recordingMeeting, otherMeeting], tasks: []),
-            transcriptionProvider: DelayedSingleSegmentTranscriptionProvider(segment: lateSegment),
+            transcriptionProvider: transcriptProvider,
             meetings: [recordingMeeting, otherMeeting],
             selectedMeeting: recordingMeeting,
             tasks: []
         )
 
         await store.startRecording()
+        await waitUntilAsync {
+            await transcriptProvider.isReady
+        }
         await store.selectMeeting(otherMeeting.id)
+        await transcriptProvider.yield(lateSegment)
+        await transcriptProvider.finish()
         await waitUntil {
             store.meetings.first { $0.id == recordingMeeting.id }?.transcriptSegments.contains(lateSegment) == true
         }
@@ -742,6 +844,39 @@ final class ModelTests: XCTestCase {
         await oldSearch.value
 
         XCTAssertEqual(store.searchResults, [newResult])
+        XCTAssertNil(store.syncError)
+    }
+
+    @MainActor
+    func testSearchIgnoresOlderFailureAfterNewerSuccess() async {
+        let searchProvider = ControlledSearchProvider()
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [], tasks: []),
+            secondBrainSearchProvider: searchProvider
+        )
+        let newResult = SearchResult(title: "New", source: "Meeting", snippet: "new")
+
+        let oldSearch = Task { @MainActor in
+            await store.search("old")
+        }
+        await waitUntilAsync {
+            await searchProvider.hasRequest(for: "old")
+        }
+
+        let newSearch = Task { @MainActor in
+            await store.search("new")
+        }
+        await waitUntilAsync {
+            await searchProvider.hasRequest(for: "new")
+        }
+
+        await searchProvider.finish(query: "new", results: [newResult])
+        await newSearch.value
+        await searchProvider.fail(query: "old")
+        await oldSearch.value
+
+        XCTAssertEqual(store.searchResults, [newResult])
+        XCTAssertNil(store.syncError)
     }
 
     @MainActor
@@ -924,26 +1059,9 @@ private actor ControlledSearchProvider: SecondBrainSearchProvider {
     func finish(query: String, results: [SearchResult]) {
         continuations.removeValue(forKey: query)?.resume(returning: results)
     }
-}
 
-private struct DelayedSingleSegmentTranscriptionProvider: TranscriptionProvider {
-    let segment: TranscriptSegment
-
-    func transcriptStream(for meeting: Meeting) async throws -> AsyncThrowingStream<TranscriptSegment, Error> {
-        AsyncThrowingStream { continuation in
-            let task = Task {
-                try? await Task.sleep(nanoseconds: 25_000_000)
-                guard !Task.isCancelled else {
-                    continuation.finish()
-                    return
-                }
-                continuation.yield(segment)
-                continuation.finish()
-            }
-            continuation.onTermination = { _ in
-                task.cancel()
-            }
-        }
+    func fail(query: String) {
+        continuations.removeValue(forKey: query)?.resume(throwing: TestRepositoryError.updateFailed)
     }
 }
 
@@ -1026,6 +1144,11 @@ private actor OverlappingMoveRepository: RecallOSRepository {
         firstMoveContinuation = nil
     }
 
+    func completeFirstMove() {
+        firstMoveContinuation?.resume()
+        firstMoveContinuation = nil
+    }
+
     func listMeetings() async throws -> [Meeting] {
         meetings
     }
@@ -1049,9 +1172,8 @@ private actor OverlappingMoveRepository: RecallOSRepository {
             try await withCheckedThrowingContinuation { continuation in
                 firstMoveContinuation = continuation
             }
-        } else {
-            tasks = TaskStore.moved(tasks: tasks, taskIDs: taskIDs, to: status)
         }
+        tasks = TaskStore.moved(tasks: tasks, taskIDs: taskIDs, to: status)
     }
 
     func listTranscriptSegments(forMeeting meetingID: UUID) async throws -> [TranscriptSegment] {

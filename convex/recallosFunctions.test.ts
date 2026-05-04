@@ -117,6 +117,10 @@ describe("RecallOS Convex function contracts", () => {
 
     const meetingTasks = await t.query(functions.tasks.listForMeeting, { meetingId });
     expect(meetingTasks.map((task: any) => task._id)).toEqual([taskId]);
+    const meetingTasksByLocalId = await t.query(functions.tasks.listForMeetingByLocalId, {
+      meetingLocalId: "33333333-3333-4333-8333-333333333333",
+    });
+    expect(meetingTasksByLocalId.map((task: any) => task._id)).toEqual([taskId]);
 
     const otherMeetingId = await t.mutation(functions.meetings.create, {
       localId: "55555555-5555-4555-8555-555555555555",
@@ -131,6 +135,9 @@ describe("RecallOS Convex function contracts", () => {
     });
     const allTasks = await t.query(functions.tasks.listForMeeting, {});
     expect(new Set(allTasks.map((task: any) => task._id))).toEqual(new Set([taskId, otherTaskId]));
+    await expect(
+      t.query(functions.tasks.listForMeetingByLocalId, { meetingLocalId: "not-a-uuid" }),
+    ).rejects.toThrow("UUID");
 
     await t.mutation(functions.tasks.move, { taskId, status: "done" });
     const doneTasks = await t.query(functions.tasks.listForMeeting, { meetingId });

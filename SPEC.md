@@ -35,7 +35,7 @@ The artifact is a reference for visual hierarchy, interaction intent, copy, and 
 - Models: `Meeting`, `TranscriptSegment`, `MeetingTask`, `MeetingScreenshot`, `CalendarEvent`, `Person`, `Topic`, `MeetingDecision`.
 - Reusable views: hybrid note block, timestamp link, task row, search result card, recording banner, task board.
 
-Evidence: implemented under `Packages/RecallOSCore`.
+Evidence: implemented under `packages/RecallOSCore`.
 
 ### macOS App
 
@@ -48,7 +48,7 @@ Evidence: implemented under `Packages/RecallOSCore`.
 - Banner states: pre-meeting, in-progress, recording, ad-hoc.
 - Recording state: red pulsing dot, elapsed timer, pause and stop actions, no dismiss action.
 
-Evidence: implemented under `Apps/RecallOSMac`.
+Evidence: implemented under `apps/RecallOSMac`.
 
 ### Notes
 
@@ -82,7 +82,7 @@ Evidence: list and board UI implemented with sample data; persistence and drag m
 - Tasks tab.
 - Brain search tab.
 
-Evidence: implemented under `Apps/RecallOSiOS`; real recording and sync are not wired.
+Evidence: implemented under `apps/RecallOSiOS`; real recording and sync are not wired.
 
 ### Convex Backend
 

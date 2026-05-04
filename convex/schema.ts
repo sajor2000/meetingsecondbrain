@@ -314,6 +314,7 @@ export default defineSchema({
   })
     .index("by_user_status", ["userId", "status"])
     .index("by_user_meeting", ["userId", "sourceMeetingId"])
+    .index("by_user_meeting_local_id", ["userId", "sourceMeetingLocalId"])
     .index("by_user_local_id", ["userId", "localId"]),
 
   recallOSScreenshots: defineTable({

@@ -24,7 +24,9 @@ public final class RecallOSAppStore: ObservableObject {
     private let defaultSearchQuery: String
     private var transcriptTask: Swift.Task<Void, Never>?
     private var isStartingRecording = false
+    private var isStoppingRecording = false
     private var taskMoveGeneration = 0
+    private var taskMoveGenerationsByID: [UUID: Int] = [:]
     private var searchGeneration = 0
 
     public init(
@@ -196,7 +198,7 @@ public final class RecallOSAppStore: ObservableObject {
             workflowMessage = "Recording paused"
             syncError = nil
         } catch {
-            markWorkflowFailed(error)
+            await failActiveRecording(error, meetingID: session.meetingID)
         }
     }
 
@@ -211,12 +213,18 @@ public final class RecallOSAppStore: ObservableObject {
             workflowMessage = "Recording resumed"
             syncError = nil
         } catch {
-            markWorkflowFailed(error)
+            await failActiveRecording(error, meetingID: session.meetingID)
         }
     }
 
     public func stopAndEnhanceRecording() async {
-        guard var session = recordingSession, var meeting = meeting(for: session.meetingID) else { return }
+        guard var session = recordingSession,
+              session.state == .recording || session.state == .paused,
+              !isStoppingRecording,
+              var meeting = meeting(for: session.meetingID) else { return }
+
+        isStoppingRecording = true
+        defer { isStoppingRecording = false }
 
         do {
             transcriptTask?.cancel()
@@ -268,21 +276,39 @@ public final class RecallOSAppStore: ObservableObject {
     public func moveTasks(_ taskIDs: [UUID], to status: TaskStatus) async {
         taskMoveGeneration += 1
         let moveGeneration = taskMoveGeneration
-        let previousTasksByID = Dictionary(uniqueKeysWithValues: tasks.filter { taskIDs.contains($0.id) }.map { ($0.id, $0) })
+        let movedTaskIDs = Set(taskIDs)
+        for taskID in movedTaskIDs {
+            taskMoveGenerationsByID[taskID] = moveGeneration
+        }
+        let previousTasksByID = Dictionary(uniqueKeysWithValues: tasks.filter { movedTaskIDs.contains($0.id) }.map { ($0.id, $0) })
         tasks = TaskStore.moved(tasks: tasks, taskIDs: taskIDs, to: status)
         updateSelectedMeetingTasks()
 
         do {
             try await repository.moveTasks(taskIDs, to: status)
-            tasks = try await repository.listTasks(forMeeting: nil)
-            updateSelectedMeetingTasks()
-            if moveGeneration == taskMoveGeneration {
-                syncError = nil
+            guard movedTaskIDs.allSatisfy({ taskMoveGenerationsByID[$0] == moveGeneration }) else { return }
+
+            let currentTasksByID = Dictionary(uniqueKeysWithValues: tasks.map { ($0.id, $0) })
+            let persistedTasks = try await repository.listTasks(forMeeting: nil)
+            for taskID in movedTaskIDs where taskMoveGenerationsByID[taskID] == moveGeneration {
+                taskMoveGenerationsByID[taskID] = nil
             }
+            tasks = persistedTasks.map { task in
+                if taskMoveGenerationsByID[task.id] != nil, let currentTask = currentTasksByID[task.id] {
+                    return currentTask
+                }
+                return task
+            }
+            updateSelectedMeetingTasks()
+            syncError = nil
         } catch {
-            if moveGeneration == taskMoveGeneration {
+            let rollbackTaskIDs = movedTaskIDs.filter { taskMoveGenerationsByID[$0] == moveGeneration }
+            if !rollbackTaskIDs.isEmpty {
                 tasks = tasks.map { task in
-                    previousTasksByID[task.id] ?? task
+                    rollbackTaskIDs.contains(task.id) ? previousTasksByID[task.id] ?? task : task
+                }
+                for taskID in rollbackTaskIDs {
+                    taskMoveGenerationsByID[taskID] = nil
                 }
                 updateSelectedMeetingTasks()
                 syncError = error.localizedDescription
@@ -357,14 +383,19 @@ public final class RecallOSAppStore: ObservableObject {
     private func handleTranscriptStreamFailure(_ error: Error, meetingID: UUID) async {
         guard recordingSession?.meetingID == meetingID, recordingSession?.isActive == true else { return }
 
-        try? await audioProvider.stop()
+        await failActiveRecording(RecordingWorkflowError.transcriptionUnavailable(error.localizedDescription), meetingID: meetingID)
+    }
+
+    private func failActiveRecording(_ error: Error, meetingID: UUID) async {
+        transcriptTask?.cancel()
         transcriptTask = nil
+        try? await audioProvider.stop()
         if var meeting = meeting(for: meetingID) {
             meeting.status = .inProgress
             replaceSelectedMeeting(meeting)
             _ = try? await repository.updateMeeting(meeting)
         }
-        markWorkflowFailed(RecordingWorkflowError.transcriptionUnavailable(error.localizedDescription))
+        markWorkflowFailed(error)
     }
 
     private func replaceSelectedMeeting(_ meeting: Meeting) {

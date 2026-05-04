@@ -4,13 +4,12 @@
 
 Read these in order:
 
-1. `../index.html`
+1. `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c-4588-adcb-0afebf87b658/index.html`
 2. `SPEC.md`
 3. `UI_UX_DESIGN.md`
 4. `DECISIONS.md`
-5. `BUILD_PLAN.md`
 
-`../index.html` is the canonical design artifact. `../recallos-meeting-second-brain.html` is a synced backup.
+The external `index.html` is the canonical design artifact. `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c-4588-adcb-0afebf87b658/recallos-meeting-second-brain.html` is a synced backup.
 
 ## Important Framing
 
@@ -40,7 +39,7 @@ Do not recreate the foundation from this artifact folder.
 
 The native app implementation already lives at:
 
-- Local project: `/Users/jcrmacstudio/Desktop/Notes:Second Brain`
+- Local project: this Git checkout. Common local checkouts include `/Users/jcrmacstudio/Desktop/Notes:Second Brain` and CE worktrees such as `/Users/jcrmacstudio/Desktop/meetingsecondbrain-recallos-commit`.
 - GitHub repo: `https://github.com/sajor2000/meetingsecondbrain`
 
 Current foundation inventory:
@@ -133,7 +132,7 @@ Default task UX remains list-first and Things-inspired.
 ```text
 You are building RecallOS, a native Mac-first meeting second brain with an iOS companion.
 
-Read index.html, design/SPEC.md, design/UI_UX_DESIGN.md, design/DECISIONS.md, and design/BUILD_PLAN.md before coding.
+Read the external design artifact, SPEC.md, UI_UX_DESIGN.md, DECISIONS.md, and docs/plans/recallos-pilot-mvp-sprint-plan.md before coding.
 
 Use the existing implementation repo at /Users/jcrmacstudio/Desktop/Notes:Second Brain. Do not recreate the repo structure, Swift package, app targets, Convex folder, or foundation docs from scratch.
 

@@ -6,7 +6,7 @@ The files at `/Users/jcrmacstudio/Desktop/open-design/.od/projects/8cf51484-1b6c
 
 ## 2026-05-03: Shared Core Package
 
-Design tokens, domain models, fixtures, and reusable SwiftUI components live in `Packages/RecallOSCore`. Both app targets import this package.
+Design tokens, domain models, fixtures, and reusable SwiftUI components live in `packages/RecallOSCore`. Both app targets import this package.
 
 ## 2026-05-03: MeetingTask Code Name
 

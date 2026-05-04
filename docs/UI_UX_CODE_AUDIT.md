@@ -123,7 +123,7 @@ xcodebuild -project RecallOS.xcodeproj -scheme RecallOSiOS -destination 'generic
 
 Results:
 
-- Core tests passed: 4 tests.
+- Core tests passed.
 - macOS build succeeded.
 - iOS build succeeded.
 - iOS simulator install and launch succeeded.

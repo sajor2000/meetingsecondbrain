@@ -25,10 +25,69 @@ const betaIdentity = {
 };
 
 describe("RecallOS Convex auth boundaries", () => {
-  test("public RecallOS queries reject unauthenticated callers", async () => {
+  test("public RecallOS functions reject unauthenticated callers", async () => {
     const t = makeConvexTest();
+    const { meetingId, taskId } = await t.run(async (ctx) => {
+      const meetingId = await ctx.db.insert("recallOSMeetings", {
+        userId: alphaIdentity.tokenIdentifier,
+        localId: "11111111-1111-4111-8111-111111111111",
+        title: "Alpha unauth meeting",
+        startsAt: 1,
+        endsAt: 2,
+        status: "scheduled",
+        attendeeIds: [],
+        topicIds: [],
+        createdAt: 1,
+        updatedAt: 1,
+      });
+      const taskId = await ctx.db.insert("recallOSTasks", {
+        userId: alphaIdentity.tokenIdentifier,
+        localId: "22222222-2222-4222-8222-222222222222",
+        title: "Alpha unauth task",
+        status: "open",
+        priority: "medium",
+        sourceMeetingId: meetingId,
+        sourceMeetingLocalId: "11111111-1111-4111-8111-111111111111",
+        createdAt: 1,
+        updatedAt: 1,
+      });
+      return { meetingId, taskId };
+    });
 
-    await expect(t.query(functions.search.brain, { query: "anything" })).rejects.toThrow("authenticated");
+    const unauthenticatedCalls = [
+      () => t.query(functions.meetings.list, {}),
+      () => t.mutation(functions.meetings.create, {
+        localId: "33333333-3333-4333-8333-333333333333",
+        title: "Unauth create",
+        startsAt: 1,
+        endsAt: 2,
+      }),
+      () => t.mutation(functions.meetings.updateNotes, {
+        meetingId,
+        summary: "Unauth notes",
+      }),
+      () => t.query(functions.tasks.listOpen, {}),
+      () => t.query(functions.tasks.listForMeeting, {}),
+      () => t.query(functions.tasks.listForMeeting, { meetingId }),
+      () => t.query(functions.tasks.listForMeetingByLocalId, {
+        meetingLocalId: "11111111-1111-4111-8111-111111111111",
+      }),
+      () => t.mutation(functions.tasks.createFromMeeting, {
+        localId: "44444444-4444-4444-8444-444444444444",
+        title: "Unauth task",
+        sourceMeetingId: meetingId,
+      }),
+      () => t.mutation(functions.tasks.move, { taskId, status: "done" }),
+      () => t.mutation(functions.tasks.moveByLocalIds, {
+        localIds: ["22222222-2222-4222-8222-222222222222"],
+        status: "done",
+      }),
+      () => t.query(functions.search.brain, { query: "anything" }),
+    ];
+
+    for (const call of unauthenticatedCalls) {
+      await expect(call()).rejects.toThrow("authenticated");
+    }
   });
 
   test("tokenIdentifier isolates users even when subjects match", async () => {
@@ -157,6 +216,15 @@ describe("RecallOS Convex auth boundaries", () => {
     const betaGlobalTasks = await asBeta.query(functions.tasks.listForMeeting, {});
     expect(betaGlobalTasks.map((task: any) => task._id)).toEqual([betaTaskId]);
     expect(betaGlobalTasks).not.toEqual(expect.arrayContaining([expect.objectContaining({ _id: taskId })]));
+    const betaLocalMeetingTasks = await asBeta.query(functions.tasks.listForMeetingByLocalId, {
+      meetingLocalId: "99999999-9999-4999-8999-999999999999",
+    });
+    expect(betaLocalMeetingTasks.map((task: any) => task._id)).toEqual([betaTaskId]);
+    await expect(
+      asBeta.query(functions.tasks.listForMeetingByLocalId, {
+        meetingLocalId: "66666666-6666-4666-8666-666666666666",
+      }),
+    ).rejects.toThrow("Meeting not found");
 
     const alphaTask = await t.run(async (ctx) => await ctx.db.get(taskId));
     expect(alphaTask?.status).toBe("open");
