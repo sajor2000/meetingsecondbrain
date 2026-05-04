@@ -2,9 +2,11 @@ import SwiftUI
 
 public struct SearchResultCard: View {
     private let result: SearchResult
+    private let onOpenMeeting: ((UUID) -> Void)?
 
-    public init(result: SearchResult) {
+    public init(result: SearchResult, onOpenMeeting: ((UUID) -> Void)? = nil) {
         self.result = result
+        self.onOpenMeeting = onOpenMeeting
     }
 
     public var body: some View {
@@ -19,10 +21,15 @@ public struct SearchResultCard: View {
                 .font(AppFont.secondary)
                 .foregroundStyle(Color.appAISuggestionText)
                 .lineLimit(3)
-            Button("Show full meeting") {}
+            Button("Show full meeting") {
+                if let sourceMeetingID = result.sourceMeetingID {
+                    onOpenMeeting?(sourceMeetingID)
+                }
+            }
                 .font(AppFont.secondary)
                 .foregroundStyle(Color.appAccent)
                 .buttonStyle(.plain)
+                .disabled(result.sourceMeetingID == nil)
         }
         .padding(AppSpacing.md)
         .hairlinePanel()

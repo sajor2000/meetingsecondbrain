@@ -62,14 +62,7 @@ public struct TaskBoardView: View {
     }
 
     private func move(items: [String], to status: TaskStatus) {
-        let ids = items.compactMap(UUID.init(uuidString:))
-        guard !ids.isEmpty else { return }
-
-        if let onMove {
-            onMove(ids, status)
-        } else {
-            tasks = TaskStore.moved(tasks: tasks, taskIDs: ids, to: status)
-        }
+        TaskBoardDropHandler.apply(items: items, to: status, tasks: &tasks, onMove: onMove)
     }
 
     private func title(for status: TaskStatus) -> String {
@@ -79,5 +72,29 @@ public struct TaskBoardView: View {
         case .waiting: "Waiting"
         case .done: "Done"
         }
+    }
+}
+
+enum TaskBoardDropHandler {
+    @discardableResult
+    static func apply(
+        items: [String],
+        to status: TaskStatus,
+        tasks: inout [MeetingTask],
+        onMove: (([UUID], TaskStatus) -> Void)? = nil
+    ) -> Bool {
+        let ids = taskIDs(from: items)
+        guard !ids.isEmpty else { return false }
+
+        if let onMove {
+            onMove(ids, status)
+        } else {
+            tasks = TaskStore.moved(tasks: tasks, taskIDs: ids, to: status)
+        }
+        return true
+    }
+
+    static func taskIDs(from items: [String]) -> [UUID] {
+        items.compactMap(UUID.init(uuidString:))
     }
 }

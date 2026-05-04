@@ -51,6 +51,7 @@ struct MacContentView: View {
                         onSearch: { query in
                             Swift.Task { await store.search(query) }
                         },
+                        onOpenMeeting: selectMeeting,
                         onMoveTasks: { ids, status in
                             Task {
                                 await store.moveTasks(ids, to: status)
@@ -122,9 +123,13 @@ struct MacContentView: View {
                 Swift.Task { await store.moveTasks(ids, to: status) }
             })
         case .secondBrain:
-            SecondBrainContentView(searchResults: store.searchResults) { query in
-                Swift.Task { await store.search(query) }
-            }
+            SecondBrainContentView(
+                searchResults: store.searchResults,
+                onSearch: { query in
+                    Swift.Task { await store.search(query) }
+                },
+                onOpenMeeting: selectMeeting
+            )
         case .people:
             PlaceholderContentView(title: "People", message: "People profiles will collect recurring speakers, owners, and meeting context.")
         case let .folder(folder):
@@ -563,6 +568,7 @@ private struct RightRailView: View {
     let highlightedSegmentID: UUID?
     let onTimestampSelected: (TimeInterval) -> Void
     let onSearch: (String) -> Void
+    let onOpenMeeting: (UUID) -> Void
     let onMoveTasks: ([UUID], TaskStatus) -> Void
     @State private var brainQuery = "What did Patrick say about JSL POC?"
 
@@ -671,7 +677,7 @@ private struct RightRailView: View {
                     .hairlinePanel()
             } else {
                 ForEach(searchResults) { result in
-                    SearchResultCard(result: result)
+                    SearchResultCard(result: result, onOpenMeeting: onOpenMeeting)
                 }
             }
         }
@@ -840,6 +846,7 @@ private struct MacTasksContentView: View {
 private struct SecondBrainContentView: View {
     let searchResults: [SearchResult]
     let onSearch: (String) -> Void
+    let onOpenMeeting: (UUID) -> Void
     @State private var query = "What did Patrick say about JSL POC?"
 
     var body: some View {
@@ -876,7 +883,7 @@ private struct SecondBrainContentView: View {
                         .hairlinePanel()
                 } else {
                     ForEach(searchResults) { result in
-                        SearchResultCard(result: result)
+                        SearchResultCard(result: result, onOpenMeeting: onOpenMeeting)
                     }
                 }
             }

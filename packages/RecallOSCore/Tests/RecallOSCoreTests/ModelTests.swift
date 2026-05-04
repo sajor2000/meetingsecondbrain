@@ -85,6 +85,16 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(sections.first { $0.title == "Today" }?.tasks.map(\.id), [highPriorityToday.id])
     }
 
+    func testTaskListTodayDoesNotDuplicateOverdueTodayTasks() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let overdueToday = MeetingTask(title: "Past due focus", status: .today, dueAt: now.addingTimeInterval(-60))
+
+        let sections = TaskListFilter.today.sections(for: [overdueToday], now: now)
+
+        XCTAssertEqual(sections.first { $0.title == "Overdue" }?.tasks.map(\.id), [overdueToday.id])
+        XCTAssertNil(sections.first { $0.title == "Today" })
+    }
+
     func testTaskStoreMoveUpdatesStatusAndCompletionDate() {
         let task = MeetingTask(title: "Prepare recap", status: .open)
         let completedAt = Date(timeIntervalSince1970: 42)
@@ -96,6 +106,37 @@ final class ModelTests: XCTestCase {
         let reopened = TaskStore.moved(tasks: completed, taskIDs: [task.id], to: .open)
         XCTAssertEqual(reopened[0].status, .open)
         XCTAssertNil(reopened[0].completedAt)
+    }
+
+    func testTaskBoardDropRoutesCallbacksAndFallbackMutation() {
+        let task = MeetingTask(title: "Move me", status: .open)
+        var callbackTasks = [task]
+        var callbackIDs: [UUID] = []
+        var callbackStatus: TaskStatus?
+
+        let handledByCallback = TaskBoardDropHandler.apply(
+            items: [task.id.uuidString, "not-a-uuid"],
+            to: .today,
+            tasks: &callbackTasks
+        ) { ids, status in
+            callbackIDs = ids
+            callbackStatus = status
+        }
+
+        XCTAssertTrue(handledByCallback)
+        XCTAssertEqual(callbackIDs, [task.id])
+        XCTAssertEqual(callbackStatus, .today)
+        XCTAssertEqual(callbackTasks[0].status, .open)
+
+        var fallbackTasks = [task]
+        let handledByFallback = TaskBoardDropHandler.apply(items: [task.id.uuidString], to: .done, tasks: &fallbackTasks)
+        XCTAssertTrue(handledByFallback)
+        XCTAssertEqual(fallbackTasks[0].status, .done)
+        XCTAssertNotNil(fallbackTasks[0].completedAt)
+
+        let handledInvalidDrop = TaskBoardDropHandler.apply(items: ["not-a-uuid"], to: .waiting, tasks: &fallbackTasks)
+        XCTAssertFalse(handledInvalidDrop)
+        XCTAssertEqual(fallbackTasks[0].status, .done)
     }
 
     func testSyncBackedModelsPreserveConvexID() {
@@ -152,6 +193,27 @@ final class ModelTests: XCTestCase {
     }
 
     @MainActor
+    func testAppStoreKeepsGlobalTasksAfterMeetingSelection() async {
+        let firstMeeting = Meeting(title: "First", startsAt: Date(), endsAt: Date().addingTimeInterval(600))
+        let secondMeeting = Meeting(title: "Second", startsAt: Date(), endsAt: Date().addingTimeInterval(600))
+        let firstTask = MeetingTask(title: "First task", sourceMeetingID: firstMeeting.id)
+        let secondTask = MeetingTask(title: "Second task", sourceMeetingID: secondMeeting.id)
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [firstMeeting, secondMeeting], tasks: [firstTask, secondTask])
+        )
+
+        await store.load()
+        await store.selectMeeting(secondMeeting.id)
+
+        XCTAssertEqual(Set(store.tasks.map(\.id)), Set([firstTask.id, secondTask.id]))
+        XCTAssertEqual(store.selectedMeeting?.id, secondMeeting.id)
+        XCTAssertEqual(store.selectedMeeting?.tasks.map(\.id), [secondTask.id])
+
+        await store.search("First task")
+        XCTAssertTrue(store.searchResults.contains { $0.title == "First task" })
+    }
+
+    @MainActor
     func testAppStoreRunsMockRecordingEnhancementAndTaskExtraction() async throws {
         let store = RecallOSAppStore(
             repository: FixtureRecallOSRepository(meetings: [SampleData.meeting], tasks: []),
@@ -198,6 +260,28 @@ final class ModelTests: XCTestCase {
     }
 
     @MainActor
+    func testStartRecordingDeniedMicrophoneDoesNotStartCapture() async {
+        let meeting = SampleData.meeting
+        let audioProvider = RecordingSpyAudioProvider()
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            permissionProvider: DenyingRecordingPermissionProvider(),
+            audioProvider: audioProvider,
+            meetings: [meeting],
+            selectedMeeting: meeting
+        )
+
+        await store.startRecording()
+
+        let audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.startCount, 0)
+        XCTAssertEqual(audioState.stopCount, 0)
+        XCTAssertEqual(store.selectedMeeting?.status, meeting.status)
+        XCTAssertEqual(store.recordingSession?.state, .failed)
+        XCTAssertNotNil(store.syncError)
+    }
+
+    @MainActor
     func testStartRecordingIsIdempotentWhileActive() async {
         let meeting = SampleData.meeting
         let audioProvider = RecordingSpyAudioProvider()
@@ -238,6 +322,27 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(audioState.stopCount, 1)
         XCTAssertEqual(store.recordingSession?.state, .failed)
         XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
+        XCTAssertNotNil(store.syncError)
+    }
+
+    @MainActor
+    func testEnhancementFailureRestoresNonEnhancingMeetingStatus() async throws {
+        let meeting = SampleData.meeting
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000),
+            enhancementProvider: FailingEnhancementProvider(),
+            meetings: [meeting],
+            selectedMeeting: meeting
+        )
+
+        await store.startRecording()
+        try await Task.sleep(nanoseconds: 20_000_000)
+        await store.stopAndEnhanceRecording()
+
+        XCTAssertEqual(store.recordingSession?.state, .failed)
+        XCTAssertEqual(store.selectedMeeting?.status, .inProgress)
+        XCTAssertNotEqual(store.meetings.first { $0.id == meeting.id }?.status, .enhancing)
         XCTAssertNotNil(store.syncError)
     }
 
@@ -380,6 +485,12 @@ private enum TestRepositoryError: Error {
     case updateFailed
 }
 
+private struct DenyingRecordingPermissionProvider: RecordingPermissionProvider {
+    func requestMicrophoneAccess() async throws -> Bool {
+        false
+    }
+}
+
 private actor RecordingSpyAudioProvider: AudioCaptureProvider {
     private var startCount = 0
     private var stopCount = 0
@@ -425,6 +536,12 @@ private struct DelayedSingleSegmentTranscriptionProvider: TranscriptionProvider 
                 task.cancel()
             }
         }
+    }
+}
+
+private struct FailingEnhancementProvider: NoteEnhancementProvider {
+    func enhance(meeting: Meeting, transcriptSegments: [TranscriptSegment]) async throws -> EnhancedMeetingContent {
+        throw TestRepositoryError.updateFailed
     }
 }
 

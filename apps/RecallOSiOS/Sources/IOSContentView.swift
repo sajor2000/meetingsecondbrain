@@ -19,7 +19,7 @@ struct IOSContentView: View {
                         .tabItem { Label("Meetings", systemImage: "square") }
                     TasksView(tasks: store.tasks)
                         .tabItem { Label("Tasks", systemImage: "checkmark") }
-                    BrainView(results: store.searchResults) { query in
+                    BrainView(results: store.searchResults, meetings: store.meetings, tasks: store.tasks) { query in
                         Task {
                             await store.search(query)
                         }
@@ -214,8 +214,11 @@ private struct TasksView: View {
 
 private struct BrainView: View {
     let results: [SearchResult]
+    let meetings: [Meeting]
+    let tasks: [MeetingTask]
     let onSearch: (String) -> Void
     @State private var query = "What did Patrick say about JSL POC?"
+    @State private var openedMeeting: Meeting?
 
     var body: some View {
         NavigationStack {
@@ -243,13 +246,18 @@ private struct BrainView: View {
                         }
                     }
                     ForEach(results) { result in
-                        SearchResultCard(result: result)
+                        SearchResultCard(result: result) { meetingID in
+                            openedMeeting = meetings.first { $0.id == meetingID }
+                        }
                     }
                 }
                 .padding(AppSpacing.lg)
             }
             .navigationTitle("Brain")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(item: $openedMeeting) { meeting in
+                MeetingReadOnlyView(meeting: meeting, tasks: tasks.filter { $0.sourceMeetingID == meeting.id })
+            }
         }
     }
 }
