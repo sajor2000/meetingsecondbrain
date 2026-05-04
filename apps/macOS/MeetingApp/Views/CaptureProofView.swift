@@ -26,6 +26,7 @@ struct CaptureProofView: View {
                 controls
                 meters
                 artifactSummary
+                evidenceChecklistSection
                 audioInspectionSection
                 evidenceSection
                 transcriptionSection
@@ -161,6 +162,38 @@ struct CaptureProofView: View {
     private var audioInspectionSection: some View {
         if viewModel.completedArtifact != nil {
             AudioInspectionView(viewModel: audioInspectionViewModel)
+        }
+    }
+
+    @ViewBuilder
+    private var evidenceChecklistSection: some View {
+        if let artifact = viewModel.completedArtifact {
+            let checks = evidenceSummaryBuilder.buildChecks(
+                artifact: artifact,
+                audioRows: audioInspectionViewModel.rows,
+                loadResult: viewModel.loadedArtifactInspection,
+                transcriptionArtifact: transcriptionViewModel.completedArtifact
+            )
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Evidence Checklist")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                ForEach(checks) { check in
+                    Label {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("\(check.statusText) \(check.label)")
+                                .font(.caption)
+                            Text(check.detail)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .textSelection(.enabled)
+                        }
+                    } icon: {
+                        Image(systemName: check.passed ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .foregroundStyle(check.passed ? .green : .red)
+                    }
+                }
+            }
         }
     }
 

@@ -52,6 +52,13 @@ final class ManualEvidenceSummaryBuilderTests: XCTestCase {
         XCTAssertTrue(summary.contains("- System audio: present, 02:05"))
         XCTAssertTrue(summary.contains(artifact.systemAudioURL?.path ?? "missing"))
         XCTAssertTrue(summary.contains("- Transcript JSON: \(transcriptionArtifact.jsonURL.path)"))
+        XCTAssertTrue(summary.contains("### Evidence Checklist"))
+        XCTAssertTrue(summary.contains("- [PASS] System audio: present, 02:05"))
+        XCTAssertTrue(summary.contains("- [PASS] Microphone audio: present, 02:04"))
+        XCTAssertTrue(summary.contains("- [PASS] Mixed audio: present, 02:05"))
+        XCTAssertTrue(summary.contains("- [PASS] Metadata: \(artifact.metadataURL?.path ?? "missing")"))
+        XCTAssertTrue(summary.contains("- [PASS] Transcript JSON: \(transcriptionArtifact.jsonURL.path)"))
+        XCTAssertTrue(summary.contains("- [PASS] Transcript markdown: \(transcriptionArtifact.markdownURL.path)"))
         XCTAssertTrue(summary.contains("- System samples seen: 12"))
         XCTAssertTrue(summary.contains("- Last mix input error: system.caf: unreadable"))
         XCTAssertTrue(summary.contains("- Mix export status: failed"))
@@ -82,9 +89,28 @@ final class ManualEvidenceSummaryBuilderTests: XCTestCase {
 
         XCTAssertTrue(summary.contains("- Mixed audio: missing"))
         XCTAssertTrue(summary.contains("- Transcript JSON: missing"))
+        XCTAssertTrue(summary.contains("- [FAIL] Mixed audio: missing URL"))
+        XCTAssertTrue(summary.contains("- [FAIL] Transcript JSON: missing URL"))
+        XCTAssertTrue(summary.contains("- [FAIL] Transcript markdown: missing URL"))
         XCTAssertTrue(summary.contains("### Warnings"))
         XCTAssertTrue(summary.contains("- Mixed audio file is missing."))
         XCTAssertTrue(summary.contains("- Transcript JSON file is missing."))
+    }
+
+    func testBuildChecksRequireAudioInspectionRows() {
+        let artifact = RecordingArtifact.testArtifact()
+
+        let checks = ManualEvidenceSummaryBuilder().buildChecks(
+            artifact: artifact,
+            audioRows: [],
+            loadResult: nil,
+            transcriptionArtifact: nil
+        )
+
+        XCTAssertEqual(checks.first { $0.label == "System audio" }?.passed, false)
+        XCTAssertEqual(checks.first { $0.label == "Microphone audio" }?.passed, false)
+        XCTAssertEqual(checks.first { $0.label == "Mixed audio" }?.passed, false)
+        XCTAssertEqual(checks.first { $0.label == "Metadata" }?.passed, true)
     }
 }
 
