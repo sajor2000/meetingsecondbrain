@@ -12,6 +12,7 @@
 		0810FCD6FDD9C6950A70E167 /* SwiftDataRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */; };
 		15AE1E83E12DE49CCAEDF0FE /* RecallOSPersistentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E90D362DEBD483D3BFF135 /* RecallOSPersistentModels.swift */; };
 		25EA8B9CC185FA34D22BF014 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 533C35D786E1BFEF3BD60F6D /* RecallOSCore */; };
+		26A7EBF2585D29D9F5EFE572 /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */; };
 		27530E75D34600D56BEBE835 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7DDD304382FCC3A23E9D95B5 /* RecallOSCore */; };
 		3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD16BDC533757B7B74F015BF /* MacContentView.swift */; };
 		4C99EAB7A9E663714367889D /* EventKitCalendarEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */; };
@@ -22,11 +23,14 @@
 		84C4E37283733C5C1355E671 /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
 		98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
 		9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020E5BBB439A3E651DF08A98 /* IOSContentView.swift */; };
+		B26E58F41EB6EE7D0A9265FB /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */; };
 		CED416F844C90E524C328E26 /* MeetingLifecycleScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C05152F095D8924F019A38 /* MeetingLifecycleScheduler.swift */; };
+		D262ABA88025931C67D28A56 /* AVFoundationRecordingPermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */; };
 		E2DCEFA44EAD9CBB3D726D1E /* EventKitCalendarEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */; };
 		EAD41E5160B570F38CF486B9 /* RecallOSPersistenceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A54413059836AD2D907CC2 /* RecallOSPersistenceMapper.swift */; };
 		EB88C6B69F4AED72BDDAAC8A /* RecallOSMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7E48114726D83D479F481C /* RecallOSMacApp.swift */; };
 		ED13AC36F25D1C70D7741499 /* SwiftDataRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */; };
+		F4A99D3C332E17FF80152016 /* AVFoundationRecordingPermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */; };
 		FDCAEA25F9D1524C43944F3E /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +39,9 @@
 		182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitCalendarEventProvider.swift; sourceTree = "<group>"; };
 		2F7E48114726D83D479F481C /* RecallOSMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSMacApp.swift; sourceTree = "<group>"; };
 		40A6D384B414542A6DEE68A2 /* RecallOSCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RecallOSCore; path = Packages/RecallOSCore; sourceTree = SOURCE_ROOT; };
+		4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFoundationRecordingPermissionProvider.swift; sourceTree = "<group>"; };
 		63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataRecallOSRepository.swift; sourceTree = "<group>"; };
+		6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFoundationMicrophoneAudioCaptureProvider.swift; sourceTree = "<group>"; };
 		80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSStoreFactory.swift; sourceTree = "<group>"; };
 		9249171BE8B6BE902CFF0404 /* RecallOSiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RecallOSiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		952043282830E1CC3AA46119 /* RecallOSMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecallOSMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +83,15 @@
 			path = Calendar;
 			sourceTree = "<group>";
 		};
+		0F6A79FE5BB4866E29E34109 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */,
+				4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
 		22DD1FAE5ED18A7B9390DD01 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,6 +126,7 @@
 			children = (
 				BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */,
 				80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */,
+				0F6A79FE5BB4866E29E34109 /* Audio */,
 				03E8C28FEFB1E89917D54A9E /* Calendar */,
 				30BC62D3E761B98D2B99D27D /* Persistence */,
 			);
@@ -237,6 +253,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B26E58F41EB6EE7D0A9265FB /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */,
+				D262ABA88025931C67D28A56 /* AVFoundationRecordingPermissionProvider.swift in Sources */,
 				98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */,
 				E2DCEFA44EAD9CBB3D726D1E /* EventKitCalendarEventProvider.swift in Sources */,
 				9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */,
@@ -252,6 +270,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26A7EBF2585D29D9F5EFE572 /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */,
+				F4A99D3C332E17FF80152016 /* AVFoundationRecordingPermissionProvider.swift in Sources */,
 				4D5F8725C5E53BA0043B3095 /* ConvexRecallOSRepository.swift in Sources */,
 				4C99EAB7A9E663714367889D /* EventKitCalendarEventProvider.swift in Sources */,
 				3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */,

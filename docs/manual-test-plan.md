@@ -4,6 +4,31 @@
 
 Status: automated capture proof implemented, real meeting gate pending
 
+### RecallOS Sprint 4: Microphone Artifact Gate
+
+Use this section for the native RecallOS app before adding system audio or real transcription.
+
+Automated gate:
+
+- `swift test --package-path Packages/RecallOSCore`
+- `xcodebuild -project RecallOS.xcodeproj -scheme RecallOSMac -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build`
+- `xcodebuild -project RecallOS.xcodeproj -scheme RecallOSiOS -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build`
+
+Manual permission-denied check:
+
+- Deny microphone permission in System Settings.
+- Start a RecallOS recording.
+- Expected: no active recording remains, the selected meeting is recoverable, and the UI shows the microphone-specific recovery message.
+
+Manual happy path:
+
+- Allow microphone permission.
+- Start a RecallOS recording for 5-10 seconds.
+- Stop the recording and allow mock enhancement to complete.
+- Confirm the meeting shows an Audio artifacts section with a microphone path.
+- Confirm the `microphone.caf` file exists and is non-empty.
+- Relaunch the app and confirm the meeting still retains artifact metadata.
+
 ### Automated Regression Gate
 
 - `npm run xcode:test:macos` must pass before a real meeting proof run.

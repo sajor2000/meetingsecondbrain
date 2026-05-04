@@ -205,6 +205,7 @@ final class SwiftDataRecallOSRepository: RecallOSRepository, @unchecked Sendable
             PersistentMeetingScreenshot.self,
             PersistentMeetingDecision.self,
             PersistentTopic.self,
+            PersistentAudioCaptureArtifact.self,
             PersistentCalendarEvent.self,
             PersistentRecallOSSetting.self
         ])

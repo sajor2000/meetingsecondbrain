@@ -18,7 +18,7 @@ public protocol AudioCaptureProvider: Sendable {
     func start(meeting: Meeting) async throws
     func pause() async throws
     func resume() async throws
-    func stop() async throws
+    func stop() async throws -> AudioCaptureArtifact?
 }
 
 public protocol TranscriptionProvider: Sendable {
@@ -70,9 +70,10 @@ public actor MockAudioCaptureProvider: AudioCaptureProvider {
         isPaused = false
     }
 
-    public func stop() async throws {
+    public func stop() async throws -> AudioCaptureArtifact? {
         isCapturing = false
         isPaused = false
+        return nil
     }
 }
 

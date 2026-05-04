@@ -560,6 +560,27 @@ private struct NotesEditorView: View {
                     HybridNoteBlockView(block: block, onTimestampSelected: onTimestampSelected)
                 }
 
+                if !meeting.audioArtifacts.isEmpty {
+                    VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                        Text("Audio artifacts")
+                            .font(AppFont.sectionHeader)
+                        ForEach(meeting.audioArtifacts) { artifact in
+                            VStack(alignment: .leading, spacing: AppSpacing.xxs) {
+                                Text(artifact.microphoneAudioPath ?? "Microphone artifact pending")
+                                    .font(AppFont.metadata)
+                                    .foregroundStyle(Color.appAISuggestionText)
+                                    .lineLimit(2)
+                                Text(artifact.byteSize.map { "\($0) bytes" } ?? artifact.diagnostics)
+                                    .font(AppFont.metadata)
+                                    .foregroundStyle(Color.appMutedText)
+                            }
+                            Divider()
+                        }
+                    }
+                    .padding(AppSpacing.md)
+                    .hairlinePanel()
+                }
+
                 VStack(alignment: .leading, spacing: AppSpacing.sm) {
                     Text("Enhancement preview")
                         .font(AppFont.sectionHeader)

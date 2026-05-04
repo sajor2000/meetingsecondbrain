@@ -22,6 +22,7 @@ Phase 2 capture proof items now present:
 - macOS recording session UI scaffold with local capture proof controls.
 - ScreenCaptureKit system audio capture service.
 - AVFoundation microphone capture service.
+- RecallOS native microphone artifact boundary with local metadata persistence.
 - Recording artifact model, metadata writer, and local diagnostic output folder.
 - Recorder lifecycle tests for startup cleanup, stop cleanup, artifact uniqueness, and live meter activity.
 - Manual real meeting test plan at `docs/manual-test-plan.md`.

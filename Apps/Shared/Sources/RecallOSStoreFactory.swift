@@ -6,6 +6,8 @@ enum RecallOSStoreFactory {
         do {
             return RecallOSAppStore(
                 repository: try SwiftDataRecallOSRepository.persistent(),
+                permissionProvider: permissionProvider(),
+                audioProvider: audioProvider(),
                 calendarProvider: calendarProvider()
             )
         } catch {
@@ -24,6 +26,22 @@ enum RecallOSStoreFactory {
         EventKitCalendarEventProvider()
         #else
         MockCalendarEventProvider()
+        #endif
+    }
+
+    private static func permissionProvider() -> any RecordingPermissionProvider {
+        #if os(macOS)
+        AVFoundationRecordingPermissionProvider()
+        #else
+        AllowAllRecordingPermissionProvider()
+        #endif
+    }
+
+    private static func audioProvider() -> any AudioCaptureProvider {
+        #if os(macOS)
+        AVFoundationMicrophoneAudioCaptureProvider()
+        #else
+        MockAudioCaptureProvider()
         #endif
     }
 }

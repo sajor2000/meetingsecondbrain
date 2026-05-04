@@ -17,6 +17,7 @@ public struct Meeting: Identifiable, Codable, Hashable, Sendable, SyncBacked {
     public var screenshots: [MeetingScreenshot]
     public var decisions: [MeetingDecision]
     public var topics: [Topic]
+    public var audioArtifacts: [AudioCaptureArtifact]
 
     public init(
         id: UUID = UUID(),
@@ -34,7 +35,8 @@ public struct Meeting: Identifiable, Codable, Hashable, Sendable, SyncBacked {
         tasks: [MeetingTask] = [],
         screenshots: [MeetingScreenshot] = [],
         decisions: [MeetingDecision] = [],
-        topics: [Topic] = []
+        topics: [Topic] = [],
+        audioArtifacts: [AudioCaptureArtifact] = []
     ) {
         self.id = id
         self.convexID = convexID
@@ -52,6 +54,7 @@ public struct Meeting: Identifiable, Codable, Hashable, Sendable, SyncBacked {
         self.screenshots = screenshots
         self.decisions = decisions
         self.topics = topics
+        self.audioArtifacts = audioArtifacts
     }
 }
 
