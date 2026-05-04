@@ -146,6 +146,28 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(task.convexID, "tasks:abc")
     }
 
+    func testAudioCaptureArtifactKeepsLocalMetadata() throws {
+        let startedAt = Date(timeIntervalSince1970: 1_778_270_400)
+        let endedAt = startedAt.addingTimeInterval(12)
+        let artifact = AudioCaptureArtifact(
+            convexID: "audio:abc",
+            meetingID: SampleData.meetingID,
+            startedAt: startedAt,
+            endedAt: endedAt,
+            microphoneAudioPath: "/tmp/microphone.caf",
+            duration: 12,
+            byteSize: 4_096,
+            diagnostics: "ok"
+        )
+        let decoded = try JSONDecoder().decode(AudioCaptureArtifact.self, from: JSONEncoder().encode(artifact))
+
+        XCTAssertEqual(decoded.convexID, "audio:abc")
+        XCTAssertEqual(decoded.meetingID, SampleData.meetingID)
+        XCTAssertEqual(decoded.microphoneAudioPath, "/tmp/microphone.caf")
+        XCTAssertEqual(decoded.byteSize, 4_096)
+        XCTAssertEqual(Meeting(title: "No artifacts", startsAt: startedAt, endsAt: endedAt).audioArtifacts, [])
+    }
+
     func testFixtureRepositoryPersistsTaskMoveWithinRepository() async throws {
         let repository = FixtureRecallOSRepository()
         let task = try await repository.listTasks(forMeeting: SampleData.meetingID)[0]
@@ -214,6 +236,122 @@ final class ModelTests: XCTestCase {
         XCTAssertFalse(store.selectedMeeting?.userNotes.isEmpty ?? true)
         XCTAssertFalse(store.tasks.isEmpty)
         XCTAssertNil(store.syncError)
+    }
+
+    @MainActor
+    func testStopStoresAudioArtifactOnRecordingMeetingWhenSelectionChanges() async throws {
+        let recordingMeetingID = UUID(uuidString: "66666666-6666-6666-6666-666666666666")!
+        let otherMeetingID = UUID(uuidString: "77777777-7777-7777-7777-777777777777")!
+        let start = Date(timeIntervalSince1970: 1_778_270_400)
+        let recordingMeeting = Meeting(
+            id: recordingMeetingID,
+            title: "Recording meeting",
+            startsAt: start,
+            endsAt: start.addingTimeInterval(45 * 60),
+            attendees: [SampleData.me, SampleData.patrick]
+        )
+        let otherMeeting = Meeting(
+            id: otherMeetingID,
+            title: "Other meeting",
+            startsAt: start.addingTimeInterval(3_600),
+            endsAt: start.addingTimeInterval(5_400),
+            attendees: [SampleData.lily]
+        )
+        let artifact = AudioCaptureArtifact(
+            meetingID: recordingMeetingID,
+            startedAt: start,
+            endedAt: start.addingTimeInterval(10),
+            microphoneAudioPath: "/tmp/recording-meeting/microphone.caf",
+            duration: 10,
+            byteSize: 2_048,
+            diagnostics: "test artifact"
+        )
+        let audioProvider = ArtifactAudioProvider(artifact: artifact)
+        let repository = FixtureRecallOSRepository(meetings: [recordingMeeting, otherMeeting], tasks: [])
+        let store = RecallOSAppStore(
+            repository: repository,
+            audioProvider: audioProvider,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000),
+            meetings: [recordingMeeting, otherMeeting],
+            selectedMeeting: recordingMeeting,
+            tasks: []
+        )
+
+        await store.startRecording()
+        await store.selectMeeting(otherMeetingID)
+        await store.stopAndEnhanceRecording()
+
+        let completedRecordingMeeting = try XCTUnwrap(store.meetings.first { $0.id == recordingMeetingID })
+        XCTAssertEqual(completedRecordingMeeting.audioArtifacts.map(\.id), [artifact.id])
+        XCTAssertEqual(completedRecordingMeeting.audioArtifacts.first?.microphoneAudioPath, artifact.microphoneAudioPath)
+        XCTAssertEqual(store.selectedMeeting?.id, otherMeetingID)
+        XCTAssertTrue(store.selectedMeeting?.audioArtifacts.isEmpty ?? false)
+    }
+
+    @MainActor
+    func testDeniedMicrophonePermissionShowsSpecificRecoveryStateWithoutStartingAudio() async throws {
+        let meeting = Meeting(
+            title: "Permission denied",
+            startsAt: Date(timeIntervalSince1970: 1_778_270_400),
+            endsAt: Date(timeIntervalSince1970: 1_778_273_100),
+            attendees: [SampleData.me]
+        )
+        let audioProvider = RecordingSpyAudioProvider()
+        let store = RecallOSAppStore(
+            repository: FixtureRecallOSRepository(meetings: [meeting], tasks: []),
+            permissionProvider: DenyingRecordingPermissionProvider(),
+            audioProvider: audioProvider,
+            meetings: [meeting],
+            selectedMeeting: meeting,
+            tasks: []
+        )
+
+        await store.startRecording()
+
+        XCTAssertEqual(store.recordingSession?.state, .failed)
+        XCTAssertEqual(store.syncError, RecordingWorkflowError.microphonePermissionDenied.localizedDescription)
+        XCTAssertEqual(store.selectedMeeting?.status, .failed)
+        let audioState = await audioProvider.state()
+        XCTAssertEqual(audioState.startCount, 0)
+        XCTAssertEqual(audioState.stopCount, 0)
+    }
+
+    @MainActor
+    func testEnhancementFailureLeavesCapturedArtifactOnRecordingMeeting() async throws {
+        let meeting = Meeting(
+            title: "Artifact before enhancement failure",
+            startsAt: Date(timeIntervalSince1970: 1_778_270_400),
+            endsAt: Date(timeIntervalSince1970: 1_778_273_100),
+            attendees: [SampleData.me]
+        )
+        let artifact = AudioCaptureArtifact(
+            meetingID: meeting.id,
+            startedAt: meeting.startsAt,
+            endedAt: meeting.startsAt.addingTimeInterval(8),
+            microphoneAudioPath: "/tmp/failure/microphone.caf",
+            duration: 8,
+            byteSize: 1_024,
+            diagnostics: "persisted before enhancement"
+        )
+        let repository = FixtureRecallOSRepository(meetings: [meeting], tasks: [])
+        let store = RecallOSAppStore(
+            repository: repository,
+            audioProvider: ArtifactAudioProvider(artifact: artifact),
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000),
+            enhancementProvider: FailingEnhancementProvider(),
+            meetings: [meeting],
+            selectedMeeting: meeting,
+            tasks: []
+        )
+
+        await store.startRecording()
+        await store.stopAndEnhanceRecording()
+
+        let savedMeetings = try await repository.listMeetings()
+        let saved = try XCTUnwrap(savedMeetings.first { $0.id == meeting.id })
+        XCTAssertEqual(saved.audioArtifacts.map(\.id), [artifact.id])
+        XCTAssertEqual(store.recordingSession?.state, .failed)
+        XCTAssertNotNil(store.syncError)
     }
 
     @MainActor
@@ -438,11 +576,18 @@ final class ModelTests: XCTestCase {
 private enum TestRepositoryError: Error {
     case updateFailed
     case calendarFailed
+    case enhancementFailed
 }
 
 private struct ThrowingCalendarEventProvider: CalendarEventProvider {
     func upcomingEvents(limit: Int) async throws -> [CalendarEvent] {
         throw TestRepositoryError.calendarFailed
+    }
+}
+
+private struct DenyingRecordingPermissionProvider: RecordingPermissionProvider {
+    func requestMicrophoneAccess() async throws -> Bool {
+        false
     }
 }
 
@@ -458,12 +603,31 @@ private actor RecordingSpyAudioProvider: AudioCaptureProvider {
 
     func resume() async throws {}
 
-    func stop() async throws {
+    func stop() async throws -> AudioCaptureArtifact? {
         stopCount += 1
+        return nil
     }
 
     func state() -> (startCount: Int, stopCount: Int) {
         (startCount, stopCount)
+    }
+}
+
+private actor ArtifactAudioProvider: AudioCaptureProvider {
+    private let artifact: AudioCaptureArtifact
+
+    init(artifact: AudioCaptureArtifact) {
+        self.artifact = artifact
+    }
+
+    func start(meeting: Meeting) async throws {}
+
+    func pause() async throws {}
+
+    func resume() async throws {}
+
+    func stop() async throws -> AudioCaptureArtifact? {
+        artifact
     }
 }
 
@@ -481,10 +645,11 @@ private actor FinalSegmentOnStopCaptureProvider: AudioCaptureProvider, Transcrip
 
     func resume() async throws {}
 
-    func stop() async throws {
+    func stop() async throws -> AudioCaptureArtifact? {
         continuation?.yield(finalSegment)
         continuation?.finish()
         await Task.yield()
+        return nil
     }
 
     func transcriptStream(for meeting: Meeting) async throws -> AsyncThrowingStream<TranscriptSegment, Error> {
@@ -497,6 +662,12 @@ private actor FinalSegmentOnStopCaptureProvider: AudioCaptureProvider, Transcrip
         while continuation == nil {
             await Task.yield()
         }
+    }
+}
+
+private struct FailingEnhancementProvider: NoteEnhancementProvider {
+    func enhance(meeting: Meeting, transcriptSegments: [TranscriptSegment]) async throws -> EnhancedMeetingContent {
+        throw TestRepositoryError.enhancementFailed
     }
 }
 

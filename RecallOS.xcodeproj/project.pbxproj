@@ -16,8 +16,11 @@
 		0E6210BB3BE8C632223D1277 /* RecallOSConvexDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDE8EB4CE50D6CC361AAE8 /* RecallOSConvexDTOs.swift */; };
 		15AE1E83E12DE49CCAEDF0FE /* RecallOSPersistentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E90D362DEBD483D3BFF135 /* RecallOSPersistentModels.swift */; };
 		25EA8B9CC185FA34D22BF014 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 533C35D786E1BFEF3BD60F6D /* RecallOSCore */; };
+		26A7EBF2585D29D9F5EFE572 /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */; };
 		27530E75D34600D56BEBE835 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7DDD304382FCC3A23E9D95B5 /* RecallOSCore */; };
+		2BC98AAD6A62E76423E1533B /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */; };
 		2C930F6F0B45488BD3B19F24 /* MacRightRailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7EAAE88DCA68A5E3DA0774 /* MacRightRailView.swift */; };
+		33F895CB3B69A5C42CC6B1DA /* AVFoundationRecordingPermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */; };
 		380DF7F3FF6B126AFF836F0C /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
 		3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD16BDC533757B7B74F015BF /* MacContentView.swift */; };
 		4C99EAB7A9E663714367889D /* EventKitCalendarEventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */; };
@@ -39,8 +42,10 @@
 		A27A6DFD1ACDA62927213A43 /* MacNavigationViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEF7C552E518BB5B10D4674 /* MacNavigationViews.swift */; };
 		ABD445D2A67826F2A316B845 /* MacNotesEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558D643CD2E47D6AA3B0BDFD /* MacNotesEditorView.swift */; };
 		B93CA9BB285C247FD0672350 /* RecallOSConvexDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDE8EB4CE50D6CC361AAE8 /* RecallOSConvexDTOs.swift */; };
+		B26E58F41EB6EE7D0A9265FB /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */; };
 		C0012DB10FBEB59FBC8B7C73 /* RecallOSiOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1270420C0574F0584375CB35 /* RecallOSiOSTests.swift */; };
 		CED416F844C90E524C328E26 /* MeetingLifecycleScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C05152F095D8924F019A38 /* MeetingLifecycleScheduler.swift */; };
+		D262ABA88025931C67D28A56 /* AVFoundationRecordingPermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */; };
 		D768BE2479BCE41AEB5A46DC /* MacRecordingStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A6C19EA24F6E06C859698 /* MacRecordingStatusBar.swift */; };
 		DAAE407E6D7D5BD027C75D62 /* RecallOSPersistenceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A54413059836AD2D907CC2 /* RecallOSPersistenceMapper.swift */; };
 		DB4A71D8F4066734CEF7F334 /* MacSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD7DA2FA3279C131E5EB86 /* MacSidebarView.swift */; };
@@ -49,6 +54,7 @@
 		EAD41E5160B570F38CF486B9 /* RecallOSPersistenceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A54413059836AD2D907CC2 /* RecallOSPersistenceMapper.swift */; };
 		EB88C6B69F4AED72BDDAAC8A /* RecallOSMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7E48114726D83D479F481C /* RecallOSMacApp.swift */; };
 		ED13AC36F25D1C70D7741499 /* SwiftDataRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */; };
+		F4A99D3C332E17FF80152016 /* AVFoundationRecordingPermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */; };
 		FD668EAEC0399943650E369A /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = C8A7A4C5271059BD1498BB33 /* RecallOSCore */; };
 		FDCAEA25F9D1524C43944F3E /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
 /* End PBXBuildFile section */
@@ -70,6 +76,7 @@
 		182F0D5F4C3143E74B7B3E3E /* EventKitCalendarEventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitCalendarEventProvider.swift; sourceTree = "<group>"; };
 		2F7E48114726D83D479F481C /* RecallOSMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSMacApp.swift; sourceTree = "<group>"; };
 		40A6D384B414542A6DEE68A2 /* RecallOSCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RecallOSCore; path = packages/RecallOSCore; sourceTree = SOURCE_ROOT; };
+		4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFoundationRecordingPermissionProvider.swift; sourceTree = "<group>"; };
 		54808FB62F806CDAD3137C4F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		558D643CD2E47D6AA3B0BDFD /* MacNotesEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacNotesEditorView.swift; sourceTree = "<group>"; };
 		5C7EAAE88DCA68A5E3DA0774 /* MacRightRailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacRightRailView.swift; sourceTree = "<group>"; };
@@ -77,6 +84,7 @@
 		5FEA2D232340ACFE41FA9A2E /* RecallOSiOSTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RecallOSiOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		63A7B6F1203D6B5AA9203504 /* SwiftDataRecallOSRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataRecallOSRepository.swift; sourceTree = "<group>"; };
 		683708A90D7C17A2DEAF139F /* RecallOSStoreFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSStoreFactoryTests.swift; sourceTree = "<group>"; };
+		6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFoundationMicrophoneAudioCaptureProvider.swift; sourceTree = "<group>"; };
 		73C78003EFDC45106FA92EDB /* MacTasksBrainViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacTasksBrainViews.swift; sourceTree = "<group>"; };
 		7949ADA899206E8DA404EDEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSStoreFactory.swift; sourceTree = "<group>"; };
@@ -150,6 +158,15 @@
 			path = apps/RecallOSiOS/Tests;
 			sourceTree = "<group>";
 		};
+		0F6A79FE5BB4866E29E34109 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				6CD7EC316BC600516BEA033A /* AVFoundationMicrophoneAudioCaptureProvider.swift */,
+				4B732A7103D42EEDA0D0F0F0 /* AVFoundationRecordingPermissionProvider.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
 		22DD1FAE5ED18A7B9390DD01 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -189,6 +206,7 @@
 				BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */,
 				A0DDE8EB4CE50D6CC361AAE8 /* RecallOSConvexDTOs.swift */,
 				80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */,
+				0F6A79FE5BB4866E29E34109 /* Audio */,
 				03E8C28FEFB1E89917D54A9E /* Calendar */,
 				30BC62D3E761B98D2B99D27D /* Persistence */,
 			);
@@ -429,6 +447,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B26E58F41EB6EE7D0A9265FB /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */,
+				D262ABA88025931C67D28A56 /* AVFoundationRecordingPermissionProvider.swift in Sources */,
 				98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */,
 				E2DCEFA44EAD9CBB3D726D1E /* EventKitCalendarEventProvider.swift in Sources */,
 				9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */,
@@ -445,6 +465,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BC98AAD6A62E76423E1533B /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */,
+				33F895CB3B69A5C42CC6B1DA /* AVFoundationRecordingPermissionProvider.swift in Sources */,
 				63BFDEF783FD86C7467A97E5 /* ConvexRecallOSRepository.swift in Sources */,
 				0528BA414C2F719DDDF3EAA8 /* EventKitCalendarEventProvider.swift in Sources */,
 				B93CA9BB285C247FD0672350 /* RecallOSConvexDTOs.swift in Sources */,
@@ -460,6 +482,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26A7EBF2585D29D9F5EFE572 /* AVFoundationMicrophoneAudioCaptureProvider.swift in Sources */,
+				F4A99D3C332E17FF80152016 /* AVFoundationRecordingPermissionProvider.swift in Sources */,
 				4D5F8725C5E53BA0043B3095 /* ConvexRecallOSRepository.swift in Sources */,
 				4C99EAB7A9E663714367889D /* EventKitCalendarEventProvider.swift in Sources */,
 				3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */,

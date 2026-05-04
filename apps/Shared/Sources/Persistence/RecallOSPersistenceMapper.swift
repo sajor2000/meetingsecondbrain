@@ -23,7 +23,8 @@ enum RecallOSPersistenceMapper {
             tasks: meeting.tasks.map(persistentTask(from:)),
             screenshots: meeting.screenshots.map(persistentScreenshot(from:)),
             decisions: meeting.decisions.map(persistentDecision(from:)),
-            topics: meeting.topics.map(persistentTopic(from:))
+            topics: meeting.topics.map(persistentTopic(from:)),
+            audioArtifacts: meeting.audioArtifacts.map(persistentAudioArtifact(from:))
         )
     }
 
@@ -50,7 +51,10 @@ enum RecallOSPersistenceMapper {
             tasks: persistent.tasks.map(task(from:)),
             screenshots: persistent.screenshots.map(screenshot(from:)),
             decisions: persistent.decisions.map(decision(from:)),
-            topics: persistent.topics.map(topic(from:))
+            topics: persistent.topics.map(topic(from:)),
+            audioArtifacts: persistent.audioArtifacts
+                .map(audioArtifact(from:))
+                .sorted { $0.startedAt < $1.startedAt }
         )
     }
 
@@ -263,6 +267,36 @@ enum RecallOSPersistenceMapper {
             capturedAt: screenshot.capturedAt,
             storagePath: screenshot.storagePath,
             caption: screenshot.caption
+        )
+    }
+
+    private static func persistentAudioArtifact(from artifact: AudioCaptureArtifact) -> PersistentAudioCaptureArtifact {
+        PersistentAudioCaptureArtifact(
+            id: artifact.id,
+            convexID: artifact.convexID,
+            meetingID: artifact.meetingID,
+            startedAt: artifact.startedAt,
+            endedAt: artifact.endedAt,
+            microphoneAudioPath: artifact.microphoneAudioPath,
+            duration: artifact.duration,
+            byteSize: artifact.byteSize,
+            diagnostics: artifact.diagnostics,
+            errorMessage: artifact.errorMessage
+        )
+    }
+
+    private static func audioArtifact(from persistent: PersistentAudioCaptureArtifact) -> AudioCaptureArtifact {
+        AudioCaptureArtifact(
+            id: persistent.id,
+            convexID: persistent.convexID,
+            meetingID: persistent.meetingID,
+            startedAt: persistent.startedAt,
+            endedAt: persistent.endedAt,
+            microphoneAudioPath: persistent.microphoneAudioPath,
+            duration: persistent.duration,
+            byteSize: persistent.byteSize,
+            diagnostics: persistent.diagnostics,
+            errorMessage: persistent.errorMessage
         )
     }
 

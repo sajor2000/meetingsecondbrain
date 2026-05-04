@@ -20,6 +20,7 @@ final class PersistentMeeting {
     @Relationship(deleteRule: .cascade) var screenshots: [PersistentMeetingScreenshot]
     @Relationship(deleteRule: .cascade) var decisions: [PersistentMeetingDecision]
     @Relationship(deleteRule: .cascade) var topics: [PersistentTopic]
+    @Relationship(deleteRule: .cascade) var audioArtifacts: [PersistentAudioCaptureArtifact]
 
     init(
         id: UUID,
@@ -37,7 +38,8 @@ final class PersistentMeeting {
         tasks: [PersistentMeetingTask] = [],
         screenshots: [PersistentMeetingScreenshot] = [],
         decisions: [PersistentMeetingDecision] = [],
-        topics: [PersistentTopic] = []
+        topics: [PersistentTopic] = [],
+        audioArtifacts: [PersistentAudioCaptureArtifact] = []
     ) {
         self.id = id
         self.convexID = convexID
@@ -55,6 +57,7 @@ final class PersistentMeeting {
         self.screenshots = screenshots
         self.decisions = decisions
         self.topics = topics
+        self.audioArtifacts = audioArtifacts
     }
 }
 
@@ -269,6 +272,44 @@ final class PersistentTopic {
 }
 
 @Model
+final class PersistentAudioCaptureArtifact {
+    var id: UUID
+    var convexID: String?
+    var meetingID: UUID
+    var startedAt: Date
+    var endedAt: Date?
+    var microphoneAudioPath: String?
+    var duration: TimeInterval?
+    var byteSize: Int64?
+    var diagnostics: String
+    var errorMessage: String?
+
+    init(
+        id: UUID,
+        convexID: String?,
+        meetingID: UUID,
+        startedAt: Date,
+        endedAt: Date?,
+        microphoneAudioPath: String?,
+        duration: TimeInterval?,
+        byteSize: Int64?,
+        diagnostics: String,
+        errorMessage: String?
+    ) {
+        self.id = id
+        self.convexID = convexID
+        self.meetingID = meetingID
+        self.startedAt = startedAt
+        self.endedAt = endedAt
+        self.microphoneAudioPath = microphoneAudioPath
+        self.duration = duration
+        self.byteSize = byteSize
+        self.diagnostics = diagnostics
+        self.errorMessage = errorMessage
+    }
+}
+
+@Model
 final class PersistentCalendarEvent {
     @Attribute(.unique) var id: UUID
     var convexID: String?
@@ -317,4 +358,3 @@ final class PersistentRecallOSSetting {
         self.updatedAt = updatedAt
     }
 }
-
