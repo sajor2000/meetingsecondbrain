@@ -10,4 +10,7 @@
    <FileRef
       location = "group:packages/Core/Package.swift">
    </FileRef>
+   <FileRef
+      location = "group:RecallOS.xcodeproj">
+   </FileRef>
 </Workspace>
