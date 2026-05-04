@@ -1,9 +1,11 @@
+import Foundation
 import RecallOSCore
 
 enum RecallOSStoreFactory {
     @MainActor
     static func makeAppStore() -> RecallOSAppStore {
-        if let repository = ConvexRecallOSRepository.fromEnvironment() {
+        let liveConvexEnabled = ProcessInfo.processInfo.environment["RECALLOS_USE_LIVE_CONVEX"] == "1"
+        if liveConvexEnabled, let repository = ConvexRecallOSRepository.fromEnvironment() {
             return RecallOSAppStore(repository: repository)
         }
 

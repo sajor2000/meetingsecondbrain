@@ -199,7 +199,7 @@ public final class RecallOSAppStore: ObservableObject {
     }
 
     public func stopAndEnhanceRecording() async {
-        guard var session = recordingSession, var meeting = selectedMeeting else { return }
+        guard var session = recordingSession, var meeting = meeting(for: session.meetingID) else { return }
 
         do {
             transcriptTask?.cancel()
@@ -283,12 +283,25 @@ public final class RecallOSAppStore: ObservableObject {
     }
 
     private func appendTranscriptSegment(_ segment: TranscriptSegment) {
-        guard var meeting = selectedMeeting, meeting.id == segment.meetingID else { return }
+        guard var meeting = meeting(for: segment.meetingID) else { return }
         guard !meeting.transcriptSegments.contains(where: { $0.id == segment.id }) else { return }
 
         meeting.transcriptSegments.append(segment)
         meeting.transcriptSegments.sort { $0.startTime < $1.startTime }
-        replaceSelectedMeeting(meeting)
+        if selectedMeeting?.id == meeting.id {
+            selectedMeeting = meeting
+        }
+        if let index = meetings.firstIndex(where: { $0.id == meeting.id }) {
+            meetings[index] = meeting
+        } else {
+            meetings.insert(meeting, at: 0)
+        }
+    }
+
+    private func meeting(for meetingID: UUID) -> Meeting? {
+        meetings.first { $0.id == meetingID } ?? selectedMeeting.flatMap { selected in
+            selected.id == meetingID ? selected : nil
+        }
     }
 
     private func replaceSelectedMeeting(_ meeting: Meeting) {

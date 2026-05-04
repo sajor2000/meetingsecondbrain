@@ -14,6 +14,7 @@
 		4D5F8725C5E53BA0043B3095 /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
 		65AC7BF14098D67050770F2E /* RecordingBannerPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ADBF1B498E3784E6D16E5 /* RecordingBannerPanelController.swift */; };
 		741810E9D00346ED848781EC /* ConvexMobile in Frameworks */ = {isa = PBXBuildFile; productRef = F07E83D611C5AC2793296889 /* ConvexMobile */; };
+		823FBFA32D6DAF3E0E0A84CE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */; };
 		84C4E37283733C5C1355E671 /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
 		98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
 		9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020E5BBB439A3E651DF08A98 /* IOSContentView.swift */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		020E5BBB439A3E651DF08A98 /* IOSContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSContentView.swift; sourceTree = "<group>"; };
+		062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2F7E48114726D83D479F481C /* RecallOSMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSMacApp.swift; sourceTree = "<group>"; };
 		40A6D384B414542A6DEE68A2 /* RecallOSCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RecallOSCore; path = packages/RecallOSCore; sourceTree = SOURCE_ROOT; };
 		80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSStoreFactory.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				22DD1FAE5ED18A7B9390DD01 /* Packages */,
+				6C7DBA600A5E23E1833568DD /* Resources */,
 				F4299D7D0521749D90227E7E /* Sources */,
 				C3A7B495E6D3D54B9F1271D0 /* Sources */,
 				463C3C5418B30C2EB76F1302 /* Sources */,
@@ -82,6 +85,15 @@
 			);
 			name = Sources;
 			path = apps/Shared/Sources;
+			sourceTree = "<group>";
+		};
+		6C7DBA600A5E23E1833568DD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				062BC30F0F8BB211283EC932 /* LaunchScreen.storyboard */,
+			);
+			name = Resources;
+			path = apps/RecallOSiOS/Resources;
 			sourceTree = "<group>";
 		};
 		C3A7B495E6D3D54B9F1271D0 /* Sources */ = {
@@ -122,6 +134,7 @@
 			buildConfigurationList = 7161C61EB4052EC7CD4D110B /* Build configuration list for PBXNativeTarget "RecallOSiOS" */;
 			buildPhases = (
 				E03E430BD42D0E466B3DA413 /* Sources */,
+				3A4A1CB2ECCC8EE3F00EE399 /* Resources */,
 				A36C64FB7162EF343365B36C /* Frameworks */,
 			);
 			buildRules = (
@@ -196,6 +209,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3A4A1CB2ECCC8EE3F00EE399 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				823FBFA32D6DAF3E0E0A84CE /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E03E430BD42D0E466B3DA413 /* Sources */ = {

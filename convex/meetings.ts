@@ -1,12 +1,14 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireUserId } from "./auth";
 
 export const list = query({
-  args: { userId: v.string() },
+  args: {},
   handler: async (ctx, args) => {
+    const userId = await requireUserId(ctx);
     return await ctx.db
-      .query("meetings")
-      .withIndex("by_user_start", (q) => q.eq("userId", args.userId))
+      .query("recallOSMeetings")
+      .withIndex("by_user_start", (q) => q.eq("userId", userId))
       .order("desc")
       .collect();
   },
@@ -14,20 +16,22 @@ export const list = query({
 
 export const create = mutation({
   args: {
-    userId: v.string(),
+    localId: v.string(),
     title: v.string(),
     startsAt: v.number(),
     endsAt: v.number(),
-    attendeeIds: v.array(v.id("people")),
+    attendeeIds: v.optional(v.array(v.id("recallOSPeople"))),
   },
   handler: async (ctx, args) => {
+    const userId = await requireUserId(ctx);
     const now = Date.now();
-    return await ctx.db.insert("meetings", {
-      userId: args.userId,
+    return await ctx.db.insert("recallOSMeetings", {
+      userId,
+      localId: args.localId,
       title: args.title,
       startsAt: args.startsAt,
       endsAt: args.endsAt,
-      attendeeIds: args.attendeeIds,
+      attendeeIds: args.attendeeIds ?? [],
       topicIds: [],
       status: "scheduled",
       createdAt: now,
@@ -38,12 +42,26 @@ export const create = mutation({
 
 export const updateNotes = mutation({
   args: {
-    meetingId: v.id("meetings"),
+    meetingId: v.id("recallOSMeetings"),
+    status: v.optional(v.union(
+      v.literal("scheduled"),
+      v.literal("inProgress"),
+      v.literal("recording"),
+      v.literal("enhancing"),
+      v.literal("completed"),
+    )),
     rawNotes: v.optional(v.string()),
     enhancedNotes: v.optional(v.string()),
+    noteBlocks: v.optional(v.any()),
     summary: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const userId = await requireUserId(ctx);
+    const meeting = await ctx.db.get(args.meetingId);
+    if (meeting === null || meeting.userId !== userId) {
+      throw new Error("Meeting not found.");
+    }
+
     const { meetingId, ...patch } = args;
     await ctx.db.patch(meetingId, { ...patch, updatedAt: Date.now() });
     return meetingId;

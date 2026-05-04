@@ -39,8 +39,7 @@ targets:
     sources:
       - apps/Shared/Sources
       - apps/RecallOSiOS/Sources
-    resources:
-      - apps/RecallOSiOS/Resources
+      - path: apps/RecallOSiOS/Resources/LaunchScreen.storyboard
     dependencies:
       - package: RecallOSCore
       - package: ConvexSwift

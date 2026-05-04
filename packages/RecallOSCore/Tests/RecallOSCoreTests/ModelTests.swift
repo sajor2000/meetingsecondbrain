@@ -64,6 +64,17 @@ final class ModelTests: XCTestCase {
         XCTAssertFalse(sections.contains { $0.title == "Done" })
     }
 
+    func testTaskListTodayExcludesDoneTasksWithoutCompletionDate() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let undatedDone = MeetingTask(title: "Old done", status: .done, completedAt: nil)
+        let doneToday = MeetingTask(title: "Done today", status: .done, completedAt: now)
+
+        let sections = TaskListFilter.today.sections(for: [undatedDone, doneToday], now: now)
+        let doneTodayTasks = sections.first { $0.title == "Done today" }?.tasks ?? []
+
+        XCTAssertEqual(doneTodayTasks.map(\.id), [doneToday.id])
+    }
+
     func testTaskStoreMoveUpdatesStatusAndCompletionDate() {
         let task = MeetingTask(title: "Prepare recap", status: .open)
         let completedAt = Date(timeIntervalSince1970: 42)
@@ -174,6 +185,41 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(store.selectedMeeting?.status, meeting.status)
         XCTAssertEqual(store.recordingSession?.state, .failed)
         XCTAssertNotNil(store.syncError)
+    }
+
+    @MainActor
+    func testStopAndEnhanceUsesRecordingMeetingAfterSelectionChanges() async throws {
+        let recordingMeeting = Meeting(
+            title: "Recording meeting",
+            startsAt: Date(),
+            endsAt: Date().addingTimeInterval(1_800),
+            attendees: [SampleData.me]
+        )
+        let otherMeeting = Meeting(
+            title: "Other meeting",
+            startsAt: Date().addingTimeInterval(3_600),
+            endsAt: Date().addingTimeInterval(5_400),
+            attendees: [SampleData.patrick]
+        )
+        let repository = FixtureRecallOSRepository(meetings: [recordingMeeting, otherMeeting], tasks: [])
+        let store = RecallOSAppStore(
+            repository: repository,
+            transcriptionProvider: MockTranscriptionProvider(delayNanoseconds: 1_000),
+            meetings: [recordingMeeting, otherMeeting],
+            selectedMeeting: recordingMeeting,
+            tasks: []
+        )
+
+        await store.startRecording()
+        try await Task.sleep(nanoseconds: 20_000_000)
+        await store.selectMeeting(otherMeeting.id)
+
+        await store.stopAndEnhanceRecording()
+
+        XCTAssertEqual(store.selectedMeeting?.id, recordingMeeting.id)
+        XCTAssertEqual(store.selectedMeeting?.status, .completed)
+        XCTAssertEqual(store.meetings.first { $0.id == otherMeeting.id }?.status, .scheduled)
+        XCTAssertFalse(store.meetings.first { $0.id == recordingMeeting.id }?.userNotes.isEmpty ?? true)
     }
 
     @MainActor
