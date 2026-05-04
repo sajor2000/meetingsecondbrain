@@ -16,6 +16,15 @@ Existing artifact screenshots:
 
 ## Repository
 
+- macOS recording session UI scaffold with local capture proof controls.
+- ScreenCaptureKit system audio capture service.
+- AVFoundation microphone capture service.
+- RecallOS native microphone artifact boundary with local metadata persistence.
+- Recording artifact model, metadata writer, and local diagnostic output folder.
+- Recorder lifecycle tests for startup cleanup, stop cleanup, artifact uniqueness, and live meter activity.
+- Manual real meeting test plan at `docs/manual-test-plan.md`.
+- Capture hardening learning at `docs/solutions/logic-errors/stabilize-macos-capture-recorder-cleanup-and-activity-state-2026-05-03.md`.
+
 Project instruction source names this GitHub repository:
 
 `https://github.com/sajor2000/meetingsecondbrain`

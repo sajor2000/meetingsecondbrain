@@ -250,7 +250,7 @@ public final class RecallOSAppStore: ObservableObject {
             streamTranscript(for: meeting)
         } catch {
             if didStartAudioCapture {
-                try? await audioProvider.stop()
+                _ = try? await audioProvider.stop()
             }
             upsertMeeting(previousMeeting, select: true)
             markWorkflowFailed(error)
@@ -295,17 +295,22 @@ public final class RecallOSAppStore: ObservableObject {
             recordingSession = session
             workflowMessage = "Finalizing audio"
 
-            try await audioProvider.stop()
+            let audioArtifact = try await audioProvider.stop()
             await Swift.Task.yield()
             meeting = self.meeting(withID: session.meetingID) ?? meeting
             transcriptTask?.cancel()
             transcriptTask = nil
-
             session.state = .enhancing
             session.stoppedAt = Date()
             recordingSession = session
 
+            if let audioArtifact {
+                meeting.audioArtifacts.append(audioArtifact)
+                meeting.audioArtifacts.sort { $0.startedAt < $1.startedAt }
+            }
             meeting.status = .enhancing
+            upsertMeeting(meeting)
+            meeting = try await repository.updateMeeting(meeting)
             upsertMeeting(meeting)
 
             let transcriptSegments = meeting.transcriptSegments

@@ -19,7 +19,12 @@ enum RecallOSStoreFactory {
             guard let repository = ConvexRecallOSRepository.fromEnvironment(environment) else {
                 return unavailableStore("Live Convex was requested, but CONVEX_URL is not configured.")
             }
-            return RecallOSAppStore(repository: repository, calendarProvider: calendarProvider())
+            return RecallOSAppStore(
+                repository: repository,
+                permissionProvider: permissionProvider(),
+                audioProvider: audioProvider(),
+                calendarProvider: calendarProvider()
+            )
         }
 
         guard usePersistentStore else {
@@ -29,6 +34,8 @@ enum RecallOSStoreFactory {
         do {
             return RecallOSAppStore(
                 repository: try persistentRepositoryFactory(),
+                permissionProvider: permissionProvider(),
+                audioProvider: audioProvider(),
                 calendarProvider: calendarProvider()
             )
         } catch {
@@ -47,6 +54,22 @@ enum RecallOSStoreFactory {
         EventKitCalendarEventProvider()
         #else
         MockCalendarEventProvider()
+        #endif
+    }
+
+    private static func permissionProvider() -> any RecordingPermissionProvider {
+        #if os(macOS)
+        AVFoundationRecordingPermissionProvider()
+        #else
+        AllowAllRecordingPermissionProvider()
+        #endif
+    }
+
+    private static func audioProvider() -> any AudioCaptureProvider {
+        #if os(macOS)
+        AVFoundationMicrophoneAudioCaptureProvider()
+        #else
+        MockAudioCaptureProvider()
         #endif
     }
 
