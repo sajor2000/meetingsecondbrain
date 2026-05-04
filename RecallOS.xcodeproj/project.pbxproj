@@ -1,0 +1,493 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02A9CFDFA45E1F9A1BC0F3D9 /* RecallOSiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A13E3B8D08079C3540DFE0A /* RecallOSiOSApp.swift */; };
+		25EA8B9CC185FA34D22BF014 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 533C35D786E1BFEF3BD60F6D /* RecallOSCore */; };
+		27530E75D34600D56BEBE835 /* RecallOSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 7DDD304382FCC3A23E9D95B5 /* RecallOSCore */; };
+		3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD16BDC533757B7B74F015BF /* MacContentView.swift */; };
+		4D5F8725C5E53BA0043B3095 /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
+		65AC7BF14098D67050770F2E /* RecordingBannerPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1ADBF1B498E3784E6D16E5 /* RecordingBannerPanelController.swift */; };
+		741810E9D00346ED848781EC /* ConvexMobile in Frameworks */ = {isa = PBXBuildFile; productRef = F07E83D611C5AC2793296889 /* ConvexMobile */; };
+		84C4E37283733C5C1355E671 /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
+		98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */; };
+		9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020E5BBB439A3E651DF08A98 /* IOSContentView.swift */; };
+		EB88C6B69F4AED72BDDAAC8A /* RecallOSMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7E48114726D83D479F481C /* RecallOSMacApp.swift */; };
+		FDCAEA25F9D1524C43944F3E /* RecallOSStoreFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		020E5BBB439A3E651DF08A98 /* IOSContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSContentView.swift; sourceTree = "<group>"; };
+		2F7E48114726D83D479F481C /* RecallOSMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSMacApp.swift; sourceTree = "<group>"; };
+		40A6D384B414542A6DEE68A2 /* RecallOSCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = RecallOSCore; path = packages/RecallOSCore; sourceTree = SOURCE_ROOT; };
+		80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSStoreFactory.swift; sourceTree = "<group>"; };
+		9249171BE8B6BE902CFF0404 /* RecallOSiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RecallOSiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		952043282830E1CC3AA46119 /* RecallOSMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecallOSMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A13E3B8D08079C3540DFE0A /* RecallOSiOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallOSiOSApp.swift; sourceTree = "<group>"; };
+		BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvexRecallOSRepository.swift; sourceTree = "<group>"; };
+		CA1ADBF1B498E3784E6D16E5 /* RecordingBannerPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingBannerPanelController.swift; sourceTree = "<group>"; };
+		FD16BDC533757B7B74F015BF /* MacContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacContentView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7A7F47F39B3FD8A34DCCE40C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				27530E75D34600D56BEBE835 /* RecallOSCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A36C64FB7162EF343365B36C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25EA8B9CC185FA34D22BF014 /* RecallOSCore in Frameworks */,
+				741810E9D00346ED848781EC /* ConvexMobile in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		22DD1FAE5ED18A7B9390DD01 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				40A6D384B414542A6DEE68A2 /* RecallOSCore */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		41CB9CD82D1F2ABDC701F3EE = {
+			isa = PBXGroup;
+			children = (
+				22DD1FAE5ED18A7B9390DD01 /* Packages */,
+				F4299D7D0521749D90227E7E /* Sources */,
+				C3A7B495E6D3D54B9F1271D0 /* Sources */,
+				463C3C5418B30C2EB76F1302 /* Sources */,
+				EBDB9F10D69AA31EBAC56373 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		463C3C5418B30C2EB76F1302 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				BFB42D0B88F255ED7803D323 /* ConvexRecallOSRepository.swift */,
+				80B5E168C0B9AB8725816AFA /* RecallOSStoreFactory.swift */,
+			);
+			name = Sources;
+			path = apps/Shared/Sources;
+			sourceTree = "<group>";
+		};
+		C3A7B495E6D3D54B9F1271D0 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FD16BDC533757B7B74F015BF /* MacContentView.swift */,
+				2F7E48114726D83D479F481C /* RecallOSMacApp.swift */,
+				CA1ADBF1B498E3784E6D16E5 /* RecordingBannerPanelController.swift */,
+			);
+			name = Sources;
+			path = apps/RecallOSMac/Sources;
+			sourceTree = "<group>";
+		};
+		EBDB9F10D69AA31EBAC56373 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9249171BE8B6BE902CFF0404 /* RecallOSiOS.app */,
+				952043282830E1CC3AA46119 /* RecallOSMac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F4299D7D0521749D90227E7E /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				020E5BBB439A3E651DF08A98 /* IOSContentView.swift */,
+				9A13E3B8D08079C3540DFE0A /* RecallOSiOSApp.swift */,
+			);
+			name = Sources;
+			path = apps/RecallOSiOS/Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6216FB5A8DCF3A543025BA7F /* RecallOSiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7161C61EB4052EC7CD4D110B /* Build configuration list for PBXNativeTarget "RecallOSiOS" */;
+			buildPhases = (
+				E03E430BD42D0E466B3DA413 /* Sources */,
+				A36C64FB7162EF343365B36C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RecallOSiOS;
+			packageProductDependencies = (
+				533C35D786E1BFEF3BD60F6D /* RecallOSCore */,
+				F07E83D611C5AC2793296889 /* ConvexMobile */,
+			);
+			productName = RecallOSiOS;
+			productReference = 9249171BE8B6BE902CFF0404 /* RecallOSiOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		82047A6728C391C9538A5A26 /* RecallOSMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 271910B2A9A901F1CA4FD934 /* Build configuration list for PBXNativeTarget "RecallOSMac" */;
+			buildPhases = (
+				FF5B48E8131AB4C6A578672E /* Sources */,
+				7A7F47F39B3FD8A34DCCE40C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RecallOSMac;
+			packageProductDependencies = (
+				7DDD304382FCC3A23E9D95B5 /* RecallOSCore */,
+			);
+			productName = RecallOSMac;
+			productReference = 952043282830E1CC3AA46119 /* RecallOSMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FA5F37C10D4D3FC2624D8FEE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					6216FB5A8DCF3A543025BA7F = {
+						ProvisioningStyle = Automatic;
+					};
+					82047A6728C391C9538A5A26 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 89AA7ACEC8DBD04329CA9B5F /* Build configuration list for PBXProject "RecallOS" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 41CB9CD82D1F2ABDC701F3EE;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6D0093977A0AB2F0F014A62C /* XCRemoteSwiftPackageReference "convex-swift" */,
+				65B66A029C026117FE169F58 /* XCLocalSwiftPackageReference "packages/RecallOSCore" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EBDB9F10D69AA31EBAC56373 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				82047A6728C391C9538A5A26 /* RecallOSMac */,
+				6216FB5A8DCF3A543025BA7F /* RecallOSiOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E03E430BD42D0E466B3DA413 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98872E3F0EE0387D4E0A2EBE /* ConvexRecallOSRepository.swift in Sources */,
+				9B397C61D847AC2EA62A8571 /* IOSContentView.swift in Sources */,
+				84C4E37283733C5C1355E671 /* RecallOSStoreFactory.swift in Sources */,
+				02A9CFDFA45E1F9A1BC0F3D9 /* RecallOSiOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FF5B48E8131AB4C6A578672E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D5F8725C5E53BA0043B3095 /* ConvexRecallOSRepository.swift in Sources */,
+				3F5F9514CCFECCB517F403FC /* MacContentView.swift in Sources */,
+				EB88C6B69F4AED72BDDAAC8A /* RecallOSMacApp.swift in Sources */,
+				FDCAEA25F9D1524C43944F3E /* RecallOSStoreFactory.swift in Sources */,
+				65AC7BF14098D67050770F2E /* RecordingBannerPanelController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0026696020582B30ABD99E91 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				INFOPLIST_FILE = apps/RecallOSiOS/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.recallos.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		37B389F2F5ECD784861B08F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = apps/RecallOSMac/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.recallos.mac;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		4AE145CA2DBE4DE7C73BC08E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		71CA972B02E3BA368077BF6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = apps/RecallOSMac/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.recallos.mac;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BAAB29F24689EB8C1BFC0290 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		BF513BBA05756EC6675DE025 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				INFOPLIST_FILE = apps/RecallOSiOS/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.recallos.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		271910B2A9A901F1CA4FD934 /* Build configuration list for PBXNativeTarget "RecallOSMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37B389F2F5ECD784861B08F9 /* Debug */,
+				71CA972B02E3BA368077BF6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7161C61EB4052EC7CD4D110B /* Build configuration list for PBXNativeTarget "RecallOSiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0026696020582B30ABD99E91 /* Debug */,
+				BF513BBA05756EC6675DE025 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		89AA7ACEC8DBD04329CA9B5F /* Build configuration list for PBXProject "RecallOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4AE145CA2DBE4DE7C73BC08E /* Debug */,
+				BAAB29F24689EB8C1BFC0290 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		65B66A029C026117FE169F58 /* XCLocalSwiftPackageReference "packages/RecallOSCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = packages/RecallOSCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6D0093977A0AB2F0F014A62C /* XCRemoteSwiftPackageReference "convex-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/get-convex/convex-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		533C35D786E1BFEF3BD60F6D /* RecallOSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RecallOSCore;
+		};
+		7DDD304382FCC3A23E9D95B5 /* RecallOSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RecallOSCore;
+		};
+		F07E83D611C5AC2793296889 /* ConvexMobile */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6D0093977A0AB2F0F014A62C /* XCRemoteSwiftPackageReference "convex-swift" */;
+			productName = ConvexMobile;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = FA5F37C10D4D3FC2624D8FEE /* Project object */;
+}
